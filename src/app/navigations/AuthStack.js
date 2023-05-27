@@ -4,17 +4,48 @@ import OnBoardScreen from '../screens/OnBoard/OnBoardScreen';
 import LoginScreen from '../screens/Auth/LoginScreen';
 import SignupScreen from '../screens/Auth/SignupScreen';
 import ForgotPasswordScreen from '../screens/Auth/ForgotPasswordScreen';
+import { colors } from '../constants/Colors';
 
 const Stack = createStackNavigator();
 const AuthStack = () => {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="OnBoardScreen" component={OnBoardScreen} options={{
-        headerShown:false,
-      }}/>
-      <Stack.Screen name="LoginScreen" component={LoginScreen} />
-      <Stack.Screen name="SignupScreen" component={SignupScreen} />
-      <Stack.Screen name="ForgotPasswordScreen" component={ForgotPasswordScreen} />
+      <Stack.Screen
+        name="OnBoardScreen"
+        component={OnBoardScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="LoginScreen"
+        component={LoginScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="SignupScreen"
+        component={SignupScreen}
+        options={{
+          headerStyle: {
+            backgroundColor: colors.red_100,
+          },
+          headerTintColor: colors.white,
+          headerTitle: "Sign Up"
+        }}
+      />
+      <Stack.Screen
+        name="ForgotPasswordScreen"
+        component={ForgotPasswordScreen}
+        options={{
+          headerStyle: {
+            backgroundColor: colors.red_100,
+          },
+          headerTintColor: colors.white,
+          headerTitle: "Forgot Password"
+        }}
+      />
     </Stack.Navigator>
   );
 }
