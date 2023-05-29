@@ -1,13 +1,26 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Image, View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { globalStyles } from '../../../constants/Style';
 import { colors } from '../../../constants/Colors';
 import Label from '../../ui/Form/Label';
 import Input from '../../ui/Form/Input';
 import Button from '../../ui/Form/Button';
-import Icon from 'react-native-vector-icons/FontAwesome';
-
+import Iconic from '../../ui/Icons/Icons';
 const Login = ({ navigation }) => {
+    const [secureTextEntry, setSecureTextEntry] = useState(true);
+    const [iconName, setIconName] = useState('eye-outline');
+
+    const iconHandler = () => {
+        if(iconName === "eye-outline"){
+            setIconName('eye-off-outline');
+            setSecureTextEntry(false);
+        }
+        else{
+            setIconName('eye-outline');
+            setSecureTextEntry(true);
+        }
+    }
+
     return (
         <ScrollView showsVerticalScrollIndicator={false} alwaysBounceVertical={true}>
             <View style={globalStyles.authHeadingContainer}>
@@ -24,13 +37,11 @@ const Login = ({ navigation }) => {
                 />
                 <Label label="Password" />
                 <Input
-                    secureTextEntry={true}
+                    secureTextEntry={secureTextEntry}
                     cursorColor={colors.black}
                     type="password"
                 />
-                <TouchableOpacity style={{position:'absolute', top:-20}}>
-                    <Icon name="eye" size={18} color="#000" />
-                </TouchableOpacity>
+                <Iconic name={iconName} size={18} color="#8c8c8c" style={{position:'absolute', bottom:40, right:40}} onPress={()=>iconHandler()}/>
                 <TouchableOpacity style={globalStyles.smallTextContainer} onPress={() => navigation.navigate('ForgotPasswordScreen')}>
                     <Text style={globalStyles.smallText}>Forgot Password?</Text>
                 </TouchableOpacity>

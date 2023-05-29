@@ -102,5 +102,6 @@ export const globalStyles = StyleSheet.create({
     smallText:{
         fontSize:14,
         color:colors.white,        
-    }
+    },
+    
 });

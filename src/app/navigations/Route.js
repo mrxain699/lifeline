@@ -5,7 +5,10 @@ import AppStack from './AppStack';
 const Route = () => {
    return (
      <NavigationContainer>
-        <AuthStack/>
+        {
+          //<AuthStack/>
+          <AppStack/>
+        }
      </NavigationContainer>
    )
  }
