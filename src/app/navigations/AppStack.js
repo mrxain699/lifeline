@@ -9,7 +9,8 @@ import BloodGroup from '../screens/Modals/BloodGroup';
 import LastBleed from '../screens/Modals/LastBleed';
 import DateOfBirth from '../screens/Modals/DateOfBirth';
 import Gender from '../screens/Modals/Gender';
-
+import PhoneNumber from '../screens/Modals/PhoneNumber';
+import Address from '../screens/Modals/Address';
 const Stack = createStackNavigator();
 
 const screenOptions = {
@@ -48,10 +49,12 @@ const AppStack = () => {
         />
 
         <Stack.Group screenOptions={{ presentation: 'modal' }}>
-          <Stack.Screen name="BloodGroup" component={BloodGroup} />
-          <Stack.Screen name="LastBleed" component={LastBleed} />
+          <Stack.Screen name="BloodGroup" component={BloodGroup} options={{title:"Blood Group"}}/>
+          <Stack.Screen name="LastBleed" component={LastBleed} options={{title:"Last Bleed",}}/>
+          <Stack.Screen name="Address" component={Address} />
+          <Stack.Screen name="PhoneNumber" component={PhoneNumber} options={{title:"Phone Number"}}/>
           <Stack.Screen name="Gender" component={Gender} />
-          <Stack.Screen name="DateOfBirth" component={DateOfBirth} />
+          <Stack.Screen name="DateOfBirth" component={DateOfBirth} options={{title:"Date of Birth"}}/>
 
         </Stack.Group>
     </Stack.Navigator>

@@ -11,8 +11,8 @@ const Body = () => {
       <Text style={styles.heading}>Manage</Text>
       <Item icon="water" title="Blood Group " onPress={() => navigation.navigate('BloodGroup')} />
       <Item icon="calendar" title="Last Bleed " onPress={() => navigation.navigate('LastBleed')} />
-      <Item icon="location" title="Address "  />
-      <Item icon="call" title="Phone# "/>
+      <Item icon="location" title="Address "  onPress={() => navigation.navigate('Address')}/>
+      <Item icon="call" title="Phone# " onPress={() => navigation.navigate('PhoneNumber')}/>
       <Item icon="male-female-sharp" title="Gender " onPress={() => navigation.navigate('Gender')}/>
       <Item icon="calendar" title="Date of Birth " onPress={() => navigation.navigate('DateOfBirth')}/>
     </View>

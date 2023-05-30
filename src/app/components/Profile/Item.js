@@ -6,7 +6,7 @@ import Iconic from '../ui/Icons/Icons';
 const Item = ({icon, title, image, onPress}) => {
     return (
         <TouchableOpacity style={styles.profileItemcontainer} onPress={() => onPress && onPress()}>
-            <Iconic name={icon} size={28} color={colors.red}/>
+            <Iconic name={icon} size={28} color={colors.red_200}/>
             <Text style={styles.title}>{title}</Text>
         </TouchableOpacity>
     )

@@ -21,7 +21,7 @@ const Gender = () => {
                 setOpen={setOpen}
                 setValue={setValue}
                 setItems={setItems}
-                placeholder='Select Blood Group'
+                placeholder='Select Gender'
                 style={styles.dropdown}
                 maxHeight={400}
             />

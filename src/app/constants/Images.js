@@ -5,5 +5,5 @@ export const images = {
     toggle_on_icon : require('../assets/images/on.png'),
     user_default_icon : require('../assets/images/user_default.png'),
     bloodgroup_icon : require('../assets/images/blood.png'),
-    location_icon : require('../assets/images/location.png')
+    location_icon : require('../assets/images/location.png'),
 }
