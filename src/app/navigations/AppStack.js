@@ -1,10 +1,15 @@
 import React from 'react'
+import { TouchableOpacity } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
-import Tabs  from './Tabs';
-import ProfileScreen from '../screens/Main/ProfileScreen';
 import { colors } from '../constants/Colors';
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { TouchableOpacity } from 'react-native';
+import Tabs  from './Tabs';
+import ProfileScreen from '../screens/Main/ProfileScreen';
+import BloodGroup from '../screens/Modals/BloodGroup';
+import LastBleed from '../screens/Modals/LastBleed';
+import DateOfBirth from '../screens/Modals/DateOfBirth';
+import Gender from '../screens/Modals/Gender';
+
 const Stack = createStackNavigator();
 
 const screenOptions = {
@@ -41,6 +46,14 @@ const AppStack = () => {
             )
         })}
         />
+
+        <Stack.Group screenOptions={{ presentation: 'modal' }}>
+          <Stack.Screen name="BloodGroup" component={BloodGroup} />
+          <Stack.Screen name="LastBleed" component={LastBleed} />
+          <Stack.Screen name="Gender" component={Gender} />
+          <Stack.Screen name="DateOfBirth" component={DateOfBirth} />
+
+        </Stack.Group>
     </Stack.Navigator>
   );
 }

@@ -2,18 +2,19 @@ import React from 'react'
 import {View, StyleSheet, Text} from 'react-native';
 import { colors } from '../../constants/Colors';
 import Item from './Item';
-import { images } from '../../constants/Images';
+import { useNavigation } from '@react-navigation/native';
 
 const Body = () => {
+  const navigation  = useNavigation();
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Manage</Text>
-      <Item icon="water" title="Blood Group "/>
-      <Item icon="calendar" title="Last Bleed "/>
-      <Item icon="location" title="Address "/>
+      <Item icon="water" title="Blood Group " onPress={() => navigation.navigate('BloodGroup')} />
+      <Item icon="calendar" title="Last Bleed " onPress={() => navigation.navigate('LastBleed')} />
+      <Item icon="location" title="Address "  />
       <Item icon="call" title="Phone# "/>
-      <Item icon="male-female-sharp" title="Gender "/>
-      <Item icon="calendar" title="Date of Birth "/>
+      <Item icon="male-female-sharp" title="Gender " onPress={() => navigation.navigate('Gender')}/>
+      <Item icon="calendar" title="Date of Birth " onPress={() => navigation.navigate('DateOfBirth')}/>
     </View>
   )
 }
