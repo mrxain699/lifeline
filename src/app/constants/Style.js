@@ -26,6 +26,21 @@ export const globalStyles = StyleSheet.create({
         color:colors.white,
         fontSize:18
     },
+    errorContainer:{
+        backgroundColor:colors.red_50,
+        marginHorizontal:20,
+        height:50,
+        borderRadius:10,
+        marginVertical:10,
+        paddingHorizontal:10,
+        alignItems: 'flex-start',
+        justifyContent: 'center'
+    },
+    error:{
+        fontSize:16,
+        color:colors.red,
+        fontFamily:'Roboto-Regular',
+    },
     authInputContainer:{
         marginVertical:10,
         paddingHorizontal:20,

@@ -77,6 +77,12 @@ const getFormatedTime = (date) => {
     return `${hour}:${minute} ${apprend}`;
 }
 
+const trim = (text) => {
+    if(text !== null){
+        return text.trim();
+    }
+    return text;
+}
 
 
 
@@ -88,6 +94,7 @@ export {
     getTodayDate, 
     getFormatedTime,
     getLastYear,
+    trim,
      
  
 };

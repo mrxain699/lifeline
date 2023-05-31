@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useContext} from 'react'
 import { TouchableOpacity } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { colors } from '../constants/Colors';
@@ -11,6 +11,7 @@ import DateOfBirth from '../screens/Modals/DateOfBirth';
 import Gender from '../screens/Modals/Gender';
 import PhoneNumber from '../screens/Modals/PhoneNumber';
 import Address from '../screens/Modals/Address';
+import { AuthContext } from '../api/AuthContentApi';
 const Stack = createStackNavigator();
 
 const screenOptions = {
@@ -26,6 +27,7 @@ const screenOptions = {
 }
 
 const AppStack = () => {
+  const {logout} = useContext(AuthContext);
   return (
     <Stack.Navigator screenOptions={screenOptions}>
       <Stack.Screen 
@@ -41,7 +43,7 @@ const AppStack = () => {
         options={({navigation})=>({
           headerShown:true,
           headerRight:()=>(
-            <TouchableOpacity onPress={()=>navigation.navigate('Home')}>
+            <TouchableOpacity onPress={()=>logout()}>
               <Ionicons name="power" size={24} color={colors.white} style={{marginRight:20}} />
             </TouchableOpacity>
             )

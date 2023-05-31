@@ -1,22 +1,28 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { createStackNavigator } from '@react-navigation/stack';
 import OnBoardScreen from '../screens/OnBoard/OnBoardScreen';
 import LoginScreen from '../screens/Auth/LoginScreen';
 import SignupScreen from '../screens/Auth/SignupScreen';
 import ForgotPasswordScreen from '../screens/Auth/ForgotPasswordScreen';
 import { colors } from '../constants/Colors';
-
+import { AuthContext } from '../api/AuthContentApi';
 const Stack = createStackNavigator();
 const AuthStack = () => {
+  const { isAppFirstLaunched } = useContext(AuthContext);
   return (
+    isAppFirstLaunched != null && (
     <Stack.Navigator>
-      <Stack.Screen
-        name="OnBoardScreen"
-        component={OnBoardScreen}
-        options={{
-          headerShown: false,
-        }}
-      />
+
+      {
+        isAppFirstLaunched && (<Stack.Screen
+          name="OnBoardScreen"
+          component={OnBoardScreen}
+          options={{
+            headerShown: false,
+          }}
+        />) 
+      }
+
       <Stack.Screen
         name="LoginScreen"
         component={LoginScreen}
@@ -47,6 +53,7 @@ const AuthStack = () => {
         }}
       />
     </Stack.Navigator>
+    )
   );
 }
 
