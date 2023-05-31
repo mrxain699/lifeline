@@ -9,7 +9,8 @@ const Route = () => {
   const {
     checkIsAppFirstLaunched,
     isLoggedIn, 
-    setIsLoggedIn
+    setIsLoggedIn,
+    getCurrentUser
   } = useContext(AuthContext)
 
   useEffect(() => {
@@ -20,6 +21,7 @@ const Route = () => {
     const unsubscribe = auth().onAuthStateChanged((user) => {
       if(user){
         setIsLoggedIn(true);
+        getCurrentUser();
       }
       else{
         setIsLoggedIn(false);
@@ -27,6 +29,8 @@ const Route = () => {
     });
     return unsubscribe; // unsubscribe on unmount
   }, []);
+
+
 
   return (
     <NavigationContainer>

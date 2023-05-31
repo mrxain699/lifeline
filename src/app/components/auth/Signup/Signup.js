@@ -40,10 +40,6 @@ const Signup = ({ navigation }) => {
                     keyboardType="email-address"
                     cursorColor={colors.black}
                 />
-                <Label label="Address" />
-                <Input
-                    cursorColor={colors.black}
-                />
                 <Label label="Password" />
                 <Input
                     secureTextEntry={secureTextEntry}

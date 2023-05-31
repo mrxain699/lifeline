@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Image, View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { globalStyles } from '../../../constants/Style';
 import { colors } from '../../../constants/Colors';
@@ -7,8 +7,9 @@ import Input from '../../ui/Form/Input';
 import Button from '../../ui/Form/Button';
 import Iconic from '../../ui/Icons/Icons';
 import { AuthContext } from '../../../api/AuthContentApi';
+import { GoogleSigninConfiguration } from '../../../database/DB';
 const Login = ({ navigation }) => {
-    const { login, error } = useContext(AuthContext);
+    const { login, error, googleLogin } = useContext(AuthContext);
     const [secureTextEntry, setSecureTextEntry] = useState(true);
     const [iconName, setIconName] = useState('eye-outline');
     const [email, setEmail] = useState(null);
@@ -24,6 +25,10 @@ const Login = ({ navigation }) => {
             setSecureTextEntry(true);
         }
     }
+
+    useEffect(()=>{
+        GoogleSigninConfiguration();
+    },[]);
 
     return (
         <ScrollView showsVerticalScrollIndicator={false} alwaysBounceVertical={true}>
@@ -66,7 +71,7 @@ const Login = ({ navigation }) => {
                 <Text style={globalStyles.dividerText}>or</Text>
             </View>
             <View style={globalStyles.authButtonContainer}>
-                <TouchableOpacity style={globalStyles.googleButton}>
+                <TouchableOpacity style={globalStyles.googleButton} onPress={()=>googleLogin()}>
                     <Image source={require('../../../assets/images/google.png')} style={globalStyles.googleButtonImage} resizeMode='contain' />
                     <Text style={globalStyles.googleButtonText}>Sign in with Google</Text>
                 </TouchableOpacity>
