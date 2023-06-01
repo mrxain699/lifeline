@@ -11,17 +11,17 @@ import { GoogleSigninConfiguration } from '../../../database/DB';
 const Login = ({ navigation }) => {
     const { login, error, googleLogin } = useContext(AuthContext);
     const [secureTextEntry, setSecureTextEntry] = useState(true);
-    const [iconName, setIconName] = useState('eye-outline');
+    const [iconName, setIconName] = useState('eye-off-outline');
     const [email, setEmail] = useState(null);
     const [password, setPassword] = useState(null);
 
     const iconHandler = () => {
-        if (iconName === "eye-outline") {
-            setIconName('eye-off-outline');
+        if (iconName === "eye-off-outline") {
+            setIconName('eye-outline');
             setSecureTextEntry(false);
         }
         else {
-            setIconName('eye-outline');
+            setIconName('eye-off-outline');
             setSecureTextEntry(true);
         }
     }

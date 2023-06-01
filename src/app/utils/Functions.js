@@ -84,6 +84,15 @@ const trim = (text) => {
     return text;
 }
 
+const validateName = (name) => {
+  var pattern = /^[A-Za-z\s]+$/;
+  return pattern.test(name);
+}
+
+const validatePassword = (password) => {
+    return password.length >= 8
+}
+
 
 
 
@@ -95,6 +104,8 @@ export {
     getFormatedTime,
     getLastYear,
     trim,
+    validateName,
+    validatePassword
      
  
 };
