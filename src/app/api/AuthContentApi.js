@@ -14,8 +14,8 @@ const AuthContentApi = ({ children }) => {
     const [user, setUser] = useState({});
 
     const checkIsAppFirstLaunched = async () => {
-        const appData = await AsyncStorage.getItem('isAppFirstLaunched');
-        if (appData == null) {
+        const value = await AsyncStorage.getItem('isAppFirstLaunched');
+        if (value === null) {
             setIsAppFirstLaunched(true);
             AsyncStorage.setItem('isAppFirstLaunched', 'false');
         }
@@ -23,6 +23,7 @@ const AuthContentApi = ({ children }) => {
             setIsAppFirstLaunched(false);
         }
     }
+
 
     const getCurrentUser = () => {
         users
@@ -54,16 +55,20 @@ const AuthContentApi = ({ children }) => {
             })
             .then(() => {
                 getCurrentUser();
+            })
+            .catch(error => {
+                console.log(error);
             });
     }
 
     const sendVerificationMail = (user) => {
         user.sendEmailVerification()
             .then(() => {
-                console.log('Email verification email sent');
+                auth().signOut();
+                console.log('Email sent successfully');
             })
             .catch((error) => {
-                console.log('Email verification error:', error);
+                console.log('Email verification error:', error)
             });
     }
 
@@ -83,10 +88,10 @@ const AuthContentApi = ({ children }) => {
                 const response = await auth().createUserWithEmailAndPassword(trim(email), trim(password));
                 if (response) {
                     setCurrentUser(response.user, trim(name));
-                    getCurrentUser();
                     sendVerificationMail(response.user);
-                    setIsLoading(false);
                     setError(null);
+                    setIsLoading(false);
+
                 }
             } catch (error) {
                 setIsLoading(false);
@@ -104,18 +109,25 @@ const AuthContentApi = ({ children }) => {
     }
 
     const login = async (email, password) => {
+
         if (email === null || password === null) {
             setError('Both fields are required');
         }
         else {
             try {
                 setIsLoading(true);
-                const response = await auth()
-                    .signInWithEmailAndPassword(trim(email), trim(password));
+                const response = await auth().signInWithEmailAndPassword(trim(email), trim(password));
                 if (response) {
-                    setError(null);
+                    if (!response.user.emailVerified) {
+                        setError('Email not verified. Verify your email and login again');
+                        auth().signOut();
+                    }
+                    else {
+                        setError(null);
+                        getCurrentUser();
+                    }
                     setIsLoading(false);
-                    getCurrentUser();
+
                 }
             } catch (error) {
                 setIsLoading(false);
@@ -214,7 +226,7 @@ const AuthContentApi = ({ children }) => {
         getCurrentUser,
         register,
         forgotPassword,
-        message, 
+        message,
         setMessage
     }
 

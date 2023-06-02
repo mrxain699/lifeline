@@ -10,12 +10,10 @@ const Route = () => {
     checkIsAppFirstLaunched,
     isLoggedIn, 
     setIsLoggedIn,
-    getCurrentUser
+    getCurrentUser,
   } = useContext(AuthContext)
 
-  useEffect(() => {
-    checkIsAppFirstLaunched();
-  }, []);
+
 
   useEffect(() => {
     const unsubscribe = auth().onAuthStateChanged((user) => {

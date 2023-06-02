@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useEffect, useContext } from 'react'
 import { createStackNavigator } from '@react-navigation/stack';
 import OnBoardScreen from '../screens/OnBoard/OnBoardScreen';
 import LoginScreen from '../screens/Auth/LoginScreen';
@@ -8,7 +8,12 @@ import { colors } from '../constants/Colors';
 import { AuthContext } from '../api/AuthContentApi';
 const Stack = createStackNavigator();
 const AuthStack = () => {
-  const { isAppFirstLaunched } = useContext(AuthContext);
+  const { isAppFirstLaunched, checkIsAppFirstLaunched } = useContext(AuthContext);
+ 
+  useEffect(() => {
+    checkIsAppFirstLaunched();
+  }, []);
+
   return (
     isAppFirstLaunched != null && (
     <Stack.Navigator>
