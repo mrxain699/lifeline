@@ -10,6 +10,7 @@ const ForgotPassword = ({navigation}) => {
     const {
         forgotPassword, 
         error,
+        setError,
         message, 
         setMessage
     } = useContext(AuthContext);
@@ -23,6 +24,16 @@ const ForgotPassword = ({navigation}) => {
             }, 2000)
         }
     }, [message]);
+
+    useEffect(()=>{
+        if(error){
+            setTimeout(() => {
+                setError(null);
+            }, 5000)
+        }
+    }, [error]);
+
+    
 
     return (
         <ScrollView showsVerticalScrollIndicator={false} alwaysBounceVertical={true}>

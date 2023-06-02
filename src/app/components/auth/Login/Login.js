@@ -9,7 +9,7 @@ import Iconic from '../../ui/Icons/Icons';
 import { AuthContext } from '../../../api/AuthContentApi';
 import { GoogleSigninConfiguration } from '../../../database/DB';
 const Login = ({ navigation }) => {
-    const { login, error, googleLogin } = useContext(AuthContext);
+    const { login, error, setError, googleLogin } = useContext(AuthContext);
     const [secureTextEntry, setSecureTextEntry] = useState(true);
     const [iconName, setIconName] = useState('eye-off-outline');
     const [email, setEmail] = useState(null);
@@ -29,6 +29,14 @@ const Login = ({ navigation }) => {
     useEffect(()=>{
         GoogleSigninConfiguration();
     },[]);
+
+    useEffect(()=>{
+        if(error){
+            setTimeout(() => {
+                setError(null);
+            }, 5000)
+        }
+    }, [error]);
 
     return (
         <ScrollView showsVerticalScrollIndicator={false} alwaysBounceVertical={true}>

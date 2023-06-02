@@ -205,6 +205,7 @@ const AuthContentApi = ({ children }) => {
         isLoggedIn,
         setIsLoggedIn,
         error,
+        setError,
         isLoading,
         login,
         logout,

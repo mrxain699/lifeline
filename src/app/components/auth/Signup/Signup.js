@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import { View, Text, ScrollView } from 'react-native';
 import { globalStyles } from '../../../constants/Style';
 import { colors } from '../../../constants/Colors';
@@ -9,7 +9,7 @@ import Iconic from '../../ui/Icons/Icons';
 import { AuthContext } from '../../../api/AuthContentApi';
 
 const Signup = ({ navigation }) => {
-    const {register, error} = useContext(AuthContext);
+    const {register, error, setError} = useContext(AuthContext);
     const [secureTextEntry, setSecureTextEntry] = useState(true);
     const [iconName, setIconName] = useState('eye-off-outline');
     const [name, setName] = useState(null);
@@ -26,6 +26,15 @@ const Signup = ({ navigation }) => {
             setSecureTextEntry(true);
         }
     }
+
+    useEffect(()=>{
+        if(error){
+            setTimeout(() => {
+                setError(null);
+                
+            }, 5000)
+        }
+    }, [error]);
 
     return (
         <ScrollView showsVerticalScrollIndicator={false} alwaysBounceVertical={true}>
