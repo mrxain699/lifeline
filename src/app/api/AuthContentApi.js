@@ -1,6 +1,6 @@
 import React, { useState, createContext } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { auth, firestore as db, GoogleSignin } from '../database/DB';
+import { auth, firestore as db, GoogleSignin, storage } from '../database/DB';
 import { trim, validateName, validatePassword, validatePhoneNumber } from '../utils/Functions';
 import { users } from '../database/Collections';
 const AuthContext = createContext(null);
@@ -213,13 +213,13 @@ const AuthContentApi = ({ children }) => {
     }
 
     const updateProfile = (message, field, value) => {
-        if(field === null && value === null) {
+        if (field === null && value === null) {
             setError('The field is required')
         }
-        else if(field === "phone" && !validatePhoneNumber(value)){
+        else if (field === "phone" && !validatePhoneNumber(value)) {
             setError('Invalid Phone Number');
-        } 
-        else{
+        }
+        else {
             setIsLoading(true);
             const updateObject = {};
             updateObject[field] = value;
@@ -237,9 +237,54 @@ const AuthContentApi = ({ children }) => {
                 });
         }
 
-       
+
 
     }
+
+    const checkImageExists = async (imageName) => {
+        try {
+            const reference = storage().ref('images/profiles/' + imageName);
+            const metadata = await reference.getMetadata();
+            return true;
+        } catch (error) {
+            if (error.code === 'storage/object-not-found') {
+                return false;
+            } else {
+                console.log('Error checking image existence:', error);
+            }
+        }
+    };
+
+    const uploadProfile = async (imagePath) => {
+        const isExist = await checkImageExists(currentUserId);
+        if (isExist) {
+            const reference = storage().ref('images/profiles/' + currentUserId);
+            await reference.delete();
+        }
+        const reference = storage().ref('images/profiles/' + currentUserId);
+        reference.putFile(imagePath)
+            .then(async () => {
+                const url = await storage().ref('images/profiles/' + currentUserId).getDownloadURL();
+                if(url){
+                    users.doc(currentUserId).update({
+                        image:url,
+                    })
+                    .then(()=>{
+                        getCurrentUser();
+                        setMessage('Image uploaded successfully');
+                    })
+                    .catch((error)=>{
+                        setError("Sorry, something went wrong");
+                    })
+                }
+            })
+            .catch((error) => {
+                setError("Sorry, something went wrong");
+            });
+
+    }
+
+
 
 
     const value = {
@@ -259,7 +304,8 @@ const AuthContentApi = ({ children }) => {
         forgotPassword,
         message,
         setMessage,
-        updateProfile
+        updateProfile,
+        uploadProfile
     }
 
     return (
