@@ -38,10 +38,15 @@ const Login = ({ navigation }) => {
     },[]);
 
     useEffect(()=>{
+        let interval = null;
         if(error){
-            setTimeout(() => {
+            interval = setTimeout(() => {
                 setError(null);
             }, 5000)
+        }
+
+        return () => {
+            clearTimeout(interval);
         }
     }, [error]);
 

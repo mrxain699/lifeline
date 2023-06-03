@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { globalStyles } from '../../../constants/Style';
 import { colors } from '../../../constants/Colors';
@@ -6,38 +6,46 @@ import Label from '../../ui/Form/Label';
 import Input from '../../ui/Form/Input';
 import Button from '../../ui/Form/Button';
 import { AuthContext } from '../../../api/AuthContentApi';
-const ForgotPassword = ({navigation}) => {
+const ForgotPassword = ({ navigation }) => {
     const {
-        forgotPassword, 
+        forgotPassword,
         error,
         setError,
-        message, 
+        message,
         setMessage
     } = useContext(AuthContext);
     const [email, setEmail] = useState(null);
 
-    useEffect(()=>{
-        if(message){
-            setTimeout(() => {
+    useEffect(() => {
+        let interval = null;
+        if (message) {
+            interval = setTimeout(() => {
                 setMessage(null);
                 navigation.navigate('LoginScreen');
             }, 2000)
         }
+        return () => {
+            clearTimeout(interval);
+        }
     }, [message]);
 
-    useEffect(()=>{
-        if(error){
-            setTimeout(() => {
+    useEffect(() => {
+        let interval = null;
+        if (error) {
+            interval = setTimeout(() => {
                 setError(null);
             }, 5000)
         }
+        return () => {
+            clearTimeout(interval);
+        }
     }, [error]);
 
-    
+
 
     return (
         <ScrollView showsVerticalScrollIndicator={false} alwaysBounceVertical={true}>
-            <View style={[globalStyles.authHeadingContainer, {paddingTop:40}]}>
+            <View style={[globalStyles.authHeadingContainer, { paddingTop: 40 }]}>
                 <Text style={globalStyles.authHeading}>LifeLine</Text>
                 <Text style={globalStyles.authSubheading}>Forgot Password</Text>
             </View>
@@ -47,8 +55,8 @@ const ForgotPassword = ({navigation}) => {
                 </Text>
             </View>
             {
-                message && <View style={[globalStyles.errorContainer, {backgroundColor:'#b2f6a2'}]}>
-                    <Text style={[globalStyles.error, {color:'#31ba12'}]}>{message}</Text>
+                message && <View style={[globalStyles.errorContainer, { backgroundColor: '#b2f6a2' }]}>
+                    <Text style={[globalStyles.error, { color: '#31ba12' }]}>{message}</Text>
                 </View>
             }
             {
@@ -56,7 +64,7 @@ const ForgotPassword = ({navigation}) => {
                     <Text style={globalStyles.error}>{error}</Text>
                 </View>
             }
-            <View style={[globalStyles.authInputContainer, {marginBottom:0}]}>
+            <View style={[globalStyles.authInputContainer, { marginBottom: 0 }]}>
                 <Label label="Email" />
                 <Input
                     autoComplete='email'
@@ -67,8 +75,8 @@ const ForgotPassword = ({navigation}) => {
                     onChangeText={(text) => setEmail(text)}
                 />
             </View>
-            <View style={[globalStyles.authButtonContainer, {marginTop:0}]}> 
-               <Button text="Send" onPress={()=>forgotPassword(email)}/>
+            <View style={[globalStyles.authButtonContainer, { marginTop: 0 }]}>
+                <Button text="Send" onPress={() => forgotPassword(email)} />
             </View>
         </ScrollView>
     )
@@ -76,16 +84,16 @@ const ForgotPassword = ({navigation}) => {
 
 const styles = StyleSheet.create({
 
-    textContainer:{
-        paddingHorizontal:20,
-        paddingVertical:10,
+    textContainer: {
+        paddingHorizontal: 20,
+        paddingVertical: 10,
     },
-    text:{
-        fontFamily:'Roboto-Light',
-        fontSize:14,
+    text: {
+        fontFamily: 'Roboto-Light',
+        fontSize: 14,
         textAlign: 'center',
-        color:colors.grey_50,
-        
+        color: colors.grey_50,
+
     }
 
 })

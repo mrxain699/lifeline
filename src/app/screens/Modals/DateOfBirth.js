@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { globalStyles } from '../../constants/Style';
 import Title from './components/Title';
@@ -6,49 +6,92 @@ import Button from './components/Button';
 import { colors } from '../../constants/Colors';
 import Iconic from '../../components/ui/Icons/Icons';
 import { Calendar } from 'react-native-calendars';
+import DatePicker from 'react-native-date-picker'
 import { getFormatedDate, getTodayDate, getLastYear } from '../../utils/Functions';
+import { AuthContext } from '../../api/AuthContentApi'
+const DateOfBirth = ({ navigation }) => {
+    const {
+        updateProfile,
+        error,
+        message,
+        setMessage,
+        setError,
+        user
+    } = useContext(AuthContext);
+    const [date, setDate] = useState(null);
+    const [open, setOpen] = useState(false);
+    const [selectedDate, setSelectedDate] = useState(getFormatedDate(new Date(), "WWW MMM DD YYYY"));
 
-const DateOfBirth = () => {
-    const [calendarToggle, setCalendarToggle] = useState(false);
-    const [selectedDate, setSelectedDate] = useState(getLastYear());
-    const [formatedDate, setFormatedDate] = useState(getFormatedDate(new Date(), "WWW MMM DD YYYY"));
-    const getMarkedDates = () => {
-        const markedDates = {};
-        markedDates[selectedDate] = { selected: true };
-        return markedDates;
-    };
+    useEffect(() => {
+        let interval = null;
+        if (message) {
+            interval = setTimeout(() => {
+                setMessage(null);
+                navigation.goBack();
+            }, 3000)
+        }
+        return () => {
+            clearTimeout(interval);
+        }
+    }, [message]);
+
+    useEffect(() => {
+        let interval = null;
+        if (error) {
+            interval = setTimeout(() => {
+                setError(null);
+            }, 5000)
+        }
+        return () => {
+            clearTimeout(interval);
+        }
+    }, [error]);
+
+
     return (
         <View style={[globalStyles.wrapper, { paddingHorizontal: 20 }]}>
             <Title title="Your Date of Birth" />
+            {
+                message && <View style={[globalStyles.errorContainer, { backgroundColor: '#b2f6a2' }]}>
+                    <Text style={[globalStyles.error, { color: '#31ba12' }]}>{message}</Text>
+                </View>
+            }
+            {
+                error && <View style={globalStyles.errorContainer}>
+                    <Text style={globalStyles.error}>{error}</Text>
+                </View>
+            }
             <View style={styles.datContaienr} >
-                <Text style={styles.date}>{formatedDate}</Text>
-                <TouchableOpacity> 
-                    <Iconic 
-                    name="calendar" size={24} 
-                    color={colors.red}   
-                    onPress={() =>{
-                        setCalendarToggle(!calendarToggle);
-                    }}
+                <Text style={styles.date}>{user.dob ? getFormatedDate(new Date(user.dob),  "WWW MMM DD YYYY") : selectedDate}</Text>
+                <TouchableOpacity>
+                    <Iconic
+                        name="calendar" size={24}
+                        color={colors.red}
+                        onPress={() => {
+                            setOpen(!open);
+                        }}
                     />
                 </TouchableOpacity>
             </View>
             {
-                calendarToggle &&  <Calendar
-                    initialDate={getLastYear()}
-                    maxDate={getLastYear()}
-                    enableSwipeMonths={true}
-                    markedDates={getMarkedDates()}
-                    onDayPress={day => {
-                        setSelectedDate(day.dateString);
-                        setFormatedDate(getFormatedDate(new Date(day.dateString), "WWW MMM DD YYYY"));
-                        setCalendarToggle(false);
-                    }}
-                    theme={styles.calendar}
-                    style={styles.calendarContainer}
-                /> 
+                <DatePicker
+                modal
+                maximumDate={new Date(getLastYear())}
+                mode="date"
+                open={open}
+                date={new Date(getLastYear())}
+                onConfirm={(date) => {
+                  setOpen(false)
+                  setDate(() => getFormatedDate(new Date(date), "YYYY-MM-DD"));
+                  setSelectedDate(() => getFormatedDate(new Date(date), "WWW MMM DD YYYY"));
+                }}
+                onCancel={() => {
+                  setOpen(false)
+                }}
+              />
 
             }
-            <Button />
+            <Button onPress={() => updateProfile('Date of Bith', 'dob', date)} />
         </View>
     )
 }
@@ -79,7 +122,7 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         elevation: 3,
     },
-    calendar:{
+    calendar: {
         calendarBackground: colors.white,
         selectedDayBackgroundColor: colors.red,
         selectedDayTextColor: colors.white,

@@ -1,4 +1,4 @@
-import React, {useContext} from 'react'
+import React, {useContext, useEffect} from 'react'
 import { TouchableOpacity } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { colors } from '../constants/Colors';
@@ -27,7 +27,14 @@ const screenOptions = {
 }
 
 const AppStack = () => {
-  const {logout} = useContext(AuthContext);
+  const {logout,  isLoggedIn, getCurrentUser} = useContext(AuthContext);
+
+  useEffect(()=>{
+    if(isLoggedIn){
+      getCurrentUser();
+    }
+  }, [])
+
   return (
     <Stack.Navigator screenOptions={screenOptions}>
       <Stack.Screen 

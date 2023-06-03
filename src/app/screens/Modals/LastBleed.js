@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { globalStyles } from '../../constants/Style';
 import Title from './components/Title';
@@ -7,8 +7,17 @@ import { colors } from '../../constants/Colors';
 import Iconic from '../../components/ui/Icons/Icons';
 import { Calendar } from 'react-native-calendars';
 import { getFormatedDate, getTodayDate } from '../../utils/Functions';
+import { AuthContext } from '../../api/AuthContentApi'
 
-const LastBleed = () => {
+const LastBleed = ({navigation}) => {
+    const {
+        updateProfile,
+        error,
+        message,
+        setMessage,
+        setError,
+        user
+    } = useContext(AuthContext);
     const [calendarToggle, setCalendarToggle] = useState(false);
     const [selectedDate, setSelectedDate] = useState(getTodayDate());
     const [formatedDate, setFormatedDate] = useState(getFormatedDate(new Date(), "WWW MMM DD YYYY"));
@@ -17,23 +26,59 @@ const LastBleed = () => {
         markedDates[selectedDate] = { selected: true };
         return markedDates;
     };
+
+    useEffect(() => {
+        let interval = null;
+        if (message) {
+            interval = setTimeout(() => {
+                setMessage(null);
+                navigation.goBack();
+            }, 3000)
+        }
+        return () => {
+            clearTimeout(interval);
+        }
+    }, [message]);
+
+    useEffect(() => {
+        let interval = null;
+        if (error) {
+            interval = setTimeout(() => {
+                setError(null);
+            }, 5000)
+        }
+        return () => {
+            clearTimeout(interval);
+        }
+    }, [error]);
+
     return (
         <View style={[globalStyles.wrapper, { paddingHorizontal: 20 }]}>
             <Title title="Your Last Bleed Date" />
+            {
+                message && <View style={[globalStyles.errorContainer, { backgroundColor: '#b2f6a2' }]}>
+                    <Text style={[globalStyles.error, { color: '#31ba12' }]}>{message}</Text>
+                </View>
+            }
+            {
+                error && <View style={globalStyles.errorContainer}>
+                    <Text style={globalStyles.error}>{error}</Text>
+                </View>
+            }
             <View style={styles.datContaienr} >
-                <Text style={styles.date}>{formatedDate}</Text>
-                <TouchableOpacity> 
-                    <Iconic 
-                    name="calendar" size={24} 
-                    color={colors.red}   
-                    onPress={() =>{
-                        setCalendarToggle(!calendarToggle);
-                    }}
+                <Text style={styles.date}>{user.lastbleed ? getFormatedDate(new Date(user.lastbleed), "WWW MMM DD YYYY") : formatedDate}</Text>
+                <TouchableOpacity>
+                    <Iconic
+                        name="calendar" size={24}
+                        color={colors.red}
+                        onPress={() => {
+                            setCalendarToggle(!calendarToggle);
+                        }}
                     />
                 </TouchableOpacity>
             </View>
             {
-                calendarToggle &&  <Calendar
+                calendarToggle && <Calendar
                     maxDate={getTodayDate()}
                     enableSwipeMonths={true}
                     markedDates={getMarkedDates()}
@@ -44,10 +89,10 @@ const LastBleed = () => {
                     }}
                     theme={styles.calendar}
                     style={styles.calendarContainer}
-                /> 
+                />
 
             }
-            <Button />
+            <Button onPress={() => updateProfile('Last Donation', 'lastbleed', selectedDate)} />
         </View>
     )
 }
@@ -78,7 +123,7 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         elevation: 3,
     },
-    calendar:{
+    calendar: {
         calendarBackground: colors.white,
         selectedDayBackgroundColor: colors.red,
         selectedDayTextColor: colors.white,

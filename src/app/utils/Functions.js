@@ -93,6 +93,11 @@ const validatePassword = (password) => {
     return password.length >= 8
 }
 
+const validatePhoneNumber = (number) => {
+    var pattern = /^03\d{9}$/;
+    return pattern.test(number);
+  }
+
 
 
 
@@ -105,7 +110,8 @@ export {
     getLastYear,
     trim,
     validateName,
-    validatePassword
+    validatePassword,
+    validatePhoneNumber
      
  
 };

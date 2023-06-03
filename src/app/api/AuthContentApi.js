@@ -1,7 +1,7 @@
 import React, { useState, createContext } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { auth, firestore as db, GoogleSignin } from '../database/DB';
-import { trim, validateName, validatePassword } from '../utils/Functions';
+import { trim, validateName, validatePassword, validatePhoneNumber } from '../utils/Functions';
 import { users } from '../database/Collections';
 const AuthContext = createContext(null);
 
@@ -12,6 +12,7 @@ const AuthContentApi = ({ children }) => {
     const [message, setMessage] = useState(null);
     const [isLoading, setIsLoading] = useState(null);
     const [user, setUser] = useState({});
+    const [currentUserId, setCurrentUserId] = useState('');
 
     const checkIsAppFirstLaunched = async () => {
         const value = await AsyncStorage.getItem('isAppFirstLaunched');
@@ -32,6 +33,7 @@ const AuthContentApi = ({ children }) => {
             .then((documentSnapshot) => {
                 if (documentSnapshot.exists) {
                     setUser(documentSnapshot.data());
+                    setCurrentUserId(auth().currentUser.uid);
                 }
             })
             .catch(err => {
@@ -51,7 +53,7 @@ const AuthContentApi = ({ children }) => {
                 bloodgroup: '',
                 lastbleed: '',
                 gender: '',
-                image: user.photoURL,
+                image: user.photoURL ? user.photoURL : '',
             })
             .then(() => {
                 getCurrentUser();
@@ -210,6 +212,35 @@ const AuthContentApi = ({ children }) => {
         }
     }
 
+    const updateProfile = (message, field, value) => {
+        if(field === null && value === null) {
+            setError('The field is required')
+        }
+        else if(field === "phone" && !validatePhoneNumber(value)){
+            setError('Invalid Phone Number');
+        } 
+        else{
+            setIsLoading(true);
+            const updateObject = {};
+            updateObject[field] = value;
+            users.doc(currentUserId)
+                .update(updateObject)
+                .then(() => {
+                    setIsLoading(false);
+                    setError(null);
+                    setMessage(`${message} updated successfully`);
+                    getCurrentUser();
+                })
+                .catch(() => {
+                    setIsLoading(false);
+                    setError('Sorry, something is went wrong');
+                });
+        }
+
+       
+
+    }
+
 
     const value = {
         isAppFirstLaunched,
@@ -227,7 +258,8 @@ const AuthContentApi = ({ children }) => {
         register,
         forgotPassword,
         message,
-        setMessage
+        setMessage,
+        updateProfile
     }
 
     return (
