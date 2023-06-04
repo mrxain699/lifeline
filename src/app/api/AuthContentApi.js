@@ -14,6 +14,7 @@ const AuthContentApi = ({ children }) => {
     const [user, setUser] = useState({});
     const [currentUserId, setCurrentUserId] = useState('');
 
+
     const checkIsAppFirstLaunched = async () => {
         const value = await AsyncStorage.getItem('isAppFirstLaunched');
         if (value === null) {
@@ -37,36 +38,39 @@ const AuthContentApi = ({ children }) => {
                 }
             })
             .catch(err => {
-                console.log(err);
+                console.log("Get user error", err);
             });
 
     }
 
-    const setCurrentUser = (user, name) => {
-        users.doc(user.uid)
+    const setCurrentUser = (new_user, name) => {
+        console.log(new_user);
+        users.doc(new_user.uid)
             .set({
-                name: user.displayName ? user.displayName : name,
-                email: user.email,
+                name: new_user.displayName ? new_user.displayName : name,
+                email: new_user.email,
                 phone: '',
                 address: '',
                 dob: '',
                 bloodgroup: '',
                 lastbleed: '',
                 gender: '',
-                image: user.photoURL ? user.photoURL : '',
+                image: new_user.photoURL ? new_user.photoURL : '',
+                city:'',
+                location:{latitude:'', longitude:''},
+                status:0,
             })
             .then(() => {
                 getCurrentUser();
             })
             .catch(error => {
-                console.log(error);
+                console.log("Set user error", error);
             });
     }
 
-    const sendVerificationMail = (user) => {
-        user.sendEmailVerification()
+    const sendVerificationMail = async (new_user) => {
+        new_user.sendEmailVerification()
             .then(() => {
-                auth().signOut();
                 console.log('Email sent successfully');
             })
             .catch((error) => {
@@ -89,11 +93,11 @@ const AuthContentApi = ({ children }) => {
             try {
                 const response = await auth().createUserWithEmailAndPassword(trim(email), trim(password));
                 if (response) {
+                    await sendVerificationMail(response.user);
                     setCurrentUser(response.user, trim(name));
-                    sendVerificationMail(response.user);
                     setError(null);
                     setIsLoading(false);
-
+                    setMessage('Account created. Verify your email for login your account');
                 }
             } catch (error) {
                 setIsLoading(false);
@@ -129,7 +133,6 @@ const AuthContentApi = ({ children }) => {
                         getCurrentUser();
                     }
                     setIsLoading(false);
-
                 }
             } catch (error) {
                 setIsLoading(false);
@@ -159,12 +162,9 @@ const AuthContentApi = ({ children }) => {
             if (response) {
                 const isExist = await isUserExist(response.user.uid);
                 if (!isExist) {
-                    setCurrentUser(response.user, null);
-                    getCurrentUser();
+                    setCurrentUser(response.user, null);                    
                 }
-                else {
-                    getCurrentUser();
-                }
+                getCurrentUser();
 
             }
         } catch (error) {
@@ -199,18 +199,6 @@ const AuthContentApi = ({ children }) => {
 
     }
 
-    const logout = async () => {
-        try {
-            const response = await auth().signOut();
-            if (response) {
-                setError(null);
-            }
-        } catch (error) {
-            if (error) {
-                setError("Sorry, something went wrong");
-            }
-        }
-    }
 
     const updateProfile = (message, field, value) => {
         if (field === null && value === null) {
@@ -285,6 +273,19 @@ const AuthContentApi = ({ children }) => {
     }
 
 
+    const logout = async () => {
+        try {
+            const response = await auth().signOut();
+            if (response) {
+                setError(null);
+            }
+        } catch (error) {
+            if (error) {
+                setError("Sorry, something went wrong");
+            }
+        }
+    }
+
 
 
     const value = {
@@ -305,7 +306,8 @@ const AuthContentApi = ({ children }) => {
         message,
         setMessage,
         updateProfile,
-        uploadProfile
+        uploadProfile,
+
     }
 
     return (

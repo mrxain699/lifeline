@@ -1,28 +1,80 @@
-import { StyleSheet, TextInput, View, TouchableOpacity } from 'react-native'
-import React from 'react';
+import React, { useState, useContext, useEffect } from 'react'
+import { StyleSheet, TextInput, View, Text } from 'react-native'
 import { globalStyles } from '../../constants/Style';
 import Title from './components/Title';
 import Button from './components/Button';
-import Iconic from '../../components/ui/Icons/Icons';
 import { colors } from '../../constants/Colors';
-import { images } from '../../constants/Images';
-const Address = () => {
+import { AuthContext } from '../../api/AuthContentApi'
+import { split } from '../../utils/Functions';
+import { AppContext } from '../../api/AppContentApi';
+
+
+const Address = ({ navigation }) => {
+
+  const {
+    error,
+    message,
+    setMessage,
+    setError,
+    user
+  } = useContext(AuthContext);
+  const {getGeometryAddress} = useContext(AppContext);
+  const [address, setAddress] = useState(null);
+
+  useEffect(() => {
+    let interval = null;
+    if (message) {
+      interval = setTimeout(() => {
+        setMessage(null);
+        navigation.goBack();
+      }, 3000)
+    }
+    return () => {
+      clearTimeout(interval);
+    }
+  }, [message]);
+
+  useEffect(() => {
+    let interval = null;
+    if (error) {
+      interval = setTimeout(() => {
+        setError(null);
+      }, 5000)
+    }
+    return () => {
+      clearTimeout(interval);
+    }
+  }, [error]);
+
+  const onPressHandler  = async () => {
+    await getGeometryAddress(address ? address : user.address);
+  }
+
   return (
-    <View style={[globalStyles.wrapper, {paddingHorizontal:20}]}>
-      <Title title="Your Current Address"/>
+    <View style={[globalStyles.wrapper, { paddingHorizontal: 20 }]}>
+      <Title title="Your Current Address" />
+      {
+        message && <View style={[globalStyles.errorContainer, { backgroundColor: '#b2f6a2' }]}>
+          <Text style={[globalStyles.error, { color: '#31ba12' }]}>{message}</Text>
+        </View>
+      }
+      {
+        error && <View style={globalStyles.errorContainer}>
+          <Text style={globalStyles.error}>{error}</Text>
+        </View>
+      }
       <View style={styles.inputContainer}>
         <TextInput
-            placeholder='Address'
-            placeholderTextColor={colors.grey}
-            inlineImagePadding={10}
-            cursorColor={colors.black} 
-            style={styles.input}
+          placeholder='Address'
+          placeholderTextColor={colors.grey}
+          value={address ? address : split(user.address)}
+          onChangeText={(text) => setAddress(text)}
+          cursorColor={colors.black}
+          style={styles.input}
         />
-        <TouchableOpacity style={styles.textContainer}>
-            <Iconic name="location" size={24} color={colors.red_200}/>
-        </TouchableOpacity>
+
       </View>
-      <Button/>
+      <Button onPress={() => onPressHandler()} />
     </View>
   )
 }
@@ -30,32 +82,23 @@ const Address = () => {
 export default Address
 
 const styles = StyleSheet.create({
-    inputContainer:{
-        marginTop:10,
-        backgroundColor:colors.white,
-        height:50,
-        elevation:3,
-        borderRadius:15,
-        flexDirection:'row',
+  inputContainer: {
+    marginTop: 10,
+    backgroundColor: colors.white,
+    height: 50,
+    elevation: 3,
+    borderRadius: 15,
+    flexDirection: 'row',
 
-    },
-    textContainer:{
-        height:'100%',
-        justifyContent:'center',
-        alignItems: 'center',
-        width:'15%',
-        // backgroundColor:'#000',
-        
-    },
+  },
 
-    input:{
-        width:'100%',
-        height:'100%',
-        color:colors.black,
-        paddingLeft:15,
-        alignItems:'center',
-        fontSize:16,
-        width:'85%',
-        // backgroundColor:'#ff0004',
-    }
+
+  input: {
+    width: '100%',
+    height: '100%',
+    color: colors.black,
+    paddingLeft: 15,
+    alignItems: 'center',
+    fontSize: 16,
+  }
 })

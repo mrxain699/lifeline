@@ -1,52 +1,39 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { View } from 'react-native'
 import { globalStyles } from '../../constants/Style'
-import Geolocation from '@react-native-community/geolocation';
-import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
 import Nearby from '../../components/Nearby/Nearby'
 import { AppContext } from '../../api/AppContentApi'
-import { requestForLocation } from '../../api/Permissions';
+import {
+  requestForLocationPermission,
+  checkLocationPermission,
+  requestForeEableGPS
+} from '../../api/PermissionsApi';
+
 const NearbyScreen = () => {
-  const {
-    location, 
-    isGPSEnabled, 
-    setIsGPSEnabled, 
-    setLocation,
-    getUserCurrentLocation} = useContext(AppContext);
-    const [config, setConfig] = useState({
-      authorizationLevel:'auto',
-      locationProvider: 'android'
-    })
 
-  Geolocation.setRNConfiguration(config);
+  const { getUserCurrentLocation } = useContext(AppContext);
 
-  const enableGPS = () => {
-    RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({
-      interval: 10000,
-      fastInterval: 5000,
-    })
-      .then((data) => {
-        setIsGPSEnabled(true);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
-  useEffect(()=>{
-    const locationPermissionAccess = async () => {
-      if(location === "granted"){
-        enableGPS();
-        if(isGPSEnabled){
-          await getUserCurrentLocation();
+  useEffect(() => {
+    const checkPermission = async () => {
+      const permission = await checkLocationPermission();
+      if (permission === "granted") {
+        const result = await requestForeEableGPS();
+        if (result) {
+          getUserCurrentLocation();
         }
       }
-      else{
-        setLocation(await requestForLocation());
+      else {
+        const result = await requestForLocationPermission();
+        if(result === "granted"){
+          const result = await requestForeEableGPS();
+          if (result) {
+            getUserCurrentLocation();
+          }
+        }
       }
     }
-    locationPermissionAccess();
-  },[location, isGPSEnabled]);
+    checkPermission();
+  }, []);
 
   return (
     <View style={globalStyles.wrapper}>

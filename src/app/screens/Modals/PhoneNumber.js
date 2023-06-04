@@ -42,6 +42,8 @@ const PhoneNumber = ({navigation}) => {
     }
   }, [error]);
 
+
+
   return (
     <View style={[globalStyles.wrapper, { paddingHorizontal: 20 }]}>
       <Title title="Your Phone Number" />

@@ -1,5 +1,5 @@
 import React from "react";
-// import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const title = (string) => {
     if(string){
         if(string.includes(" ")){
@@ -84,6 +84,14 @@ const trim = (text) => {
     return text;
 }
 
+const split = (address) => {
+    if(address !== null){
+        return address.split(",")[1];
+    }
+    return address;
+
+}
+
 const validateName = (name) => {
   var pattern = /^[A-Za-z\s]+$/;
   return pattern.test(name);
@@ -111,7 +119,8 @@ export {
     trim,
     validateName,
     validatePassword,
-    validatePhoneNumber
+    validatePhoneNumber,
+    split
      
  
 };

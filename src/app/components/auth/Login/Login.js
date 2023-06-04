@@ -13,7 +13,8 @@ const Login = ({ navigation }) => {
         error, 
         setError, 
         googleLogin,
-
+        message,
+        setMessage
     
     } = useContext(AuthContext);
     const [secureTextEntry, setSecureTextEntry] = useState(true);
@@ -37,6 +38,18 @@ const Login = ({ navigation }) => {
         GoogleSigninConfiguration();
     },[]);
 
+    useEffect(() => {
+        let interval = null;
+        if (message) {
+            interval = setTimeout(() => {
+                setMessage(null);
+            }, 5000)
+        }
+        return () => {
+            clearTimeout(interval);
+        }
+    }, [message]);
+
     useEffect(()=>{
         let interval = null;
         if(error){
@@ -56,6 +69,11 @@ const Login = ({ navigation }) => {
                 <Text style={globalStyles.authHeading}>LifeLine</Text>
                 <Text style={globalStyles.authSubheading}>Login your account</Text>
             </View>
+            {
+                message && <View style={[globalStyles.errorContainer, { backgroundColor: '#b2f6a2' }]}>
+                    <Text style={[globalStyles.error, { color: '#31ba12' }]}>{message}</Text>
+                </View>
+            }
             {
                 error && <View style={globalStyles.errorContainer}>
                     <Text style={globalStyles.error}>{error}</Text>

@@ -7,12 +7,10 @@ import { auth } from '../database/DB';
 
 const Route = () => {
   const {
-    checkIsAppFirstLaunched,
     isLoggedIn, 
     setIsLoggedIn,
     getCurrentUser,
   } = useContext(AuthContext)
-
 
 
   useEffect(() => {
@@ -25,7 +23,7 @@ const Route = () => {
         setIsLoggedIn(false);
       }
     });
-    return unsubscribe; // unsubscribe on unmount
+    return unsubscribe;
   }, []);
 
 
@@ -33,7 +31,7 @@ const Route = () => {
   return (
     <NavigationContainer>
       {
-        !isLoggedIn ? <AuthStack /> : <AppStack />
+        !isLoggedIn ? <AuthStack /> :  <AppStack />
       }
     </NavigationContainer>
   )
