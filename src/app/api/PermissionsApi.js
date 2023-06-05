@@ -4,9 +4,6 @@ import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
 export const requestForLocationPermission = async () => {
     try {
        const result  =  await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
-       if(result){
-        console.log(result);
-       }
     } catch (error) {
         console.log(error);
     }
@@ -17,9 +14,6 @@ export const requestForLocationPermission = async () => {
 export const requestForNotificationPermission = async () => {
     try {
         const result = await request(PERMISSIONS.ANDROID.POST_NOTIFICATIONS);
-        if(result){
-            console.log(result)
-        }
     } catch (error) {
         console.log(error)
     }
@@ -28,9 +22,6 @@ export const requestForNotificationPermission = async () => {
 export const requestForStoragePermission = async () => {
     try {
         const result = await request(PERMISSIONS.ANDROID.READ_MEDIA_IMAGES);
-        if(result){
-            console.log(result);
-        }
     } catch (error) {
         console.log(error);
     }

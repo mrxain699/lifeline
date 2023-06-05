@@ -124,14 +124,16 @@ const AuthContentApi = ({ children }) => {
                 setIsLoading(true);
                 const response = await auth().signInWithEmailAndPassword(trim(email), trim(password));
                 if (response) {
-                    if (!response.user.emailVerified) {
-                        setError('Email not verified. Verify your email and login again');
-                        auth().signOut();
-                    }
-                    else {
-                        setError(null);
-                        getCurrentUser();
-                    }
+                    // if (!response.user.emailVerified) {
+                    //     setError('Email not verified. Verify your email and login again');
+                    //     auth().signOut();
+                    // }
+                    // else {
+                    //     setError(null);
+                    //     getCurrentUser();
+                    // }
+                    setError(null);
+                    getCurrentUser();
                     setIsLoading(false);
                 }
             } catch (error) {

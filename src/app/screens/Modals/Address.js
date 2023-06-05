@@ -47,7 +47,7 @@ const Address = ({ navigation }) => {
   }, [error]);
 
   const onPressHandler  = async () => {
-    await getGeometryAddress(address ? address : user.address);
+    await getGeometryAddress(address !== null ? address : user.address);
   }
 
   return (
@@ -67,7 +67,7 @@ const Address = ({ navigation }) => {
         <TextInput
           placeholder='Address'
           placeholderTextColor={colors.grey}
-          value={address ? address : split(user.address)}
+          value={address ? address : user.address}
           onChangeText={(text) => setAddress(text)}
           cursorColor={colors.black}
           style={styles.input}

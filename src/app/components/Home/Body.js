@@ -1,20 +1,20 @@
-import React, {useState} from 'react'
+import React, {useState, useContext} from 'react'
 import { View, StyleSheet } from 'react-native';
 import Item from './Item';
 import { images } from '../../constants/Images';
-
+import { AppContext } from '../../api/AppContentApi';
 const Body = () => {
+  const {user,toggleStatus} = useContext(AppContext);
   const [toggleImage, setToggleImage] = useState(images.toggle_off_icon);
-  const [isToggle, setIsToggle] = useState(false);
 
   const toggle_switch = () => {
-    if(isToggle){
+    if(user.status === 1){
       setToggleImage(images.toggle_off_icon);
-      setIsToggle(false);
+      toggleStatus(0);
     }
     else{
-      setIsToggle(true);
       setToggleImage(images.toggle_on_icon);
+      toggleStatus(1);
     }
   };
 

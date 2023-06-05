@@ -8,7 +8,8 @@ import {
   requestForLocationPermission,
   requestForNotificationPermission,
   requestForStoragePermission,
-  requestForeEableGPS
+  requestForeEableGPS,
+  checkLocationPermission
 } from '../../api/PermissionsApi';
 
 
@@ -26,7 +27,16 @@ const HomeScreen = () => {
         await requestForNotificationPermission();
         const result = await requestForeEableGPS();
         if(result){
-          getUserCurrentLocation();
+          await getUserCurrentLocation();
+        }
+      }
+      else{
+        const permission = await checkLocationPermission();
+        if(permission === "granted"){
+          const result = await requestForeEableGPS();
+          if(result){
+            await getUserCurrentLocation();
+          }
         }
       }
     }

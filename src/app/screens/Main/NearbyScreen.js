@@ -11,7 +11,10 @@ import {
 
 const NearbyScreen = () => {
 
-  const { getUserCurrentLocation } = useContext(AppContext);
+  const { 
+    getUserCurrentLocation,
+    getAvailableDonor,
+  } = useContext(AppContext);
 
   useEffect(() => {
     const checkPermission = async () => {
@@ -19,21 +22,24 @@ const NearbyScreen = () => {
       if (permission === "granted") {
         const result = await requestForeEableGPS();
         if (result) {
-          getUserCurrentLocation();
+          await getUserCurrentLocation();
         }
       }
       else {
         const result = await requestForLocationPermission();
+        console.log(result);
         if(result === "granted"){
           const result = await requestForeEableGPS();
           if (result) {
-            getUserCurrentLocation();
+            await getUserCurrentLocation();
           }
         }
       }
     }
     checkPermission();
   }, []);
+
+
 
   return (
     <View style={globalStyles.wrapper}>
