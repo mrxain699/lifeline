@@ -11,7 +11,11 @@ const { width, height } = Dimensions.get('window');
 const Nearby = () => {
 
     const { user } = useContext(AuthContext)
-    const { getAvailableDonor, availableDonors } = useContext(AppContext);
+    const { 
+        userCurrentLocation,
+        getAvailableDonor, 
+        availableDonors 
+    } = useContext(AppContext);
     const ASPECT_RATIO = width / height;
     const LATITUDE_DELTA = 0.02;
 
@@ -29,16 +33,16 @@ const Nearby = () => {
                 style={styles.map}
                 showsUserLocation
                 region={{
-                    latitude: user.location.latitude ? user.location.latitude : 30.3753,
-                    longitude: user.location.longitude ? user.location.longitude : 69.3451,
+                    latitude: user.location.latitude ? user.location.latitude : userCurrentLocation.latitude,
+                    longitude: user.location.longitude ? user.location.longitude : userCurrentLocation.longitude,
                     latitudeDelta: LATITUDE_DELTA,
                     longitudeDelta: LATITUDE_DELTA * ASPECT_RATIO,
                 }}
             >
                 <Marker
                     coordinate={{
-                        latitude: user.location.latitude ? user.location.latitude : 30.3753,
-                        longitude: user.location.longitude ? user.location.longitude : 69.3451,
+                        latitude: user.location.latitude ? user.location.latitude : userCurrentLocation.latitude,
+                        longitude: user.location.longitude ? user.location.longitude : userCurrentLocation.longitude,
                         latitudeDelta: LATITUDE_DELTA,
                         longitudeDelta: LATITUDE_DELTA * ASPECT_RATIO
                     }}

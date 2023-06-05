@@ -13,7 +13,6 @@ const NearbyScreen = () => {
 
   const { 
     getUserCurrentLocation,
-    getAvailableDonor,
   } = useContext(AppContext);
 
   useEffect(() => {

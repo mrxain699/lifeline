@@ -18,7 +18,7 @@ const Address = ({ navigation }) => {
     setError,
     user
   } = useContext(AuthContext);
-  const {getGeometryAddress} = useContext(AppContext);
+  const {getGeometryAddress, formattedAddress} = useContext(AppContext);
   const [address, setAddress] = useState(null);
 
   useEffect(() => {
@@ -67,7 +67,7 @@ const Address = ({ navigation }) => {
         <TextInput
           placeholder='Address'
           placeholderTextColor={colors.grey}
-          value={address ? address : user.address}
+          value={address ? address : user.address ? user.address : formattedAddress}
           onChangeText={(text) => setAddress(text)}
           cursorColor={colors.black}
           style={styles.input}

@@ -14,6 +14,7 @@ const AppContentApi = ({ children }) => {
   const [country, setCountry] = useState('');
   const [city, setCity] = useState('');
   const [availableDonors, setAvailableDonors] = useState([]);
+  
   Geocoder.init(API_KEY, { language: "en" });
 
   const getUserCurrentLocation = async () => {
@@ -21,10 +22,6 @@ const AppContentApi = ({ children }) => {
       async (position) => {
         setUserCurrentLocation({ latitude: position.coords.latitude, longitude: position.coords.longitude });
         getFormattedAddress(position.coords.latitude, position.coords.longitude);
-        await updateProfile("Location", 'location', userCurrentLocation);
-        await updateProfile("City", "city", city);
-        await updateProfile("Country", "country", country);
-        await updateProfile("Address", "address", formattedAddress);
       },
       (error) => {
         console.log("geolocation", error);
@@ -63,6 +60,8 @@ const AppContentApi = ({ children }) => {
           longitude: data.results[0].geometry.location.lng,
         }
         await updateProfile("Address", 'address', address);
+        await updateProfile("City", "city", city);
+        await updateProfile("Country", "country", country);
         await updateProfile("Location", 'location', new_location);
 
       }
@@ -95,6 +94,8 @@ const AppContentApi = ({ children }) => {
     }
   }
 
+  
+
 
 
   const value = {
@@ -102,7 +103,11 @@ const AppContentApi = ({ children }) => {
     getGeometryAddress,
     toggleStatus,
     getAvailableDonor,
+    userCurrentLocation,
     availableDonors,
+    formattedAddress,
+    city,
+    country,
     user
   }
 
