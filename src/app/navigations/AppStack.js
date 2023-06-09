@@ -12,6 +12,7 @@ import Gender from '../screens/Modals/Gender';
 import PhoneNumber from '../screens/Modals/PhoneNumber';
 import Address from '../screens/Modals/Address';
 import { AuthContext } from '../api/AuthContentApi';
+import { AppContext } from '../api/AppContentApi';
 const Stack = createStackNavigator();
 
 const screenOptions = {
@@ -28,7 +29,7 @@ const screenOptions = {
 
 const AppStack = () => {
   const {logout,  isLoggedIn, getCurrentUser} = useContext(AuthContext);
-
+  const {modalVisible, setModalVisible} = useContext(AppContext);
   useEffect(()=>{
     if(isLoggedIn){
       getCurrentUser();
@@ -50,7 +51,7 @@ const AppStack = () => {
         options={({navigation})=>({
           headerShown:true,
           headerRight:()=>(
-            <TouchableOpacity onPress={()=>logout()}>
+            <TouchableOpacity onPress={()=>setModalVisible(!modalVisible)}>
               <Ionicons name="power" size={24} color={colors.white} style={{marginRight:20}} />
             </TouchableOpacity>
             )

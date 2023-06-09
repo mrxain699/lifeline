@@ -5,7 +5,6 @@ import Title from './components/Title';
 import Button from './components/Button';
 import { colors } from '../../constants/Colors';
 import { AuthContext } from '../../api/AuthContentApi'
-import { split } from '../../utils/Functions';
 import { AppContext } from '../../api/AppContentApi';
 
 
@@ -19,35 +18,28 @@ const Address = ({ navigation }) => {
     user
   } = useContext(AuthContext);
   const {getGeometryAddress, formattedAddress} = useContext(AppContext);
-  const [address, setAddress] = useState(null);
+  const [address, setAddress] = useState(user.address  ? user.address : formattedAddress ? formattedAddress : null);
 
   useEffect(() => {
-    let interval = null;
     if (message) {
-      interval = setTimeout(() => {
+      setTimeout(() => {
         setMessage(null);
         navigation.goBack();
       }, 3000)
     }
-    return () => {
-      clearTimeout(interval);
-    }
   }, [message]);
 
   useEffect(() => {
-    let interval = null;
     if (error) {
-      interval = setTimeout(() => {
+      setTimeout(() => {
         setError(null);
       }, 5000)
     }
-    return () => {
-      clearTimeout(interval);
-    }
   }, [error]);
 
+
   const onPressHandler  = async () => {
-    await getGeometryAddress(address !== null ? address : user.address);
+    await getGeometryAddress(address);
   }
 
   return (
@@ -67,7 +59,7 @@ const Address = ({ navigation }) => {
         <TextInput
           placeholder='Address'
           placeholderTextColor={colors.grey}
-          value={address ? address : user.address ? user.address : formattedAddress}
+          value={address}
           onChangeText={(text) => setAddress(text)}
           cursorColor={colors.black}
           style={styles.input}

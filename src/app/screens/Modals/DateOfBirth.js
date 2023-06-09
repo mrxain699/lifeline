@@ -23,27 +23,19 @@ const DateOfBirth = ({ navigation }) => {
     const [selectedDate, setSelectedDate] = useState(getFormatedDate(new Date(), "WWW MMM DD YYYY"));
 
     useEffect(() => {
-        let interval = null;
         if (message) {
-            interval = setTimeout(() => {
+            setTimeout(() => {
                 setMessage(null);
                 navigation.goBack();
             }, 3000)
         }
-        return () => {
-            clearTimeout(interval);
-        }
     }, [message]);
 
     useEffect(() => {
-        let interval = null;
         if (error) {
-            interval = setTimeout(() => {
+            setTimeout(() => {
                 setError(null);
             }, 5000)
-        }
-        return () => {
-            clearTimeout(interval);
         }
     }, [error]);
 

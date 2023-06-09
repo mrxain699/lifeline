@@ -11,10 +11,10 @@ const { width, height } = Dimensions.get('window');
 const Nearby = () => {
 
     const { user } = useContext(AuthContext)
-    const { 
+    const {
         userCurrentLocation,
-        getAvailableDonor, 
-        availableDonors 
+        getAvailableDonor,
+        availableDonors
     } = useContext(AppContext);
     const ASPECT_RATIO = width / height;
     const LATITUDE_DELTA = 0.02;
@@ -23,7 +23,7 @@ const Nearby = () => {
         const getDonors = async () => {
             await getAvailableDonor();
         }
-        setInterval(() => {getDonors()}, 1000);
+        setInterval(() => { getDonors() }, 1000);
     }, []);
 
     return (
@@ -33,16 +33,19 @@ const Nearby = () => {
                 style={styles.map}
                 showsUserLocation
                 region={{
-                    latitude: user.location.latitude ? user.location.latitude : userCurrentLocation.latitude,
-                    longitude: user.location.longitude ? user.location.longitude : userCurrentLocation.longitude,
+                    latitude: userCurrentLocation.latitude ? Number(userCurrentLocation.latitude) : 30.3753,
+                    longitude: userCurrentLocation.longitude ? Number(userCurrentLocation.longitude) : 69.3451,
                     latitudeDelta: LATITUDE_DELTA,
                     longitudeDelta: LATITUDE_DELTA * ASPECT_RATIO,
                 }}
             >
-                <Marker
+            {
+
+           
+                userCurrentLocation && <Marker
                     coordinate={{
-                        latitude: user.location.latitude ? user.location.latitude : userCurrentLocation.latitude,
-                        longitude: user.location.longitude ? user.location.longitude : userCurrentLocation.longitude,
+                        latitude: Number(userCurrentLocation.latitude),
+                        longitude: Number(userCurrentLocation.longitude),
                         latitudeDelta: LATITUDE_DELTA,
                         longitudeDelta: LATITUDE_DELTA * ASPECT_RATIO
                     }}
@@ -51,41 +54,48 @@ const Nearby = () => {
                     pinColor='#0000cc'
                 >
                 </Marker>
+
+                }
+
                 {
-                   availableDonors && availableDonors.map((donor, i) => (
-
-                        <Marker
-                            coordinate={{
-                                latitude: donor.location.latitude,
-                                longitude: donor.location.longitude,
-                                latitudeDelta: LATITUDE_DELTA,
-                                longitudeDelta: LATITUDE_DELTA * ASPECT_RATIO
-                            }}
-                            pinColor='#ff0004'
-                            key={i * i}
-                        >
-                            <Callout tooltip>
-                                <View>
-                                    <View style={styles.callOutView}>
-                                    <View style={styles.calloutItemContainer}>
-                                            <Iconic name="person" size={18} color={colors.red} />
-                                            <Text style={styles.text}>{donor.name}</Text>
+                    availableDonors && availableDonors.map((donor, i) => {
+                        
+                        if((donor.location.latitude && donor.location.longitude) && (donor.email != user.email)) {
+                            return ( 
+                                <Marker
+                                    coordinate={{
+                                        latitude: Number(donor.location.latitude),
+                                        longitude: Number(donor.location.longitude),
+                                        latitudeDelta: LATITUDE_DELTA,
+                                        longitudeDelta: LATITUDE_DELTA * ASPECT_RATIO
+                                    }}
+                                    pinColor='#ff0004'
+                                    key={i * i}
+                                >
+                                    <Callout tooltip>
+                                        <View>
+                                            <View style={styles.callOutView}>
+                                                <View style={styles.calloutItemContainer}>
+                                                    <Iconic name="person" size={18} color={colors.red} />
+                                                    <Text style={styles.text}>{donor.name}</Text>
+                                                </View>
+                                                <View style={styles.calloutItemContainer}>
+                                                    <Iconic name="call" size={18} color={colors.red} />
+                                                    <Text style={styles.text}>{donor.phone}</Text>
+                                                </View>
+                                                <View style={styles.calloutItemContainer}>
+                                                    <Iconic name="water" size={18} color={colors.red} />
+                                                    <Text style={styles.text}>{donor.bloodgroup}</Text>
+                                                </View>
+                                            </View>
                                         </View>
-                                        <View style={styles.calloutItemContainer}>
-                                            <Iconic name="call" size={18} color={colors.red} />
-                                            <Text style={styles.text}>{donor.phone}</Text>
-                                        </View>
-                                        <View style={styles.calloutItemContainer}>
-                                            <Iconic name="water" size={18} color={colors.red} />
-                                            <Text style={styles.text}>{donor.bloodgroup}</Text>
-                                        </View>
-                                    </View>
-                                </View>
-                            </Callout>
-                        </Marker>
+                                    </Callout>
+                                </Marker>
+                               );
+                        }
+                        
 
-
-                    ))
+                    })
                 }
             </MapView>
         </View>
@@ -108,16 +118,16 @@ const styles = StyleSheet.create({
         position: 'relative',
         marginBottom: 10,
         backgroundColor: colors.white,
-        padding:10,
+        padding: 10,
     },
 
-    calloutItemContainer:{
-        flexDirection:'row',
-        marginBottom:5,
-    },  
-    text:{
-        color:colors.black,
-        marginLeft:10,
+    calloutItemContainer: {
+        flexDirection: 'row',
+        marginBottom: 5,
+    },
+    text: {
+        color: colors.black,
+        marginLeft: 10,
     }
 });
 

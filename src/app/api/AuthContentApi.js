@@ -218,7 +218,7 @@ const AuthContentApi = ({ children }) => {
                 .then(() => {
                     setIsLoading(false);
                     setError(null);
-                    setMessage(`${message} updated successfully`);
+                    message && setMessage(`${message} updated successfully`);
                     getCurrentUser();
                 })
                 .catch(() => {
@@ -246,31 +246,28 @@ const AuthContentApi = ({ children }) => {
     };
 
     const uploadProfile = async (imagePath) => {
-        const isExist = await checkImageExists(currentUserId);
-        if (isExist) {
+        try {
+            const isExist = await checkImageExists(currentUserId);
+            if (isExist) {
+                const reference = storage().ref('images/profiles/' + currentUserId);
+                await reference.delete();
+            }
             const reference = storage().ref('images/profiles/' + currentUserId);
-            await reference.delete();
+            await reference.putFile(imagePath)
+        
+            const url = await storage().ref('images/profiles/' + currentUserId).getDownloadURL();
+            if(url){
+                await users.doc(currentUserId).update({
+                    image:url,
+                });
+                getCurrentUser();
+                return true;
+            }
+        } catch (error) {
+            console.log("Image Download Error", error);
         }
-        const reference = storage().ref('images/profiles/' + currentUserId);
-        reference.putFile(imagePath)
-            .then(async () => {
-                const url = await storage().ref('images/profiles/' + currentUserId).getDownloadURL();
-                if(url){
-                    users.doc(currentUserId).update({
-                        image:url,
-                    })
-                    .then(()=>{
-                        getCurrentUser();
-                        setMessage('Image uploaded successfully');
-                    })
-                    .catch((error)=>{
-                        setError("Sorry, something went wrong");
-                    })
-                }
-            })
-            .catch((error) => {
-                setError("Sorry, something went wrong");
-            });
+
+        return false;
 
     }
 

@@ -9,7 +9,7 @@ import { Calendar } from 'react-native-calendars';
 import { getFormatedDate, getTodayDate } from '../../utils/Functions';
 import { AuthContext } from '../../api/AuthContentApi'
 
-const LastBleed = ({navigation}) => {
+const LastBleed = ({ navigation }) => {
     const {
         updateProfile,
         error,
@@ -28,27 +28,20 @@ const LastBleed = ({navigation}) => {
     };
 
     useEffect(() => {
-        let interval = null;
         if (message) {
-            interval = setTimeout(() => {
+            setTimeout(() => {
                 setMessage(null);
                 navigation.goBack();
             }, 3000)
         }
-        return () => {
-            clearTimeout(interval);
-        }
+
     }, [message]);
 
     useEffect(() => {
-        let interval = null;
         if (error) {
-            interval = setTimeout(() => {
+            setTimeout(() => {
                 setError(null);
             }, 5000)
-        }
-        return () => {
-            clearTimeout(interval);
         }
     }, [error]);
 

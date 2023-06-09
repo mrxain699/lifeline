@@ -5,6 +5,7 @@ import { colors } from '../../constants/Colors';
 import { images } from '../../constants/Images';
 import { AuthContext } from '../../api/AuthContentApi';
 import { AppContext } from '../../api/AppContentApi';
+import Toast from 'react-native-toast-message'
 import {
   requestForStoragePermission,
   checkStoragePermission
@@ -35,7 +36,23 @@ const Header = () => {
         cropping: true,
         mediaType: 'photo'
       }).then(async (image) => {
-        await uploadProfile(image.path);
+        Toast.show({
+          type: 'info',
+          text1: 'Image is uploading....'
+        });
+        const result = await uploadProfile(image.path);
+        if(result){
+          Toast.show({
+            type: 'success',
+            text1: 'Image uploaded successfully....'
+          });
+        }
+        else{
+          Toast.show({
+            type: 'error',
+            text1: 'Sorry, something went wrong'
+          });
+        }
       })
         .catch((error) => {
           console.log("Image Picker error", error);

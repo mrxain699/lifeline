@@ -14,6 +14,7 @@ const AppContentApi = ({ children }) => {
   const [country, setCountry] = useState('');
   const [city, setCity] = useState('');
   const [availableDonors, setAvailableDonors] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
   
   Geocoder.init(API_KEY, { language: "en" });
 
@@ -53,6 +54,7 @@ const AppContentApi = ({ children }) => {
 
   const getGeometryAddress = async (address) => {
     try {
+      
       const data = await Geocoder.from(address);
       if (data.results[0].geometry.location) {
         const new_location = {
@@ -60,9 +62,9 @@ const AppContentApi = ({ children }) => {
           longitude: data.results[0].geometry.location.lng,
         }
         await updateProfile("Address", 'address', address);
-        await updateProfile("City", "city", city);
-        await updateProfile("Country", "country", country);
-        await updateProfile("Location", 'location', new_location);
+        await updateProfile(null, "city", city);
+        await updateProfile(null, "country", country);
+        await updateProfile("Address", 'location', new_location);
 
       }
     } catch (error) {
@@ -108,7 +110,9 @@ const AppContentApi = ({ children }) => {
     formattedAddress,
     city,
     country,
-    user
+    user,
+    modalVisible, 
+    setModalVisible
   }
 
   return (

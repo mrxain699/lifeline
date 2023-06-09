@@ -18,7 +18,7 @@ const Body = () => {
       <Text style={styles.heading}>Manage</Text>
       <Item icon="water" title={user.bloodgroup ? user.bloodgroup : 'Blood Group'} onPress={() => navigation.navigate('BloodGroup')} />
       <Item icon="calendar" title={user.lastbleed ? getFormatedDate(new Date(user.lastbleed), "WWW MMM DD YYYY") : 'Last Donation'} onPress={() => navigation.navigate('LastBleed')} />
-      <Item icon="location" title={user.address ? user.address : formattedAddress ? formattedAddress : 'Address'} onPress={() => navigation.navigate('Address')} />
+      <Item icon="location" title={user.address ? user.address.substr(0, 50).concat('...') : formattedAddress ? formattedAddress : 'Address'} onPress={() => navigation.navigate('Address')} />
       <Item icon="call" title={user.phone ? user.phone : 'Phone #'} onPress={() => navigation.navigate('PhoneNumber')} />
       <Item icon="male-female-sharp" title={user.gender ? user.gender : 'Gender'} onPress={() => navigation.navigate('Gender')} />
       <Item icon="calendar" title={user.dob ? getFormatedDate(new Date(user.dob), "WWW MMM DD YYYY") : 'Date of Birth'} onPress={() => navigation.navigate('DateOfBirth')} />
