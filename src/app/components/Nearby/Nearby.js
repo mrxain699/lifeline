@@ -39,29 +39,45 @@ const Nearby = () => {
                     longitudeDelta: LATITUDE_DELTA * ASPECT_RATIO,
                 }}
             >
-            {
+                {
 
-           
-                userCurrentLocation && <Marker
-                    coordinate={{
-                        latitude: Number(userCurrentLocation.latitude),
-                        longitude: Number(userCurrentLocation.longitude),
-                        latitudeDelta: LATITUDE_DELTA,
-                        longitudeDelta: LATITUDE_DELTA * ASPECT_RATIO
-                    }}
-                    title="My Location"
-                    description="i am here now"
-                    pinColor='#0000cc'
-                >
-                </Marker>
+
+                    userCurrentLocation && <Marker
+                        coordinate={{
+                            latitude: Number(userCurrentLocation.latitude),
+                            longitude: Number(userCurrentLocation.longitude),
+                            latitudeDelta: LATITUDE_DELTA,
+                            longitudeDelta: LATITUDE_DELTA * ASPECT_RATIO
+                        }}
+                        pinColor='#0000cc'
+                    >
+                        <Callout tooltip>
+                            <View>
+                                <View style={styles.callOutView}>
+                                    <View style={styles.calloutItemContainer}>
+                                        <Iconic name="person" size={18} color={colors.red} />
+                                        <Text style={styles.text}>{user.name}</Text>
+                                    </View>
+                                    <View style={styles.calloutItemContainer}>
+                                        <Iconic name="call" size={18} color={colors.red} />
+                                        <Text style={styles.text}>{user.phone}</Text>
+                                    </View>
+                                    <View style={styles.calloutItemContainer}>
+                                        <Iconic name="water" size={18} color={colors.red} />
+                                        <Text style={styles.text}>{user.bloodgroup}</Text>
+                                    </View>
+                                </View>
+                            </View>
+                        </Callout>
+                    </Marker>
 
                 }
 
                 {
                     availableDonors && availableDonors.map((donor, i) => {
-                        
-                        if((donor.location.latitude && donor.location.longitude) && (donor.email != user.email)) {
-                            return ( 
+
+                        if ((donor.location.latitude && donor.location.longitude) && (donor.email != user.email)) {
+                            return (
                                 <Marker
                                     coordinate={{
                                         latitude: Number(donor.location.latitude),
@@ -91,9 +107,9 @@ const Nearby = () => {
                                         </View>
                                     </Callout>
                                 </Marker>
-                               );
+                            );
                         }
-                        
+
 
                     })
                 }

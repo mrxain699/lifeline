@@ -1,29 +1,42 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AuthStack from './AuthStack';
 import AppStack from './AppStack';
 import { AuthContext } from '../api/AuthContentApi';
 import { auth } from '../database/DB';
-
+import InternetScreen from '../screens/Network/InternetScreen';
+import NetInfo from "@react-native-community/netinfo";
+const Stack = createNativeStackNavigator();
 const Route = () => {
   const {
-    isLoggedIn, 
+    isLoggedIn,
     setIsLoggedIn,
     getCurrentUser,
   } = useContext(AuthContext)
+  const [isConnected, seIsConnected] = useState(false);
 
 
   useEffect(() => {
     const unsubscribe = auth().onAuthStateChanged((user) => {
-      if(user){
+      if (user) {
         setIsLoggedIn(true);
         getCurrentUser();
       }
-      else{
+      else {
         setIsLoggedIn(false);
       }
     });
     return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    const checkInternet = () => {
+      const unsubscribe = NetInfo.addEventListener(state => {
+        seIsConnected(state.isConnected);
+      });
+    } 
+    setTimeout(() => checkInternet(), 1000);
   }, []);
 
 
@@ -31,7 +44,14 @@ const Route = () => {
   return (
     <NavigationContainer>
       {
-        !isLoggedIn ? <AuthStack /> :  <AppStack />
+        isConnected ?
+          !isLoggedIn ? <AuthStack /> : <AppStack />
+          :
+          <Stack.Navigator screenOptions={{
+            headerShown: false,
+          }}>
+            <Stack.Screen name="InternetScreen" component={InternetScreen} />
+          </Stack.Navigator>
       }
     </NavigationContainer>
   )

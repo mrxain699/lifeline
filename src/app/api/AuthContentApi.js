@@ -1,6 +1,6 @@
 import React, { useState, createContext } from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { auth, firestore as db, GoogleSignin, storage } from '../database/DB';
+import { auth, firestore as db, GoogleSignin, storage, messaging } from '../database/DB';
 import { trim, validateName, validatePassword, validatePhoneNumber } from '../utils/Functions';
 import { users } from '../database/Collections';
 const AuthContext = createContext(null);
@@ -43,8 +43,7 @@ const AuthContentApi = ({ children }) => {
 
     }
 
-    const setCurrentUser = (new_user, name) => {
-        console.log(new_user);
+    const setCurrentUser = (new_user, name, token) => {
         users.doc(new_user.uid)
             .set({
                 name: new_user.displayName ? new_user.displayName : name,
@@ -59,6 +58,7 @@ const AuthContentApi = ({ children }) => {
                 city:'',
                 location:{latitude:'', longitude:''},
                 status:0,
+                token:token && token,
             })
             .then(() => {
                 getCurrentUser();
@@ -92,9 +92,10 @@ const AuthContentApi = ({ children }) => {
             setIsLoading(true);
             try {
                 const response = await auth().createUserWithEmailAndPassword(trim(email), trim(password));
+                const token = await messaging().getToken();
                 if (response) {
                     await sendVerificationMail(response.user);
-                    setCurrentUser(response.user, trim(name));
+                    setCurrentUser(response.user, trim(name), token);
                     setError(null);
                     setIsLoading(false);
                     setMessage('Account created. Verify your email for login your account');
@@ -124,17 +125,20 @@ const AuthContentApi = ({ children }) => {
                 setIsLoading(true);
                 const response = await auth().signInWithEmailAndPassword(trim(email), trim(password));
                 if (response) {
-                    // if (!response.user.emailVerified) {
-                    //     setError('Email not verified. Verify your email and login again');
-                    //     auth().signOut();
-                    // }
-                    // else {
-                    //     setError(null);
-                    //     getCurrentUser();
-                    // }
                     setError(null);
-                    getCurrentUser();
                     setIsLoading(false);
+                    getCurrentUser();
+                    const token = await messaging().getToken();
+                    console.log(token);
+                    users.doc(currentUserId).update({
+                        token:token,
+                    })
+                    .then(()=>{
+                        console.log("Token Updated")
+                    })
+                    .catch((error)=>{
+                        console.log("Token Update Error ", error)
+                    })
                 }
             } catch (error) {
                 setIsLoading(false);
@@ -163,14 +167,28 @@ const AuthContentApi = ({ children }) => {
             const response = await auth().signInWithCredential(googleCredential);
             if (response) {
                 const isExist = await isUserExist(response.user.uid);
+                const token = await messaging().getToken();
                 if (!isExist) {
-                    setCurrentUser(response.user, null);                    
+                    setCurrentUser(response.user, null, token); 
+                    getCurrentUser();                   
                 }
-                getCurrentUser();
+                else{
+                    getCurrentUser();
+                    users.doc(currentUserId).update({
+                        token:token,
+                    })
+                    .then(()=>{
+                        console.log("Token Updated")
+                    })
+                    .catch((error)=>{
+                        console.log("Token Update Error ", error)
+                    })
+                }
+
 
             }
         } catch (error) {
-            console.log(error)
+            console.log("Google Login Error", error)
         }
 
     }
