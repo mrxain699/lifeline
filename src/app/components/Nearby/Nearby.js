@@ -33,45 +33,43 @@ const Nearby = () => {
                 style={styles.map}
                 showsUserLocation
                 region={{
-                    latitude: userCurrentLocation.latitude ? Number(userCurrentLocation.latitude) : 30.3753,
-                    longitude: userCurrentLocation.longitude ? Number(userCurrentLocation.longitude) : 69.3451,
+                    latitude: Number(userCurrentLocation.latitude),
+                    longitude: Number(userCurrentLocation.longitude),
                     latitudeDelta: LATITUDE_DELTA,
                     longitudeDelta: LATITUDE_DELTA * ASPECT_RATIO,
                 }}
             >
-                {
 
-
-                    userCurrentLocation && <Marker
-                        coordinate={{
-                            latitude: Number(userCurrentLocation.latitude),
-                            longitude: Number(userCurrentLocation.longitude),
-                            latitudeDelta: LATITUDE_DELTA,
-                            longitudeDelta: LATITUDE_DELTA * ASPECT_RATIO
-                        }}
-                        pinColor='#0000cc'
-                    >
-                        <Callout tooltip>
-                            <View>
-                                <View style={styles.callOutView}>
-                                    <View style={styles.calloutItemContainer}>
-                                        <Iconic name="person" size={18} color={colors.red} />
-                                        <Text style={styles.text}>{user.name}</Text>
-                                    </View>
-                                    <View style={styles.calloutItemContainer}>
-                                        <Iconic name="call" size={18} color={colors.red} />
-                                        <Text style={styles.text}>{user.phone}</Text>
-                                    </View>
-                                    <View style={styles.calloutItemContainer}>
-                                        <Iconic name="water" size={18} color={colors.red} />
-                                        <Text style={styles.text}>{user.bloodgroup}</Text>
-                                    </View>
+                <Marker
+                    coordinate={{
+                        latitude: Number(userCurrentLocation.latitude),
+                        longitude: Number(userCurrentLocation.longitude),
+                        latitudeDelta: LATITUDE_DELTA,
+                        longitudeDelta: LATITUDE_DELTA * ASPECT_RATIO
+                    }}
+                    pinColor='#0000cc'
+                >
+                    <Callout tooltip>
+                        <View>
+                            <View style={styles.callOutView}>
+                                <View style={styles.calloutItemContainer}>
+                                    <Iconic name="person" size={18} color={colors.red} />
+                                    <Text style={styles.text}>{user.name}</Text>
+                                </View>
+                                <View style={styles.calloutItemContainer}>
+                                    <Iconic name="call" size={18} color={colors.red} />
+                                    <Text style={styles.text}>{user.phone}</Text>
+                                </View>
+                                <View style={styles.calloutItemContainer}>
+                                    <Iconic name="water" size={18} color={colors.red} />
+                                    <Text style={styles.text}>{user.bloodgroup}</Text>
                                 </View>
                             </View>
-                        </Callout>
-                    </Marker>
+                        </View>
+                    </Callout>
+                </Marker>
 
-                }
+
 
                 {
                     availableDonors && availableDonors.map((donor, i) => {

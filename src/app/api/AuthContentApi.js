@@ -129,8 +129,7 @@ const AuthContentApi = ({ children }) => {
                     setIsLoading(false);
                     getCurrentUser();
                     const token = await messaging().getToken();
-                    console.log(token);
-                    users.doc(currentUserId).update({
+                    users.doc(auth().currentUser.uid).update({
                         token:token,
                     })
                     .then(()=>{

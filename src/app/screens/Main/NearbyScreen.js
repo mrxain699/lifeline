@@ -1,8 +1,9 @@
 import React, { useContext, useEffect } from 'react'
-import { View } from 'react-native'
+import { View, ActivityIndicator, StyleSheet } from 'react-native'
 import { globalStyles } from '../../constants/Style'
 import Nearby from '../../components/Nearby/Nearby'
 import { AppContext } from '../../api/AppContentApi'
+import { colors } from '../../constants/Colors'
 import {
   requestForLocationPermission,
   checkLocationPermission,
@@ -13,6 +14,7 @@ const NearbyScreen = () => {
 
   const { 
     getUserCurrentLocation,
+    userCurrentLocation
   } = useContext(AppContext);
 
   useEffect(() => {
@@ -42,9 +44,22 @@ const NearbyScreen = () => {
 
   return (
     <View style={globalStyles.wrapper}>
-      <Nearby />
+      {
+        userCurrentLocation ? <Nearby /> :
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={colors.grey_100}/>
+        </View>
+      }
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+  loadingContainer:{
+    flex:1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
+});
 
 export default NearbyScreen

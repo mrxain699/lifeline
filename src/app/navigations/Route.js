@@ -8,6 +8,7 @@ import { auth } from '../database/DB';
 import InternetScreen from '../screens/Network/InternetScreen';
 import NetInfo from "@react-native-community/netinfo";
 const Stack = createNativeStackNavigator();
+
 const Route = () => {
   const {
     isLoggedIn,
@@ -15,6 +16,7 @@ const Route = () => {
     getCurrentUser,
   } = useContext(AuthContext)
   const [isConnected, seIsConnected] = useState(false);
+  const [initialLoad, setInitialLoad] = useState(true);
 
 
   useEffect(() => {
@@ -34,12 +36,16 @@ const Route = () => {
     const checkInternet = () => {
       const unsubscribe = NetInfo.addEventListener(state => {
         seIsConnected(state.isConnected);
+        setInitialLoad(false);
       });
     } 
     setTimeout(() => checkInternet(), 1000);
   }, []);
 
 
+  if (initialLoad) {
+    return null; 
+  }
 
   return (
     <NavigationContainer>

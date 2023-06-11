@@ -11,6 +11,8 @@ import DateOfBirth from '../screens/Modals/DateOfBirth';
 import Gender from '../screens/Modals/Gender';
 import PhoneNumber from '../screens/Modals/PhoneNumber';
 import Address from '../screens/Modals/Address';
+import BloodRequestScreen from '../screens/Main/BloodRequestScreen';
+import UrgentBloodRequestScreen from '../screens/Main/UrgentBloodRequestScreen';
 import { AuthContext } from '../api/AuthContentApi';
 import { AppContext } from '../api/AppContentApi';
 const Stack = createStackNavigator();
@@ -28,7 +30,7 @@ const screenOptions = {
 }
 
 const AppStack = () => {
-  const {logout,  isLoggedIn, getCurrentUser} = useContext(AuthContext);
+  const {isLoggedIn, getCurrentUser} = useContext(AuthContext);
   const {modalVisible, setModalVisible} = useContext(AppContext);
   useEffect(()=>{
     if(isLoggedIn){
@@ -57,7 +59,9 @@ const AppStack = () => {
             )
         })}
         />
-
+        <Stack.Screen name="BloodRequestScreen" component={BloodRequestScreen} options={{title:"Blood Request"}}/>
+        <Stack.Screen name="UrgentBloodRequestScreen" component={UrgentBloodRequestScreen} options={{title:"Urgent Blood Request"}}/>
+        
         <Stack.Group screenOptions={{ presentation: 'modal' }}>
           <Stack.Screen name="BloodGroup" component={BloodGroup} options={{title:"Blood Group"}}/>
           <Stack.Screen name="LastBleed" component={LastBleed} options={{title:"Last Bleed",}}/>
@@ -65,7 +69,6 @@ const AppStack = () => {
           <Stack.Screen name="PhoneNumber" component={PhoneNumber} options={{title:"Phone Number"}}/>
           <Stack.Screen name="Gender" component={Gender} />
           <Stack.Screen name="DateOfBirth" component={DateOfBirth} options={{title:"Date of Birth"}}/>
-
         </Stack.Group>
     </Stack.Navigator>
   );

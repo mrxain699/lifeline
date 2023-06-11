@@ -1,9 +1,9 @@
 import React from 'react'
 import { globalStyles } from '../../../constants/Style'
 import { Text } from 'react-native'
-const Label = ({label}) => {
+const Label = ({label, style}) => {
   return (
-    <Text style={globalStyles.label}>{label}</Text>
+    <Text style={[globalStyles.label, style && style]}>{label}</Text>
   )
 }
 

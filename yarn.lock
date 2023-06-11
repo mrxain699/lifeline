@@ -6190,17 +6190,19 @@
   dependencies:
     "prop-types" "^15.8.1"
 
-"react-native-dropdown-picker@^5.4.6":
-  "integrity" "sha512-T1XBHbE++M6aRU3wFYw3MvcOuabhWZ29RK/Ivdls2r1ZkZ62iEBZknLUPeVLMX3x6iUxj4Zgr3X2DGlEGXeHsA=="
-  "resolved" "https://registry.npmjs.org/react-native-dropdown-picker/-/react-native-dropdown-picker-5.4.6.tgz"
-  "version" "5.4.6"
+"react-native-dropdown-picker@^5.4.7-beta.1":
+  "integrity" "sha512-M/HvDhdP4d2LhmKtbvAqNBLwlN0AejWYxc7nIWPOdhNhN9iaY02kDSMGtCxndAYKaavLx8AjNip2RVljZBtdjQ=="
+  "resolved" "https://registry.npmjs.org/react-native-dropdown-picker/-/react-native-dropdown-picker-5.4.7-beta.1.tgz"
+  "version" "5.4.7-beta.1"
+  dependencies:
+    "react-native-gesture-handler" "*"
 
 "react-native-geocoding@^0.5.0":
   "integrity" "sha512-peTXRpRxPLiZpbTW43AOvoXXAEoS+eLnSo4KRY0hcL9F2hulWE5r7o5KiaLx8AWj35c6EJP3fdGHe754q2Gd2Q=="
   "resolved" "https://registry.npmjs.org/react-native-geocoding/-/react-native-geocoding-0.5.0.tgz"
   "version" "0.5.0"
 
-"react-native-gesture-handler@^2.10.1", "react-native-gesture-handler@>= 1.0.0":
+"react-native-gesture-handler@*", "react-native-gesture-handler@^2.10.1", "react-native-gesture-handler@>= 1.0.0":
   "integrity" "sha512-vDJx3KnheMLEPg35chQW6aiNGqfv3tmWGRRzmfVvqnvvIt5pNkxXe8+x7CYpfIAAnqNLaK1xiozvMkzZPRw1vw=="
   "resolved" "https://registry.npmjs.org/react-native-gesture-handler/-/react-native-gesture-handler-2.10.1.tgz"
   "version" "2.10.1"
