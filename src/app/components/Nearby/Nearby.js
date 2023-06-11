@@ -33,8 +33,8 @@ const Nearby = () => {
                 style={styles.map}
                 showsUserLocation
                 region={{
-                    latitude: Number(userCurrentLocation.latitude),
-                    longitude: Number(userCurrentLocation.longitude),
+                    latitude: userCurrentLocation.latitude,
+                    longitude: userCurrentLocation.longitude,
                     latitudeDelta: LATITUDE_DELTA,
                     longitudeDelta: LATITUDE_DELTA * ASPECT_RATIO,
                 }}
@@ -42,8 +42,8 @@ const Nearby = () => {
 
                 <Marker
                     coordinate={{
-                        latitude: Number(userCurrentLocation.latitude),
-                        longitude: Number(userCurrentLocation.longitude),
+                        latitude: userCurrentLocation.latitude,
+                        longitude: userCurrentLocation.longitude,
                         latitudeDelta: LATITUDE_DELTA,
                         longitudeDelta: LATITUDE_DELTA * ASPECT_RATIO
                     }}
@@ -78,8 +78,8 @@ const Nearby = () => {
                             return (
                                 <Marker
                                     coordinate={{
-                                        latitude: Number(donor.location.latitude),
-                                        longitude: Number(donor.location.longitude),
+                                        latitude: donor.location.latitude,
+                                        longitude: donor.location.longitude,
                                         latitudeDelta: LATITUDE_DELTA,
                                         longitudeDelta: LATITUDE_DELTA * ASPECT_RATIO
                                     }}
