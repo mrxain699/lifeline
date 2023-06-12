@@ -57,7 +57,8 @@ const PhoneNumber = ({navigation}) => {
         <View style={styles.verticalDivider}></View>
         <TextInput
           inputMode='numeric'
-          value={phoneNumber ? phoneNumber : user.phone}
+          value={phoneNumber}
+          defaultValue={user.phone && user.phone}
           onChangeText={(text) => setPhoneNumber(text)}
           placeholder='eg:03123456789'
           placeholderTextColor={colors.grey}

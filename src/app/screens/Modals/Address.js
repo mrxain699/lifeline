@@ -18,7 +18,7 @@ const Address = ({ navigation }) => {
     user
   } = useContext(AuthContext);
   const {getGeometryAddress, formattedAddress} = useContext(AppContext);
-  const [address, setAddress] = useState(user.address  ? user.address : formattedAddress ? formattedAddress : null);
+  const [address, setAddress] = useState(null);
 
   useEffect(() => {
     if (message) {
@@ -60,6 +60,7 @@ const Address = ({ navigation }) => {
           placeholder='Address'
           placeholderTextColor={colors.grey}
           value={address}
+          defaultValue={user.address  ? user.address : formattedAddress}
           onChangeText={(text) => setAddress(text)}
           cursorColor={colors.black}
           style={styles.input}
