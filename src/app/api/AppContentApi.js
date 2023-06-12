@@ -9,25 +9,25 @@ const AppContext = createContext(null);
 const AppContentApi = ({ children }) => {
 
   const { updateProfile, user } = useContext(AuthContext);
-  const [userCurrentLocation, setUserCurrentLocation] = useState({});
+  const [userCurrentLocation, setUserCurrentLocation] = useState(null);
   const [formattedAddress, setFormattedAddress] = useState('');
   const [country, setCountry] = useState('');
   const [city, setCity] = useState('');
   const [availableDonors, setAvailableDonors] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
-  
+
   Geocoder.init(API_KEY, { language: "en" });
 
-  const getUserCurrentLocation = async () => {
+  const getUserCurrentLocation =  () => {
     Geolocation.getCurrentPosition(
-      async (position) => {
-        setUserCurrentLocation({ latitude: position.coords.latitude, longitude: position.coords.longitude });
-        getFormattedAddress(position.coords.latitude, position.coords.longitude);
+      async position => {
+        setUserCurrentLocation({latitude: position.coords.latitude, longitude: position.coords.longitude});
+        await getFormattedAddress(position.coords.latitude, position.coords.longitude);
       },
-      (error) => {
-        console.log("geolocation", error);
+      error => {
+        console.error('Error getting user location:', error);
       },
-      { enableHighAccuracy: true }
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
     );
   }
 
@@ -54,7 +54,7 @@ const AppContentApi = ({ children }) => {
 
   const getGeometryAddress = async (address) => {
     try {
-      
+
       const data = await Geocoder.from(address);
       if (data.results[0].geometry.location) {
         const new_location = {
@@ -87,7 +87,7 @@ const AppContentApi = ({ children }) => {
         });
         setAvailableDonors(donorsarray);
       }
-      else{
+      else {
         setAvailableDonors([]);
       }
 
@@ -96,7 +96,7 @@ const AppContentApi = ({ children }) => {
     }
   }
 
-  
+
 
 
 
@@ -111,7 +111,7 @@ const AppContentApi = ({ children }) => {
     city,
     country,
     user,
-    modalVisible, 
+    modalVisible,
     setModalVisible
   }
 

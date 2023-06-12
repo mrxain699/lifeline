@@ -8,11 +8,10 @@ import Iconic from '../ui/Icons/Icons';
 const { width, height } = Dimensions.get('window');
 
 
-const Nearby = () => {
-
+const Nearby = ({location}) => {
+    console.log(location);
     const { user } = useContext(AuthContext)
     const {
-        userCurrentLocation,
         getAvailableDonor,
         availableDonors
     } = useContext(AppContext);
@@ -33,19 +32,20 @@ const Nearby = () => {
                 style={styles.map}
                 showsUserLocation
                 region={{
-                    latitude: userCurrentLocation.latitude,
-                    longitude: userCurrentLocation.longitude,
+                    latitude: location.latitude,
+                    longitude: location.longitude,
                     latitudeDelta: LATITUDE_DELTA,
                     longitudeDelta: LATITUDE_DELTA * ASPECT_RATIO,
                 }}
             >
-
+                {
+    
+                location != null && 
+                (
                 <Marker
                     coordinate={{
-                        latitude: userCurrentLocation.latitude,
-                        longitude: userCurrentLocation.longitude,
-                        latitudeDelta: LATITUDE_DELTA,
-                        longitudeDelta: LATITUDE_DELTA * ASPECT_RATIO
+                        latitude: location.latitude,
+                        longitude: location.longitude,
                     }}
                     pinColor='#0000cc'
                 >
@@ -68,13 +68,15 @@ const Nearby = () => {
                         </View>
                     </Callout>
                 </Marker>
+                )
+            }
 
 
 
                 {
                     availableDonors && availableDonors.map((donor, i) => {
 
-                        if ((donor.location.latitude && donor.location.longitude) && (donor.email != user.email)) {
+                        if (donor.email != user.email) {
                             return (
                                 <Marker
                                     coordinate={{

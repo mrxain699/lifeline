@@ -27,7 +27,7 @@ const HomeScreen = () => {
         await requestForNotificationPermission();
         const result = await requestForeEableGPS();
         if(result){
-          await getUserCurrentLocation();
+          getUserCurrentLocation();
         }
       }
       else{
@@ -35,7 +35,7 @@ const HomeScreen = () => {
         if(permission === "granted"){
           const result = await requestForeEableGPS();
           if(result){
-            await getUserCurrentLocation();
+            getUserCurrentLocation();
           }
         }
       }

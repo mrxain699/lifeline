@@ -23,16 +23,15 @@ const NearbyScreen = () => {
       if (permission === "granted") {
         const result = await requestForeEableGPS();
         if (result) {
-          await getUserCurrentLocation();
+          getUserCurrentLocation();
         }
       }
       else {
         const result = await requestForLocationPermission();
-        console.log(result);
         if(result === "granted"){
           const result = await requestForeEableGPS();
           if (result) {
-            await getUserCurrentLocation();
+            getUserCurrentLocation();
           }
         }
       }
@@ -45,7 +44,7 @@ const NearbyScreen = () => {
   return (
     <View style={globalStyles.wrapper}>
       {
-        userCurrentLocation ? <Nearby /> :
+        userCurrentLocation ? <Nearby  location={userCurrentLocation} /> :
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={colors.grey_100}/>
         </View>
