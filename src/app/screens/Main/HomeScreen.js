@@ -17,7 +17,11 @@ import {
 const HomeScreen = () => {
 
   const { isAppFirstLaunched } = useContext(AuthContext);
-  const {getUserCurrentLocation} = useContext(AppContext);
+  const {
+    getUserCurrentLocation,
+    userCurrentLocation,
+    getFormattedAddress,
+  } = useContext(AppContext);
 
   useEffect(() => {
     const requestForPermissions = async () => {
@@ -42,6 +46,12 @@ const HomeScreen = () => {
     }
     requestForPermissions();
   }, []);
+
+  useEffect(() => {
+    if(userCurrentLocation != null){
+      getFormattedAddress(userCurrentLocation.latitude, userCurrentLocation.longitude);
+    }
+  }, [userCurrentLocation])
 
 
   return (

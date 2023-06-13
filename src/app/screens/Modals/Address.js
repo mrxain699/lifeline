@@ -1,15 +1,16 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { StyleSheet, TextInput, View, Text } from 'react-native'
+import { StyleSheet, TouchableOpacity, View, Text } from 'react-native'
 import { globalStyles } from '../../constants/Style';
 import Title from './components/Title';
 import Button from './components/Button';
 import { colors } from '../../constants/Colors';
 import { AuthContext } from '../../api/AuthContentApi'
 import { AppContext } from '../../api/AppContentApi';
+import Iconic from '../../components/ui/Icons/Icons';
+
 
 
 const Address = ({ navigation }) => {
-
   const {
     error,
     message,
@@ -18,7 +19,6 @@ const Address = ({ navigation }) => {
     user
   } = useContext(AuthContext);
   const {getGeometryAddress, formattedAddress} = useContext(AppContext);
-  const [address, setAddress] = useState(null);
 
   useEffect(() => {
     if (message) {
@@ -39,7 +39,7 @@ const Address = ({ navigation }) => {
 
 
   const onPressHandler  = async () => {
-    await getGeometryAddress(address);
+    await getGeometryAddress(formattedAddress);
   }
 
   return (
@@ -55,17 +55,13 @@ const Address = ({ navigation }) => {
           <Text style={globalStyles.error}>{error}</Text>
         </View>
       }
-      <View style={styles.inputContainer}>
-        <TextInput
-          placeholder='Address'
-          placeholderTextColor={colors.grey}
-          value={address}
-          defaultValue={user.address  ? user.address : formattedAddress}
-          onChangeText={(text) => setAddress(text)}
-          cursorColor={colors.black}
-          style={styles.input}
-        />
-
+      <View style={styles.addressContainer}>
+        <View style={styles.address}>
+          <Text style={styles.userAddress}>{user.address != null ? user.address.substr(0, 50).concat('...') :  formattedAddress.substr(0,50).concat('...')}</Text>
+        </View>
+        <TouchableOpacity style={styles.markerButton} >
+          <Iconic name="location" size={24} color={colors.red} onPress={()=>{navigation.navigate('Map')}}/>
+        </TouchableOpacity>
       </View>
       <Button onPress={() => onPressHandler()} />
     </View>
@@ -75,23 +71,30 @@ const Address = ({ navigation }) => {
 export default Address
 
 const styles = StyleSheet.create({
-  inputContainer: {
+  addressContainer: {
     marginTop: 10,
     backgroundColor: colors.white,
     height: 50,
     elevation: 3,
     borderRadius: 15,
     flexDirection: 'row',
-
   },
-
-
-  input: {
-    width: '100%',
-    height: '100%',
-    color: colors.black,
-    paddingLeft: 15,
-    alignItems: 'center',
-    fontSize: 16,
+  address:{
+    alignItems:'center',
+    justifyContent: 'center',
+    paddingHorizontal:10,
+    flexWrap:'wrap',
+    width:'85%',
+  },
+  markerButton:{
+    width:'15%',
+    justifyContent:'center',
+    alignItems:'center',
+  },
+  userAddress:{
+    color:colors.grey_100,
+    fontSize:16
   }
+
+
 })

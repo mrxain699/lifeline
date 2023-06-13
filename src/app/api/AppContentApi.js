@@ -102,6 +102,7 @@ const AppContentApi = ({ children }) => {
 
   const value = {
     getUserCurrentLocation,
+    getFormattedAddress,
     getGeometryAddress,
     toggleStatus,
     getAvailableDonor,

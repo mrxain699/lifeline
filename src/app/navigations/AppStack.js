@@ -11,10 +11,12 @@ import DateOfBirth from '../screens/Modals/DateOfBirth';
 import Gender from '../screens/Modals/Gender';
 import PhoneNumber from '../screens/Modals/PhoneNumber';
 import Address from '../screens/Modals/Address';
+import Map from '../screens/Modals/Map';
 import BloodRequestScreen from '../screens/Main/BloodRequestScreen';
 import UrgentBloodRequestScreen from '../screens/Main/UrgentBloodRequestScreen';
 import { AuthContext } from '../api/AuthContentApi';
 import { AppContext } from '../api/AppContentApi';
+
 const Stack = createStackNavigator();
 
 const screenOptions = {
@@ -69,6 +71,7 @@ const AppStack = () => {
           <Stack.Screen name="PhoneNumber" component={PhoneNumber} options={{title:"Phone Number"}}/>
           <Stack.Screen name="Gender" component={Gender} />
           <Stack.Screen name="DateOfBirth" component={DateOfBirth} options={{title:"Date of Birth"}}/>
+          <Stack.Screen name="Map" component={Map} options={{title:"Pin Your Location"}}/>
         </Stack.Group>
     </Stack.Navigator>
   );

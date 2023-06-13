@@ -9,7 +9,6 @@ const { width, height } = Dimensions.get('window');
 
 
 const Nearby = ({location}) => {
-    console.log(location);
     const { user } = useContext(AuthContext)
     const {
         getAvailableDonor,
@@ -30,7 +29,6 @@ const Nearby = ({location}) => {
             <MapView
                 provider={PROVIDER_GOOGLE}
                 style={styles.map}
-                showsUserLocation
                 region={{
                     latitude: location.latitude,
                     longitude: location.longitude,

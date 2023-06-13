@@ -14,7 +14,8 @@ const NearbyScreen = () => {
 
   const { 
     getUserCurrentLocation,
-    userCurrentLocation
+    userCurrentLocation,
+    getFormattedAddress,
   } = useContext(AppContext);
 
   useEffect(() => {
@@ -38,6 +39,12 @@ const NearbyScreen = () => {
     }
     checkPermission();
   }, []);
+
+  useEffect(() => {
+    if(userCurrentLocation != null){
+      getFormattedAddress(userCurrentLocation.latitude, userCurrentLocation.longitude);
+    }
+  }, [userCurrentLocation])
 
 
 
