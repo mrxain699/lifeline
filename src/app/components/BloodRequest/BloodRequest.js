@@ -1,16 +1,19 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity } from 'react-native'
 import { globalStyles } from '../../constants/Style';
 import { colors } from '../../constants/Colors';
 import Label from '../ui/Form/Label';
 import Input from '../ui/Form/Input';
-import Button from '../ui/Form/Button';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { AuthContext } from '../../api/AuthContentApi';
+import { AppContext } from '../../api/AppContentApi';
 import { ScrollView } from 'react-native-gesture-handler';
-import { screensEnabled } from 'react-native-screens';
+import Iconic from '../ui/Icons/Icons';
+import { useNavigation } from '@react-navigation/native';
 const BloodRequest = () => {
+    const navigation = useNavigation();
     const { user } = useContext(AuthContext);
+    const { formattedAddress } = useContext(AppContext);
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState(null);
     const [items, setItems] = useState([
@@ -24,12 +27,13 @@ const BloodRequest = () => {
         { label: 'O-', value: 'O-' },
     ]);
 
+
     return (
         <KeyboardAvoidingView style={globalStyles.wrapper}>
             <View style={styles.heading}>
                 <Text style={styles.headingText}>Create Blood Request</Text>
             </View>
-            <ScrollView showsVerticalScrollIndicator={false} alwaysBounceVertical={true}  nestedScrollEnabled={true} contentContainerStyle={{ flexGrow: 1 }}>
+            <ScrollView showsVerticalScrollIndicator={false} alwaysBounceVertical={true} nestedScrollEnabled={true} contentContainerStyle={{ flexGrow: 1 }}>
                 <View style={styles.inputsContainer}>
                     <Label label="Name" style={{ color: colors.red, marginLeft: 8 }} />
                     <View style={styles.inputContainer}>
@@ -58,13 +62,15 @@ const BloodRequest = () => {
                         />
                     </View>
                     <Label label="Address" style={{ color: colors.red, marginLeft: 8, marginTop: 20 }} />
-                    <View style={styles.inputContainer}>
-                        <Input
-                            placehokder="Address"
-                            defaultValue={user.address && user.address}
-                            placeholderTextColor={colors.grey}
-                            style={[styles.input, { borderWidth: 0, marginTop: 0 }]}
-                        />
+                    <View style={styles.addressContainer}>
+                        <View style={styles.address}>
+                            <Text style={styles.userAddress}>{formattedAddress.substr(0, 50).concat('...')}</Text>
+                        </View>
+                        <TouchableOpacity style={styles.markerButton} >
+                            <Iconic name="location" size={24} color={colors.red} onPress={() => { 
+                                navigation.navigate('Map')
+                            }} />
+                        </TouchableOpacity>
                     </View>
                     <Label label="Blood Group" style={{ color: colors.red, marginLeft: 8, marginTop: 20 }} />
                     <View style={styles.inputContainer}>
@@ -82,9 +88,9 @@ const BloodRequest = () => {
                             listMode="SCROLLVIEW"
                             dropDownDirection="Bottom"
                             dropDownContainerStyle={{
-                                borderWidth:0,
+                                borderWidth: 0,
                             }}
-                            
+
                         />
 
                     </View>
@@ -170,6 +176,30 @@ const styles = StyleSheet.create({
         color: colors.white,
         fontSize: 18,
         fontFamily: 'Roboto-Regular'
+    },
+    addressContainer: {
+        marginTop: 5,
+        backgroundColor: colors.white,
+        height: 50,
+        elevation: 3,
+        borderRadius: 15,
+        flexDirection: 'row',
+    },
+    address: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingHorizontal: 10,
+        flexWrap: 'wrap',
+        width: '85%',
+    },
+    markerButton: {
+        width: '15%',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    userAddress: {
+        color: colors.grey_100,
+        fontSize: 16
     }
 });
 
