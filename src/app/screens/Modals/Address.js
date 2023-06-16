@@ -57,7 +57,7 @@ const Address = ({ navigation }) => {
       }
       <View style={styles.addressContainer}>
         <View style={styles.address}>
-          <Text style={styles.userAddress}>{user.address != null ? user.address.substr(0, 50).concat('...') :  formattedAddress.substr(0,50).concat('...')}</Text>
+          <Text style={styles.userAddress}>{ formattedAddress.substr(0,50).concat('...')}</Text>
         </View>
         <TouchableOpacity style={styles.markerButton} >
           <Iconic name="location" size={24} color={colors.red} onPress={()=>{navigation.navigate('Map')}}/>
