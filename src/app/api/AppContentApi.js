@@ -79,7 +79,11 @@ const AppContentApi = ({ children }) => {
 
   const getAvailableDonor = async () => {
     try {
-      const donors = await users.where('status', '==', 1).get();
+      const donors = await users
+      .where('status', '==', 1)
+      .where('bloodgroup', '==', user.bloodgroup)
+
+      .get();
       if (donors.size > 0) {
         const donorsarray = [];
         donors.forEach(doc => {

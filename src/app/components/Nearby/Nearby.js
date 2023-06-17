@@ -5,10 +5,12 @@ import { AuthContext } from '../../api/AuthContentApi';
 import { AppContext } from '../../api/AppContentApi';
 import { colors } from '../../constants/Colors';
 import Iconic from '../ui/Icons/Icons';
+import { useNavigation } from '@react-navigation/native';
 const { width, height } = Dimensions.get('window');
 
 
 const Nearby = ({location}) => {
+    const navigation = useNavigation();
     const { user } = useContext(AuthContext)
     const {
         getAvailableDonor,
@@ -21,7 +23,10 @@ const Nearby = ({location}) => {
         const getDonors = async () => {
             await getAvailableDonor();
         }
-        setInterval(() => { getDonors() }, 1000);
+        const interval = setInterval(() => { getDonors() }, 1000);
+        return () => {
+            clearInterval(interval);
+        }
     }, []);
 
     return (
@@ -45,7 +50,7 @@ const Nearby = ({location}) => {
                         latitude: location.latitude,
                         longitude: location.longitude,
                     }}
-                    pinColor='#0000cc'
+                    pinColor={colors.blue}
                 >
                     <Callout tooltip>
                         <View>
@@ -74,7 +79,7 @@ const Nearby = ({location}) => {
                 {
                     availableDonors && availableDonors.map((donor, i) => {
 
-                        if (donor.email != user.email) {
+                        if (donor.email != user.email && donor.location.latitude != "") {
                             return (
                                 <Marker
                                     coordinate={{
@@ -83,28 +88,13 @@ const Nearby = ({location}) => {
                                         latitudeDelta: LATITUDE_DELTA,
                                         longitudeDelta: LATITUDE_DELTA * ASPECT_RATIO
                                     }}
-                                    pinColor='#ff0004'
+                                    pinColor={colors.green}
                                     key={i * i}
-                                >
-                                    <Callout tooltip>
-                                        <View>
-                                            <View style={styles.callOutView}>
-                                                <View style={styles.calloutItemContainer}>
-                                                    <Iconic name="person" size={18} color={colors.red} />
-                                                    <Text style={styles.text}>{donor.name}</Text>
-                                                </View>
-                                                <View style={styles.calloutItemContainer}>
-                                                    <Iconic name="call" size={18} color={colors.red} />
-                                                    <Text style={styles.text}>{donor.phone}</Text>
-                                                </View>
-                                                <View style={styles.calloutItemContainer}>
-                                                    <Iconic name="water" size={18} color={colors.red} />
-                                                    <Text style={styles.text}>{donor.bloodgroup}</Text>
-                                                </View>
-                                            </View>
-                                        </View>
-                                    </Callout>
-                                </Marker>
+                                    onPress={()=>{
+                                        navigation.navigate('DonorDetail', {donor});
+                                    }}
+                                />
+                                 
                             );
                         }
 

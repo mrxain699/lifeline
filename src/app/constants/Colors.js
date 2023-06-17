@@ -8,5 +8,8 @@ export const colors = {
     grey:'#cccccc',
     grey_100: '#808080',
     grey_200: '#666666',
+    blue:'#0000cc',
+    green:'#4caf50',
+
 
 }

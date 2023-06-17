@@ -23,8 +23,8 @@ const Map = () => {
                 provider={PROVIDER_GOOGLE}
                 style={styles.map}
                 region={{
-                    latitude: user.location.latitude != null ? user.location.latitude : userCurrentLocation.latitude,
-                    longitude: user.location.longitude != null ? user.location.longitude : userCurrentLocation.longitude,
+                    latitude: user.location.latitude != "" ? user.location.latitude : userCurrentLocation.latitude,
+                    longitude: user.location.longitude != "" ? user.location.longitude : userCurrentLocation.longitude,
                     latitudeDelta: LATITUDE_DELTA,
                     longitudeDelta: LATITUDE_DELTA * ASPECT_RATIO,
                 }}
@@ -40,10 +40,10 @@ const Map = () => {
                     (
                         <Marker
                             coordinate={{
-                                latitude: user.location.latitude != null ? user.location.latitude : userCurrentLocation.latitude,
-                                longitude: user.location.longitude != null ? user.location.longitude : userCurrentLocation.longitude,
+                                latitude: user.location.latitude != "" ? user.location.latitude : userCurrentLocation.latitude,
+                                longitude: user.location.longitude != "" ? user.location.longitude : userCurrentLocation.longitude,
                             }}
-                            pinColor='#0000cc'
+                            pinColor={colors.blue}
                         >
                             <Callout tooltip>
                                 <View>
