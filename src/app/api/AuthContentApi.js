@@ -323,6 +323,7 @@ const AuthContentApi = ({ children }) => {
         setMessage,
         updateProfile,
         uploadProfile,
+        setIsLoading,
 
     }
 

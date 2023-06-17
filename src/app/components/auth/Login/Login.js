@@ -86,6 +86,8 @@ const Login = ({ navigation }) => {
                     inputMode="email"
                     keyboardType="email-address"
                     cursorColor={colors.black}
+                    placeholder="Email"
+                    placeholderTextColor={colors.grey_100}
                     value={email}
                     onChangeText={(text) => setEmail(text)}
                 />
@@ -94,6 +96,8 @@ const Login = ({ navigation }) => {
                     secureTextEntry={secureTextEntry}
                     cursorColor={colors.black}
                     type="password"
+                    placeholder="Password"
+                    placeholderTextColor={colors.grey_100}
                     value={password}
                     onChangeText={(text) => setPassword(text)}
                 />

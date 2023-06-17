@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView, TouchableOpacity, ActivityIndicator } from 'react-native'
 import { globalStyles } from '../../constants/Style';
 import { colors } from '../../constants/Colors';
 import Label from '../ui/Form/Label';
@@ -12,10 +12,23 @@ import Iconic from '../ui/Icons/Icons';
 import { useNavigation } from '@react-navigation/native';
 import { Calendar } from 'react-native-calendars';
 import { getTodayDate, getFormatedDate } from '../../utils/Functions';
+import { validateName, validatePhoneNumber } from '../../utils/Functions';
 const BloodRequest = () => {
     const navigation = useNavigation();
-    const { user } = useContext(AuthContext);
-    const { formattedAddress } = useContext(AppContext);
+    const {
+        user,
+        error,
+        setError,
+    } = useContext(AuthContext);
+    const { 
+        formattedAddress,
+        makeBloodRequest,
+        getRequestGeometryAddress,
+        isLoading
+     } = useContext(AppContext);
+    const [name, setName] = useState(user.name);
+    const [phone, setPhone] = useState(user.phone);
+    const [isValid, setIsValid] = useState(false);
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState(null);
     const [items, setItems] = useState([
@@ -30,23 +43,77 @@ const BloodRequest = () => {
     ]);
     const [calendarToggle, setCalendarToggle] = useState(false);
     const [selectedDate, setSelectedDate] = useState(getTodayDate());
-    const [formatedDate, setFormatedDate] = useState(getFormatedDate(new Date(), "WWW MMM DD YYYY"));
     const getMarkedDates = () => {
         const markedDates = {};
         markedDates[selectedDate] = { selected: true };
         return markedDates;
     };
 
+    const validate_fields =  () => {
+        if (!validateName(name)) {
+            setError('Invalid Name. Name should contain letters and whire space')
+        }
+        else if (!validatePhoneNumber(phone)) {
+            setError('Invalid Phone Number');
+        }
+        else if (value === null) {
+            setError("Blood Group is required")
+        }
+        else if (name === null) {
+            setError('Name is required')
+        }
+        else if (phone === null) {
+            setError('Phone Number is required')
+        }
+        else{
+           setIsValid(true);
+        }
+    }
+
+    useEffect(()=>{
+        if(isValid){
+            const requestedUserLocation = async () => {
+                try {
+                    const location = await getRequestGeometryAddress(formattedAddress);
+                    if(location){
+                        console.log(location);
+                        const data = {
+                            sender_name:name,
+                            sender_phone:phone,
+                            required_date:selectedDate,
+                            blood_group:value,
+                            sender_location:location,
+                            request_date:getTodayDate(),
+                        }
+                        makeBloodRequest(data);
+                        setIsValid(false);
+                    }
+
+                } catch (error) {
+                    console.log("Getting Location error in blood request:", error);
+                }
+            }
+            requestedUserLocation();
+        }
+
+    }, [isValid])
 
 
     return (
-        <KeyboardAvoidingView style={[globalStyles.wrapper, {paddingTop:40}]}>
+        <KeyboardAvoidingView style={[globalStyles.wrapper, { paddingTop: 40 }]}>
             <ScrollView showsVerticalScrollIndicator={false} alwaysBounceVertical={true} nestedScrollEnabled={true} contentContainerStyle={{ flexGrow: 1 }}>
+                {
+                    error && <View style={globalStyles.errorContainer}>
+                        <Text style={globalStyles.error}>{error}</Text>
+                    </View>
+                }
                 <View style={styles.inputsContainer}>
                     <Label label="Name" style={{ color: colors.red, marginLeft: 8 }} />
                     <View style={styles.inputContainer}>
                         <Input
-                            placehokder="Name"
+                            placeholder="Name"
+                            value={name}
+                            onChangeText={(text) => setName(text)}
                             defaultValue={user.name && user.name}
                             placeholderTextColor={colors.grey}
                             style={[styles.input, { borderWidth: 0, marginTop: 0, }]}
@@ -66,6 +133,8 @@ const BloodRequest = () => {
                             maxLength={11}
                             cursorColor={colors.black}
                             style={styles.input}
+                            value={phone}
+                            onChangeText={(text) => setPhone(text)}
 
                         />
                     </View>
@@ -82,7 +151,7 @@ const BloodRequest = () => {
                     </View>
                     <Label label="Required Date" style={{ color: colors.red, marginLeft: 8, marginTop: 20 }} />
                     <View style={styles.datContaienr} >
-                        <Text style={styles.date}>{user.lastbleed ? getFormatedDate(new Date(user.lastbleed), "WWW MMM DD YYYY") : formatedDate}</Text>
+                        <Text style={styles.date}>{getFormatedDate(new Date(selectedDate), "WWW MMM DD YYYY")}</Text>
                         <TouchableOpacity>
                             <Iconic
                                 name="calendar" size={24}
@@ -100,7 +169,6 @@ const BloodRequest = () => {
                             markedDates={getMarkedDates()}
                             onDayPress={day => {
                                 setSelectedDate(day.dateString);
-                                setFormatedDate(getFormatedDate(new Date(day.dateString), "WWW MMM DD YYYY"));
                                 setCalendarToggle(false);
                             }}
                             theme={styles.calendar}
@@ -131,8 +199,11 @@ const BloodRequest = () => {
 
                     </View>
 
-                    <TouchableOpacity style={styles.button}>
-                        <Text style={styles.buttonText}>Save</Text>
+                    <TouchableOpacity style={styles.button} onPress={() => validate_fields()}>
+                        {
+                            !isLoading ? <Text style={styles.buttonText}>Save</Text>
+                            : <ActivityIndicator size={"small"} color={colors.red_100}/>
+                        }
                     </TouchableOpacity>
                 </View>
             </ScrollView>
@@ -197,7 +268,7 @@ const styles = StyleSheet.create({
         borderRadius: 15,
     },
     button: {
-        marginBottom:20,
+        marginBottom: 20,
         height: 50,
         justifyContent: 'center',
         alignItems: 'center',
@@ -244,7 +315,7 @@ const styles = StyleSheet.create({
         backgroundColor: colors.white,
         paddingHorizontal: 15,
         borderRadius: 15,
-        marginTop:5,
+        marginTop: 5,
     },
     date: {
         color: colors.grey_200,

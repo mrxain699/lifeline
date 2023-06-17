@@ -4,7 +4,7 @@ import { TextInput, View, Text } from 'react-native'
 const Input = (props) => {
   return (
     
-    !props.type ? <TextInput {...props} style={[globalStyles.inputField, props.style && props.style]} /> 
+    !props.type ? <TextInput {...props} style={[globalStyles.inputField, props.style && props.style]}  /> 
     : <TextInput {...props} style={[globalStyles.inputField, {position:'relative'}]} />
   
   )

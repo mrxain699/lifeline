@@ -70,6 +70,8 @@ const ForgotPassword = ({ navigation }) => {
                     autoComplete='email'
                     inputMode="email"
                     keyboardType="email-address"
+                    placeholder="Email"
+                    placeholderTextColor={colors.grey_100}
                     cursorColor={colors.black}
                     value={email}
                     onChangeText={(text) => setEmail(text)}

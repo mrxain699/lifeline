@@ -14,7 +14,9 @@ const Nearby = ({location}) => {
     const { user } = useContext(AuthContext)
     const {
         getAvailableDonor,
-        availableDonors
+        availableDonors,
+        getRequesters,
+        requesters,
     } = useContext(AppContext);
     const ASPECT_RATIO = width / height;
     const LATITUDE_DELTA = 0.02;
@@ -24,6 +26,16 @@ const Nearby = ({location}) => {
             await getAvailableDonor();
         }
         const interval = setInterval(() => { getDonors() }, 1000);
+        return () => {
+            clearInterval(interval);
+        }
+    }, []);
+
+    useEffect(() => {
+        const getPatients = async () => {
+            await getRequesters();
+        }
+        const interval = setInterval(() => { getPatients() }, 1000);
         return () => {
             clearInterval(interval);
         }
@@ -75,6 +87,32 @@ const Nearby = ({location}) => {
             }
 
 
+
+                {
+                    requesters && requesters.map((requester, i) => {
+
+                        if (requester.sender_location.latitude != "") {
+                            return (
+                                <Marker
+                                    coordinate={{
+                                        latitude: requester.sender_location.latitude,
+                                        longitude: requester.sender_location.longitude,
+                                        latitudeDelta: LATITUDE_DELTA,
+                                        longitudeDelta: LATITUDE_DELTA * ASPECT_RATIO
+                                    }}
+                                    pinColor={colors.red}
+                                    key={i * i}
+                                    // onPress={()=>{
+                                    //     navigation.navigate('DonorDetail', {donor});
+                                    // }}
+                                />
+                                 
+                            );
+                        }
+
+
+                    })
+                }
 
                 {
                     availableDonors && availableDonors.map((donor, i) => {

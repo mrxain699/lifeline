@@ -58,6 +58,8 @@ const Signup = ({ navigation }) => {
                     cursorColor={colors.black}
                     value={name}
                     onChangeText={(text) => setName(text)}
+                    placeholder="Name"
+                    placeholderTextColor={colors.grey_100}
                 />
                 <Label label="Email" />
                 <Input
@@ -65,6 +67,8 @@ const Signup = ({ navigation }) => {
                     inputMode="email"
                     keyboardType="email-address"
                     cursorColor={colors.black}
+                    placeholder="Email"
+                    placeholderTextColor={colors.grey_100}
                     value={email}
                     onChangeText={(text) => setEmail(text)}
                 />
@@ -74,6 +78,8 @@ const Signup = ({ navigation }) => {
                     cursorColor={colors.black}
                     value={password}
                     onChangeText={(text) => setPassword(text)}
+                    placeholder="Password"
+                    placeholderTextColor={colors.grey_100}
                 />
                 <Iconic name={iconName} size={18} color="#8c8c8c" style={{position:'absolute', bottom:35, right:40}} onPress={()=>iconHandler()} />
             </View>

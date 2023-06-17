@@ -1,6 +1,8 @@
 import React, { useState, createContext, useContext } from 'react'
 import Geolocation from '@react-native-community/geolocation';
 import Geocoder from 'react-native-geocoding';
+import { bloodrequests } from '../database/Collections';
+import { auth } from '../database/DB';
 import { API_KEY } from '../constants/Const';
 import { AuthContext } from './AuthContentApi';
 import { users } from '../database/Collections';
@@ -8,13 +10,20 @@ const AppContext = createContext(null);
 
 const AppContentApi = ({ children }) => {
 
-  const { updateProfile, user } = useContext(AuthContext);
+  const { 
+    updateProfile,
+    user,
+    setIsLoading,
+    isLoading,
+   } = useContext(AuthContext);
   const [userCurrentLocation, setUserCurrentLocation] = useState(null);
   const [formattedAddress, setFormattedAddress] = useState('');
   const [country, setCountry] = useState('');
   const [city, setCity] = useState('');
   const [availableDonors, setAvailableDonors] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [requestLocation, setRequestLocation] = useState(null);
+  const [requesters, setRequesters] = useState([]);
 
   Geocoder.init(API_KEY, { language: "en" });
 
@@ -73,6 +82,23 @@ const AppContentApi = ({ children }) => {
 
   }
 
+  const getRequestGeometryAddress = async (address) => {
+    try {
+
+      const data = await Geocoder.from(address);
+      if (data.results[0].geometry.location) {
+        const new_location = {
+          latitude: data.results[0].geometry.location.lat,
+          longitude: data.results[0].geometry.location.lng,
+        }
+        return new_location;
+
+      }
+    } catch (error) {
+      console.log("Geocode Reverse", error);
+    }
+  }
+
   const toggleStatus = async (status) => {
     await updateProfile('Status', 'status', status);
   }
@@ -101,6 +127,51 @@ const AppContentApi = ({ children }) => {
   }
 
 
+  const makeBloodRequest =  (data) => {
+    const uploaded_data = {
+      sender_id : auth().currentUser.uid,
+      ...data,
+      sender_address:formattedAddress,
+      sender_city:city,
+      requestStatus:0,
+    }
+    console.log(uploaded_data);
+    setIsLoading(true);
+    bloodrequests.add(uploaded_data)
+    .then(() => {
+      setIsLoading(false);
+      setRequestLocation(null);
+    })
+    .catch(() => {
+      console.log("Blood Request adding error : ", error)
+    });
+
+
+
+  }
+
+  const getRequesters = async () => {
+    try {
+      const requester = await bloodrequests
+      .where('sender_id', '!=', auth().currentUser.uid)
+      .get();
+      if (requester.size > 0) {
+        const requesterArray = [];
+        requester.forEach(doc => {
+          requesterArray.push(doc.data());
+        });
+        setRequesters(requesterArray);
+      }
+      else {
+        setRequesters([]);
+      }
+
+    } catch (error) {
+      console.log("Get Donors Error", error)
+    }
+  }
+
+
 
 
 
@@ -117,7 +188,13 @@ const AppContentApi = ({ children }) => {
     country,
     user,
     modalVisible,
-    setModalVisible
+    setModalVisible,
+    makeBloodRequest,
+    requestLocation,
+    getRequestGeometryAddress,
+    requesters,
+    getRequesters,
+    isLoading,
   }
 
   return (
