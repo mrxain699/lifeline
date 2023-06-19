@@ -15,6 +15,7 @@ import Map from '../screens/Modals/Map';
 import BloodRequestScreen from '../screens/Main/BloodRequestScreen';
 import UrgentBloodRequestScreen from '../screens/Main/UrgentBloodRequestScreen';
 import DonorDetail from '../screens/Modals/DonorDetail';
+import RequesterDetail from '../screens/Modals/RequesterDetail';
 import { AuthContext } from '../api/AuthContentApi';
 import { AppContext } from '../api/AppContentApi';
 
@@ -74,6 +75,7 @@ const AppStack = () => {
           <Stack.Screen name="DateOfBirth" component={DateOfBirth} options={{title:"Date of Birth"}}/>
           <Stack.Screen name="Map" component={Map} options={{title:"Pin Your Location"}}/>
           <Stack.Screen name="DonorDetail" component={DonorDetail} options={{title:"Donor Information"}}/>
+          <Stack.Screen name="RequesterDetail" component={RequesterDetail} options={{title:"Requester Information"}}/>
         </Stack.Group>
     </Stack.Navigator>
   );

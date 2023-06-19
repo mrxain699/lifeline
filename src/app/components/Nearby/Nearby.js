@@ -102,9 +102,9 @@ const Nearby = ({location}) => {
                                     }}
                                     pinColor={colors.red}
                                     key={i * i}
-                                    // onPress={()=>{
-                                    //     navigation.navigate('DonorDetail', {donor});
-                                    // }}
+                                    onPress={()=>{
+                                        navigation.navigate('RequesterDetail', {requester});
+                                    }}
                                 />
                                  
                             );

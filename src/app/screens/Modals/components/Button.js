@@ -2,14 +2,14 @@ import React, {useContext} from 'react'
 import { StyleSheet, Text, TouchableOpacity, ActivityIndicator } from 'react-native'
 import { colors } from '../../../constants/Colors'
 import { AuthContext } from '../../../api/AuthContentApi';
-const Button = ({onPress}) => {
+const Button = ({onPress, style, text}) => {
     const {isLoading} = useContext(AuthContext)
     return (
 
-        <TouchableOpacity style={styles.buttonContainer} onPress={() => onPress && onPress()}>
+        <TouchableOpacity style={[styles.buttonContainer, style && {...style}]} onPress={() => onPress && onPress()}>
         {
             isLoading ? <ActivityIndicator size="small" color={colors.red_50} /> 
-            : <Text style={styles.button}>Save</Text>
+            : <Text style={styles.button}>{ text ? text  : 'Save'}</Text>
         }
         </TouchableOpacity>
     )
