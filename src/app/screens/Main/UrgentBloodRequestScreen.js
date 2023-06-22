@@ -1,14 +1,13 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-
+import React from 'react';
+import { View } from 'react-native'
+import { globalStyles } from '../../constants/Style';
+import UrgentBloodRequest from '../../components/BloodRequest/UrgentBloodRequest';
 const UrgentBloodRequestScreen = () => {
   return (
-    <View>
-      <Text>UrgentBloodRequestScreen</Text>
+    <View style={globalStyles.wrapper}>
+      <UrgentBloodRequest/>
     </View>
   )
 }
 
 export default UrgentBloodRequestScreen
-
-const styles = StyleSheet.create({})

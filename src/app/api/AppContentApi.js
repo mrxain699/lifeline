@@ -1,7 +1,7 @@
 import React, { useState, createContext, useContext } from 'react'
 import Geolocation from '@react-native-community/geolocation';
 import Geocoder from 'react-native-geocoding';
-import { bloodrequests } from '../database/Collections';
+import { bloodrequests, bloodtypes } from '../database/Collections';
 import { auth } from '../database/DB';
 import { API_KEY } from '../constants/Const';
 import { AuthContext } from './AuthContentApi';
@@ -10,12 +10,12 @@ const AppContext = createContext(null);
 
 const AppContentApi = ({ children }) => {
 
-  const { 
+  const {
     updateProfile,
     user,
     setIsLoading,
     isLoading,
-   } = useContext(AuthContext);
+  } = useContext(AuthContext);
   const [userCurrentLocation, setUserCurrentLocation] = useState(null);
   const [formattedAddress, setFormattedAddress] = useState('');
   const [country, setCountry] = useState('');
@@ -24,13 +24,15 @@ const AppContentApi = ({ children }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [requestLocation, setRequestLocation] = useState(null);
   const [requesters, setRequesters] = useState([]);
+  const [universalGroup, setUniversalGroup] = useState(null);
 
   Geocoder.init(API_KEY, { language: "en" });
 
-  const getUserCurrentLocation =  () => {
+  const getUserCurrentLocation = () => {
+    getBloodUniversal();
     Geolocation.getCurrentPosition(
       async position => {
-        setUserCurrentLocation({latitude: position.coords.latitude, longitude: position.coords.longitude});
+        setUserCurrentLocation({ latitude: position.coords.latitude, longitude: position.coords.longitude });
         await getFormattedAddress(position.coords.latitude, position.coords.longitude);
       },
       error => {
@@ -103,13 +105,21 @@ const AppContentApi = ({ children }) => {
     await updateProfile('Status', 'status', status);
   }
 
+  const getBloodUniversal = () => {
+    bloodtypes.doc(user.bloodgroup)
+      .onSnapshot(documentSnapshot => {
+        setUniversalGroup(documentSnapshot.data());
+      });
+  }
+
+
   const getAvailableDonor = async () => {
+    getBloodUniversal();
     try {
       const donors = await users
-      .where('status', '==', 1)
-      .where('bloodgroup', '==', user.bloodgroup)
-
-      .get();
+        .where('status', '==', 1)
+        .where('bloodgroup', 'in', universalGroup.receive_from)
+        .get();
       if (donors.size > 0) {
         const donorsarray = [];
         donors.forEach(doc => {
@@ -126,25 +136,25 @@ const AppContentApi = ({ children }) => {
     }
   }
 
+  
 
-  const makeBloodRequest =  (data) => {
+  const makeBloodRequest = (data) => {
     const uploaded_data = {
-      sender_id : auth().currentUser.uid,
+      sender_id: auth().currentUser.uid,
       ...data,
-      sender_address:formattedAddress,
-      sender_city:city,
-      requestStatus:0,
+      sender_address: formattedAddress,
+      sender_city: city,
+      requestStatus: 0,
     }
-    console.log(uploaded_data);
     setIsLoading(true);
     bloodrequests.add(uploaded_data)
-    .then(() => {
-      setIsLoading(false);
-      setRequestLocation(null);
-    })
-    .catch(() => {
-      console.log("Blood Request adding error : ", error)
-    });
+      .then(() => {
+        setIsLoading(false);
+        setRequestLocation(null);
+      })
+      .catch(() => {
+        console.log("Blood Request adding error : ", error)
+      });
 
 
 
@@ -153,8 +163,8 @@ const AppContentApi = ({ children }) => {
   const getRequesters = async () => {
     try {
       const requester = await bloodrequests
-      .where('sender_id', '!=', auth().currentUser.uid)
-      .get();
+        .where('sender_id', '!=', auth().currentUser.uid)
+        .get();
       if (requester.size > 0) {
         const requesterArray = [];
         requester.forEach(doc => {
