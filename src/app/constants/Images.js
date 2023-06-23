@@ -6,5 +6,7 @@ export const images = {
     user_default_icon : require('../assets/images/user_default.png'),
     bloodgroup_icon : require('../assets/images/blood.png'),
     location_icon : require('../assets/images/location.png'),
-    wave_icon:require('../assets/images/wave.png')
+    wave_icon:require('../assets/images/wave.png'),
+    red_flag_icon:require('../assets/images/red_flag.png'),
+    green_flag_icon:require('../assets/images/green_flag.png'),
 }

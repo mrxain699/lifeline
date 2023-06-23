@@ -105,7 +105,8 @@ const Nearby = ({location}) => {
                                         latitudeDelta: LATITUDE_DELTA,
                                         longitudeDelta: LATITUDE_DELTA * ASPECT_RATIO
                                     }}
-                                    icon={images.wave_icon}
+                                    image={images.wave_icon}
+                                    pinColor={colors.red}
                                     key={i * i}
                                     onPress={()=>{
                                         navigation.navigate('RequesterDetail', {requester});
@@ -131,6 +132,7 @@ const Nearby = ({location}) => {
                                         latitudeDelta: LATITUDE_DELTA,
                                         longitudeDelta: LATITUDE_DELTA * ASPECT_RATIO
                                     }}
+                                    image={images.red_flag_icon}
                                     pinColor={colors.red}
                                     key={i * i}
                                     onPress={()=>{
@@ -157,6 +159,7 @@ const Nearby = ({location}) => {
                                         latitudeDelta: LATITUDE_DELTA,
                                         longitudeDelta: LATITUDE_DELTA * ASPECT_RATIO
                                     }}
+                                    image={images.green_flag_icon}
                                     pinColor={colors.green}
                                     key={i * i}
                                     onPress={()=>{
