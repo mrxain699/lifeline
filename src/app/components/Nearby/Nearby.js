@@ -6,6 +6,7 @@ import { AppContext } from '../../api/AppContentApi';
 import { colors } from '../../constants/Colors';
 import Iconic from '../ui/Icons/Icons';
 import { useNavigation } from '@react-navigation/native';
+import { images } from '../../constants/Images';
 const { width, height } = Dimensions.get('window');
 
 
@@ -16,6 +17,8 @@ const Nearby = ({location}) => {
         getAvailableDonor,
         availableDonors,
         getRequesters,
+        getUrgentRequesters,
+        urgentRequesters,
         requesters,
     } = useContext(AppContext);
     const ASPECT_RATIO = width / height;
@@ -34,12 +37,14 @@ const Nearby = ({location}) => {
     useEffect(() => {
         const getPatients = async () => {
             await getRequesters();
+            await getUrgentRequesters();
         }
         const interval = setInterval(() => { getPatients() }, 1000);
         return () => {
             clearInterval(interval);
         }
     }, []);
+
 
     return (
         <View style={styles.container}>
@@ -87,6 +92,32 @@ const Nearby = ({location}) => {
             }
 
 
+
+                {
+                    urgentRequesters && urgentRequesters.map((requester, i) => {
+
+                        if (requester.sender_location.latitude != "") {
+                            return (
+                                <Marker
+                                    coordinate={{
+                                        latitude: requester.sender_location.latitude,
+                                        longitude: requester.sender_location.longitude,
+                                        latitudeDelta: LATITUDE_DELTA,
+                                        longitudeDelta: LATITUDE_DELTA * ASPECT_RATIO
+                                    }}
+                                    icon={images.wave_icon}
+                                    key={i * i}
+                                    onPress={()=>{
+                                        navigation.navigate('RequesterDetail', {requester});
+                                    }}
+                                />
+                                 
+                            );
+                        }
+
+
+                    })
+                }
 
                 {
                     requesters && requesters.map((requester, i) => {

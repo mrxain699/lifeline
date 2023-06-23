@@ -13,6 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Calendar } from 'react-native-calendars';
 import { getTodayDate, getFormatedDate } from '../../utils/Functions';
 import { validateName, validatePhoneNumber } from '../../utils/Functions';
+import Toast from 'react-native-toast-message'
 const BloodRequest = () => {
     const navigation = useNavigation();
     const {
@@ -24,7 +25,8 @@ const BloodRequest = () => {
         formattedAddress,
         makeBloodRequest,
         getRequestGeometryAddress,
-        isLoading
+        isLoading,
+        showToast
      } = useContext(AppContext);
     const [name, setName] = useState(user.name);
     const [phone, setPhone] = useState(user.phone);
@@ -97,6 +99,15 @@ const BloodRequest = () => {
         }
 
     }, [isValid])
+
+    useEffect(() => {
+        if(showToast){
+            Toast.show({
+                type: 'success',
+                text1: 'Request send successfully!'
+              });
+        }
+    }, [showToast])
 
 
     return (

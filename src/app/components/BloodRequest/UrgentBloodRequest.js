@@ -12,6 +12,7 @@ import Iconic from '../ui/Icons/Icons';
 import { useNavigation } from '@react-navigation/native';
 import { getTodayDate, getFormatedDate } from '../../utils/Functions';
 import { validateName, validatePhoneNumber } from '../../utils/Functions';
+import Toast from 'react-native-toast-message'
 const UrgentBloodRequest = () => {
     const navigation = useNavigation();
     const {
@@ -21,9 +22,10 @@ const UrgentBloodRequest = () => {
     } = useContext(AuthContext);
     const { 
         formattedAddress,
-        makeBloodRequest,
+        makeUrgentBloodRequest,
         getRequestGeometryAddress,
-        isLoading
+        isLoading,
+        showToast,
      } = useContext(AppContext);
     const [name, setName] = useState(user.name);
     const [phone, setPhone] = useState(user.phone);
@@ -73,12 +75,11 @@ const UrgentBloodRequest = () => {
                         const data = {
                             sender_name:name,
                             sender_phone:phone,
-                            required_date:selectedDate,
                             blood_group:value,
                             sender_location:location,
                             request_date:getTodayDate(),
                         }
-                        makeBloodRequest(data);
+                        makeUrgentBloodRequest(data);
                         setIsValid(false);
                     }
 
@@ -91,6 +92,15 @@ const UrgentBloodRequest = () => {
 
     }, [isValid])
 
+
+    useEffect(() => {
+        if(showToast){
+            Toast.show({
+                type: 'success',
+                text1: 'Request send successfully!'
+              });
+        }
+    }, [showToast])
 
     return (
         <KeyboardAvoidingView style={[globalStyles.wrapper, { paddingTop: 40 }]}>

@@ -1,7 +1,7 @@
 import React, { useState, createContext, useContext } from 'react'
 import Geolocation from '@react-native-community/geolocation';
 import Geocoder from 'react-native-geocoding';
-import { bloodrequests, bloodtypes } from '../database/Collections';
+import { bloodrequests, bloodtypes,urgentbloodrequests } from '../database/Collections';
 import { auth } from '../database/DB';
 import { API_KEY } from '../constants/Const';
 import { AuthContext } from './AuthContentApi';
@@ -24,7 +24,9 @@ const AppContentApi = ({ children }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [requestLocation, setRequestLocation] = useState(null);
   const [requesters, setRequesters] = useState([]);
+  const [urgentRequesters, setUrgentRequesters] = useState([]);
   const [universalGroup, setUniversalGroup] = useState(null);
+  const [showToast, setShowToast] = useState(false);
 
   Geocoder.init(API_KEY, { language: "en" });
 
@@ -144,19 +146,39 @@ const AppContentApi = ({ children }) => {
       ...data,
       sender_address: formattedAddress,
       sender_city: city,
-      requestStatus: 0,
+      requestStatus: 1,
     }
     setIsLoading(true);
     bloodrequests.add(uploaded_data)
       .then(() => {
         setIsLoading(false);
         setRequestLocation(null);
+        setShowToast(true);
       })
       .catch(() => {
         console.log("Blood Request adding error : ", error)
       });
 
+  }
 
+  const makeUrgentBloodRequest = (data) => {
+    const uploaded_data = {
+      sender_id: auth().currentUser.uid,
+      ...data,
+      sender_address: formattedAddress,
+      sender_city: city,
+      requestStatus: 1,
+    }
+    setIsLoading(true);
+    urgentbloodrequests.add(uploaded_data)
+      .then(() => {
+        setIsLoading(false);
+        setRequestLocation(null);
+        setShowToast(true);
+      })
+      .catch(() => {
+        console.log("Blood Request adding error : ", error)
+      });
 
   }
 
@@ -178,6 +200,27 @@ const AppContentApi = ({ children }) => {
 
     } catch (error) {
       console.log("Get Donors Error", error)
+    }
+  }
+
+  const getUrgentRequesters = async () => {
+    try {
+      const requester = await urgentbloodrequests
+        .where('sender_id', '!=', auth().currentUser.uid)
+        .get();
+      if (requester.size > 0) {
+        const requesterArray = [];
+        requester.forEach(doc => {
+          requesterArray.push(doc.data());
+        });
+        setUrgentRequesters(requesterArray);
+      }
+      else {
+        setUrgentRequesters([]);
+      }
+
+    } catch (error) {
+      console.log("Get Urgent Requester Error", error)
     }
   }
 
@@ -203,8 +246,14 @@ const AppContentApi = ({ children }) => {
     requestLocation,
     getRequestGeometryAddress,
     requesters,
+    urgentRequesters,
     getRequesters,
     isLoading,
+    makeUrgentBloodRequest,
+    showToast,
+    urgentRequesters,
+    getUrgentRequesters
+
   }
 
   return (
