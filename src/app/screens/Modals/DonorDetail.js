@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import React, { useState, useContext } from 'react';
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { globalStyles } from '../../constants/Style';
 import { colors } from '../../constants/Colors';
 import { images } from '../../constants/Images';
 import Item from './components/Item';
-
+import { useNavigation } from '@react-navigation/native';
+import { AuthContext } from '../../api/AuthContentApi';
 const DonorDetail = ({ route }) => {
+  const navigation = useNavigation();
+  const {user} = useContext(AuthContext);
   const [donor, setDonor] = useState(route.params.donor);
   return (
     <View style={globalStyles.wrapper}>
@@ -26,6 +29,15 @@ const DonorDetail = ({ route }) => {
         <Item icon="call" title={donor.phone} />
         <Item icon="location" title={donor.address.substr(0, 50).concat('...')} />
       </View>
+      <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button}>
+              <Text style={styles.buttonText}>Send Request</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ChatScreen', {sender : user, receiver:donor})}>
+              <Text style={styles.buttonText}>Message</Text>
+            </TouchableOpacity>
+      </View>
+      
 
     </View>
   )
@@ -71,6 +83,25 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     marginHorizontal: 20,
   },
+  buttonContainer:{
+    flexDirection:'row',
+    justifyContent:'center',
+    gap:10,
+    marginTop:20,
+  },
+  button:{
+    backgroundColor:colors.red,
+    height:50,
+    justifyContent:'center',
+    alignItems: 'center',
+    borderRadius:15,
+    width:150
+  },
+  buttonText:{
+    color:colors.white,
+    fontSize:16,
+    fontFamily:'Roboto-Light'
+  }
 
 
 

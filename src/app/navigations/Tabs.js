@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../screens/Main/HomeScreen';
 import NearbyScreen from '../screens/Main/NearbyScreen';
 import HistoryScreen from '../screens/Main/HistoryScreen';
-import ChatScreen from '../screens/Main/ChatScreen';
+import MessagesScreen from '../screens/Main/MessagesScreen';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { colors } from '../constants/Colors';
 
@@ -80,8 +80,8 @@ function Tabs() {
         }}
       />
       <Tab.Screen
-        name="Chat"
-        component={ChatScreen}
+        name="Messages"
+        component={MessagesScreen}
         options={{
           title: "Chat",
         }}

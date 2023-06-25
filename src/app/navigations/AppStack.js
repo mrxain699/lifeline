@@ -18,6 +18,7 @@ import DonorDetail from '../screens/Modals/DonorDetail';
 import RequesterDetail from '../screens/Modals/RequesterDetail';
 import { AuthContext } from '../api/AuthContentApi';
 import { AppContext } from '../api/AppContentApi';
+import ChatScreen from '../screens/Main/ChatScreen';
 
 const Stack = createStackNavigator();
 
@@ -65,7 +66,8 @@ const AppStack = () => {
         />
         <Stack.Screen name="BloodRequestScreen" component={BloodRequestScreen} options={{title:"Blood Request"}}/>
         <Stack.Screen name="UrgentBloodRequestScreen" component={UrgentBloodRequestScreen} options={{title:"Urgent Blood Request"}}/>
-        
+        <Stack.Screen name="ChatScreen" component={ChatScreen} />
+
         <Stack.Group screenOptions={{ presentation: 'modal' }}>
           <Stack.Screen name="BloodGroup" component={BloodGroup} options={{title:"Blood Group"}}/>
           <Stack.Screen name="LastBleed" component={LastBleed} options={{title:"Last Bleed",}}/>
