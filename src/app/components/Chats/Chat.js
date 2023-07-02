@@ -1,30 +1,63 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { StyleSheet, View, TouchableOpacity, Text } from 'react-native'
+import { StyleSheet, View, Text } from 'react-native'
 import { globalStyles } from '../../constants/Style'
 import { GiftedChat, Bubble, Send } from 'react-native-gifted-chat'
 import { colors } from '../../constants/Colors'
-import Iconic from '../ui/Icons/Icons'
+import { messages_collection } from '../../database/Collections'
 const Chat = ({ sender, receiver }) => {
   const [messages, setMessages] = useState([])
 
 
-
   useEffect(() => {
-    setMessages([
-      {
-        _id: 1,
-        text: 'Hello developer',
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: 'React Native',
-          avatar: 'https://placeimg.com/140/140/any',
-        },
-      },
-    ])
-  }, []);
+    const senderReceiverQuery = messages_collection
+    .where('sender_id', '==', sender.id)
+    .where('receiver_id', '==', receiver.id)
+    .orderBy('createdAt', 'desc');
+
+  const receiverSenderQuery = messages_collection
+    .where('sender_id', '==', receiver.id)
+    .where('receiver_id', '==', sender.id)
+    .orderBy('createdAt', 'desc');
+
+  Promise.all([senderReceiverQuery.get(), receiverSenderQuery.get()])
+    .then((querySnapshots) => {
+      const messages = [];
+      querySnapshots.forEach((querySnapshot) => {
+        querySnapshot.forEach((documentSnapshot) => {
+          const message = documentSnapshot.data();
+          const formattedMessage = {
+            _id: message._id,
+            text: message.text,
+            createdAt: new Date(message.createdAt.toDate()),
+            user: {
+              _id: message.sender_id === sender.id ? sender.id : receiver.id,
+              avatar: message.receiver_image,
+            },
+          };
+          messages.push(formattedMessage);
+        });
+      });
+      setMessages(messages);
+    })
+    .catch((error) => console.log(error));
+  }, [])
 
   const onSend = useCallback((messages = []) => {
+    const new_message = messages.length > 0 && messages[0];
+    const update_new_message = {
+      ...new_message,
+      sender_id: sender.id,
+      receiver_id: receiver.id,
+      receiver_image: receiver.image
+    }
+    messages_collection.doc(update_new_message._id)
+      .set({
+        ...update_new_message
+      })
+      .then(() => {
+        console.log('Message added!');
+      })
+      .catch(err => console.log(err));
     setMessages(previousMessages =>
       GiftedChat.append(previousMessages, messages),
     )
@@ -38,7 +71,7 @@ const Chat = ({ sender, receiver }) => {
         messages={messages}
         onSend={messages => onSend(messages)}
         user={{
-          _id: 1,
+          _id: sender.id,
         }}
         textInputProps={{
           autoFocus: true,
@@ -55,7 +88,6 @@ const Chat = ({ sender, receiver }) => {
               wrapperStyle={{
                 left: {
                   backgroundColor: colors.white,
-                  elevation: 2,
                 }
               }}
             />
@@ -64,7 +96,7 @@ const Chat = ({ sender, receiver }) => {
         renderSend={(props) => {
           return (<Send {...props} >
             <View style={{ justifyContent: 'center', height: '100%', marginRight: 20 }}>
-              <Text style={{color:colors.red, fontWeight: 'bold', fontSize:16,}}>Send</Text>
+              <Text style={{ color: colors.red, fontWeight: 'bold', fontSize: 16, }}>Send</Text>
             </View>
           </Send>
           );

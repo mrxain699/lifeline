@@ -46,6 +46,7 @@ const AuthContentApi = ({ children }) => {
     const setCurrentUser = (new_user, name, token) => {
         users.doc(new_user.uid)
             .set({
+                id:new_user.uid,
                 name: new_user.displayName ? new_user.displayName : name,
                 email: new_user.email,
                 phone: '',
