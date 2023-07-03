@@ -1,11 +1,17 @@
 import React, { useState, createContext, useContext } from 'react'
 import Geolocation from '@react-native-community/geolocation';
 import Geocoder from 'react-native-geocoding';
-import { bloodrequests, bloodtypes,urgentbloodrequests } from '../database/Collections';
 import { auth } from '../database/DB';
 import { API_KEY } from '../constants/Const';
 import { AuthContext } from './AuthContentApi';
 import { users } from '../database/Collections';
+import {
+  bloodrequests,
+  bloodtypes,
+  urgentbloodrequests,
+  messages_collection,
+} from '../database/Collections';
+
 const AppContext = createContext(null);
 
 const AppContentApi = ({ children }) => {
@@ -27,7 +33,6 @@ const AppContentApi = ({ children }) => {
   const [urgentRequesters, setUrgentRequesters] = useState([]);
   const [universalGroup, setUniversalGroup] = useState(null);
   const [showToast, setShowToast] = useState(false);
-
   Geocoder.init(API_KEY, { language: "en" });
 
   const getUserCurrentLocation = () => {
@@ -138,7 +143,7 @@ const AppContentApi = ({ children }) => {
     }
   }
 
-  
+
 
   const makeBloodRequest = (data) => {
     const uploaded_data = {
@@ -226,6 +231,22 @@ const AppContentApi = ({ children }) => {
 
 
 
+  const sendMessage = async (message) => {
+    messages_collection.doc(message._id)
+      .set({
+        ...message
+      })
+      .then(() => {
+        console.log('Message added!');
+      })
+      .catch(err => console.log(err));
+  }
+
+
+
+
+
+
 
 
   const value = {
@@ -252,7 +273,9 @@ const AppContentApi = ({ children }) => {
     makeUrgentBloodRequest,
     showToast,
     urgentRequesters,
-    getUrgentRequesters
+    getUrgentRequesters,
+    sendMessage,
+
 
   }
 

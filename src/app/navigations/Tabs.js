@@ -19,7 +19,7 @@ const tabBarIcons = (route, focused) => {
   else if (rn === "Nearby") {
     iconName = focused ? 'location' : 'location';
   }
-  else if (rn === "Chat") {
+  else if (rn === "Messages") {
     iconName = focused ? 'chatbubbles' : 'chatbubbles';
   }
   else {
@@ -83,7 +83,7 @@ function Tabs() {
         name="Messages"
         component={MessagesScreen}
         options={{
-          title: "Chat",
+          title: "Chats",
         }}
       />
       <Tab.Screen

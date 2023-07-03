@@ -11,5 +11,5 @@ export {
     bloodrequests,
     bloodtypes,
     urgentbloodrequests,
-    messages_collection
+    messages_collection,
 }

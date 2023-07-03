@@ -1,45 +1,55 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import { StyleSheet, View, Text } from 'react-native'
+import React, { useState, useEffect, useCallback, useContext } from 'react'
+import { View, Text } from 'react-native'
 import { globalStyles } from '../../constants/Style'
 import { GiftedChat, Bubble, Send } from 'react-native-gifted-chat'
 import { colors } from '../../constants/Colors'
 import { messages_collection } from '../../database/Collections'
+import { AppContext } from '../../api/AppContentApi'
+
 const Chat = ({ sender, receiver }) => {
+  const {
+    sendMessage,
+  } = useContext(AppContext)
   const [messages, setMessages] = useState([])
 
 
   useEffect(() => {
-    const senderReceiverQuery = messages_collection
-    .where('sender_id', '==', sender.id)
-    .where('receiver_id', '==', receiver.id)
-    .orderBy('createdAt', 'desc');
+    const getMessages = async () => {
+      const senderReceiverQuery = messages_collection
+        .where('sender_id', '==', sender.id)
+        .where('receiver_id', '==', receiver.id)
+        .orderBy('createdAt', 'desc');
 
-  const receiverSenderQuery = messages_collection
-    .where('sender_id', '==', receiver.id)
-    .where('receiver_id', '==', sender.id)
-    .orderBy('createdAt', 'desc');
+      const receiverSenderQuery = messages_collection
+        .where('sender_id', '==', receiver.id)
+        .where('receiver_id', '==', sender.id)
+        .orderBy('createdAt', 'desc');
 
-  Promise.all([senderReceiverQuery.get(), receiverSenderQuery.get()])
-    .then((querySnapshots) => {
-      const messages = [];
-      querySnapshots.forEach((querySnapshot) => {
-        querySnapshot.forEach((documentSnapshot) => {
-          const message = documentSnapshot.data();
-          const formattedMessage = {
-            _id: message._id,
-            text: message.text,
-            createdAt: new Date(message.createdAt.toDate()),
-            user: {
-              _id: message.sender_id === sender.id ? sender.id : receiver.id,
-              avatar: message.receiver_image,
-            },
-          };
-          messages.push(formattedMessage);
-        });
-      });
-      setMessages(messages);
-    })
-    .catch((error) => console.log(error));
+      Promise.all([senderReceiverQuery.get(), receiverSenderQuery.get()])
+        .then((querySnapshots) => {
+          const messages = [];
+          querySnapshots.forEach((querySnapshot) => {
+            querySnapshot.forEach((documentSnapshot) => {
+              const message = documentSnapshot.data();
+              const formattedMessage = {
+                _id: message._id,
+                text: message.text,
+                createdAt: new Date(message.createdAt.toDate()),
+                user: {
+                  // _id: message.sender_id === sender.id ? sender.id : receiver.id,
+                  _id: message.user._id,
+                  avatar: message.user.avatar 
+                },
+              };
+              messages.push(formattedMessage);
+            });
+          });
+          setMessages(messages);
+        })
+        .catch((error) => console.log(error));
+    }
+    getMessages();
+
   }, [])
 
   const onSend = useCallback((messages = []) => {
@@ -48,16 +58,8 @@ const Chat = ({ sender, receiver }) => {
       ...new_message,
       sender_id: sender.id,
       receiver_id: receiver.id,
-      receiver_image: receiver.image
     }
-    messages_collection.doc(update_new_message._id)
-      .set({
-        ...update_new_message
-      })
-      .then(() => {
-        console.log('Message added!');
-      })
-      .catch(err => console.log(err));
+    sendMessage(update_new_message);
     setMessages(previousMessages =>
       GiftedChat.append(previousMessages, messages),
     )
@@ -72,6 +74,7 @@ const Chat = ({ sender, receiver }) => {
         onSend={messages => onSend(messages)}
         user={{
           _id: sender.id,
+          avatar:sender.image,
         }}
         textInputProps={{
           autoFocus: true,
@@ -108,6 +111,5 @@ const Chat = ({ sender, receiver }) => {
   )
 }
 
-export default Chat
+export default Chat;
 
-const styles = StyleSheet.create({})
