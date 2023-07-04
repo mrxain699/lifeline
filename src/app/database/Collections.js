@@ -5,6 +5,7 @@ const bloodrequests = db().collection('bloodrequests');
 const bloodtypes = db().collection('bloodtypes');
 const urgentbloodrequests = db().collection('urgentbloodrequests');
 const messages_collection = db().collection('messages');
+const chats = db().collection('chatheads');
 
 export {
     users, 
@@ -12,4 +13,5 @@ export {
     bloodtypes,
     urgentbloodrequests,
     messages_collection,
+    chats
 }

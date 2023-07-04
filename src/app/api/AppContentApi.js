@@ -10,6 +10,7 @@ import {
   bloodtypes,
   urgentbloodrequests,
   messages_collection,
+  chats
 } from '../database/Collections';
 
 const AppContext = createContext(null);
@@ -122,25 +123,28 @@ const AppContentApi = ({ children }) => {
 
   const getAvailableDonor = async () => {
     getBloodUniversal();
-    try {
-      const donors = await users
-        .where('status', '==', 1)
-        .where('bloodgroup', 'in', universalGroup.receive_from)
-        .get();
-      if (donors.size > 0) {
-        const donorsarray = [];
-        donors.forEach(doc => {
-          donorsarray.push(doc.data());
-        });
-        setAvailableDonors(donorsarray);
+    if(universalGroup != null){
+      try {
+        const donors = await users
+          .where('status', '==', 1)
+          .where('bloodgroup', 'in', universalGroup.receive_from)
+          .get();
+        if (donors.size > 0) {
+          const donorsarray = [];
+          donors.forEach(doc => {
+            donorsarray.push(doc.data());
+          });
+          setAvailableDonors(donorsarray);
+        }
+        else {
+          setAvailableDonors([]);
+        }
+  
+      } catch (error) {
+        console.log("Get Donors Error", error)
       }
-      else {
-        setAvailableDonors([]);
-      }
-
-    } catch (error) {
-      console.log("Get Donors Error", error)
     }
+   
   }
 
 
@@ -209,40 +213,84 @@ const AppContentApi = ({ children }) => {
   }
 
   const getUrgentRequesters = async () => {
-    try {
-      const requester = await urgentbloodrequests
-        .where('sender_id', '!=', auth().currentUser.uid)
-        .get();
-      if (requester.size > 0) {
-        const requesterArray = [];
-        requester.forEach(doc => {
-          requesterArray.push(doc.data());
-        });
-        setUrgentRequesters(requesterArray);
+      try {
+        const requester = await urgentbloodrequests
+          .where('sender_id', '!=', user.id)
+          .get();
+        if (requester.size > 0) {
+          const requesterArray = [];
+          requester.forEach(doc => {
+            requesterArray.push(doc.data());
+          });
+          setUrgentRequesters(requesterArray);
+        }
+        else {
+          setUrgentRequesters([]);
+        }
+  
+      } catch (error) {
+        console.log("Get Urgent Requester Error", error)
       }
-      else {
-        setUrgentRequesters([]);
-      }
-
-    } catch (error) {
-      console.log("Get Urgent Requester Error", error)
-    }
+    
+   
   }
 
 
+  const isCheatThreadExist = async (sender, receiver) => {
+    try {
+      const querySnapshot = await chats
+        .where('sender_id', '==', sender)
+        .where('receiver_id', '==', receiver)
+        .limit(1)
+        .get();
 
-  const sendMessage = async (message) => {
+      if (querySnapshot.size > 0) {
+        const docs = querySnapshot.docs;
+        const document = docs[0];
+        return document.id;
+      }
+      else {
+        return false;
+      }
+
+    } catch (error) {
+      console.log("Cheatheads Existence Error", error);
+    }
+  }
+
+  const sendMessage = (message) => {
     messages_collection.doc(message._id)
       .set({
         ...message
       })
-      .then(() => {
+      .then(async () => {
         console.log('Message added!');
+        const document = await isCheatThreadExist(message.sender_id, message.receiver_id);
+        if (!document) {
+          chats.add({
+            sender_id: message.sender_id,
+            receiver_id: message.receiver_id,
+            last_message: message.text,
+            createdAt: message.createdAt
+          }).then(() => {
+            console.log("Chat Head Created");
+          }).catch((err) => console.log(err));
+        }
+        else {
+          chats
+            .doc(document)
+            .update({
+              last_message: message.text,
+              createdAt: message.createdAt
+            })
+            .then(() => {
+              console.log('Chat Head updated!');
+            }).catch((err) => console.log(err));
+        }
+
       })
       .catch(err => console.log(err));
   }
-
-
 
 
 

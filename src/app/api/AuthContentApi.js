@@ -174,7 +174,7 @@ const AuthContentApi = ({ children }) => {
                 }
                 else{
                     getCurrentUser();
-                    users.doc(currentUserId).update({
+                    users.doc(auth().currentUser.uid).update({
                         token:token,
                     })
                     .then(()=>{
