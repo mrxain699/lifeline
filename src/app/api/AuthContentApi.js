@@ -26,6 +26,17 @@ const AuthContentApi = ({ children }) => {
         }
     }
 
+    const getUserById = async (id) => {
+        try {
+           const documentSnapshot =   await users.doc(id).get(); 
+           if(documentSnapshot.exists){
+            return documentSnapshot.data();
+           }
+        } catch (error) {
+            console.log("Get user error", error);
+        }
+    }
+
 
     const getCurrentUser = () => {
         users
@@ -325,6 +336,7 @@ const AuthContentApi = ({ children }) => {
         updateProfile,
         uploadProfile,
         setIsLoading,
+        getUserById,
 
     }
 

@@ -30,7 +30,6 @@ const ChatScreen = ({route, navigation}) => {
             </View>
             <View style={styles.donorInfo}>
               <Text style={styles.donorName}>{receiver.name}</Text>
-              <Text style={styles.status}>Donor</Text>
             </View>
           </View>
         );

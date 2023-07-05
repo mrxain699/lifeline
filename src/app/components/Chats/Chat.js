@@ -12,45 +12,55 @@ const Chat = ({ sender, receiver }) => {
   } = useContext(AppContext)
   const [messages, setMessages] = useState([])
 
-
-  useEffect(() => {
-    const getMessages = async () => {
-      const senderReceiverQuery = messages_collection
+  const fetchMessages = async () => {
+    try {
+      const senderReceiverSnapshot = await messages_collection
         .where('sender_id', '==', sender.id)
         .where('receiver_id', '==', receiver.id)
-        .orderBy('createdAt', 'desc');
+        .orderBy('createdAt', 'desc')
+        .get();
 
-      const receiverSenderQuery = messages_collection
+      const receiverSenderSnapshot = await messages_collection
         .where('sender_id', '==', receiver.id)
         .where('receiver_id', '==', sender.id)
-        .orderBy('createdAt', 'desc');
+        .orderBy('createdAt', 'desc')
+        .get();
 
-      Promise.all([senderReceiverQuery.get(), receiverSenderQuery.get()])
-        .then((querySnapshots) => {
-          const messages = [];
-          querySnapshots.forEach((querySnapshot) => {
-            querySnapshot.forEach((documentSnapshot) => {
-              const message = documentSnapshot.data();
-              const formattedMessage = {
-                _id: message._id,
-                text: message.text,
-                createdAt: new Date(message.createdAt.toDate()),
-                user: {
-                  // _id: message.sender_id === sender.id ? sender.id : receiver.id,
-                  _id: message.user._id,
-                  avatar: message.user.avatar 
-                },
-              };
-              messages.push(formattedMessage);
-            });
-          });
-          setMessages(messages);
-        })
-        .catch((error) => console.log(error));
+      const senderReceiverMessages = senderReceiverSnapshot.docs.map((doc) => {
+        const message = doc.data();
+        return {
+          _id: doc.id,
+          text: message.text,
+          createdAt: message.createdAt.toDate(),
+          user: {
+            _id: message.user._id,
+            avatar: message.user.avatar,
+          },
+        };
+      });
+
+      const receiverSenderMessages = receiverSenderSnapshot.docs.map((doc) => {
+        const message = doc.data();
+        return {
+          _id: doc.id,
+          text: message.text,
+          createdAt: message.createdAt.toDate(),
+          user: {
+            _id: message.user._id,
+            avatar: message.user.avatar,
+          },
+        };
+      });
+
+      const allMessages = [...senderReceiverMessages, ...receiverSenderMessages];
+      const sortedMessages = allMessages.sort(
+        (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
+      );
+      setMessages(sortedMessages);
+    } catch (error) {
+      console.error('Error fetching messages:', error);
     }
-    getMessages();
-
-  }, [])
+  };
 
   const onSend = useCallback((messages = []) => {
     const new_message = messages.length > 0 && messages[0];
@@ -64,6 +74,21 @@ const Chat = ({ sender, receiver }) => {
       GiftedChat.append(previousMessages, messages),
     )
   }, [])
+
+
+  useEffect(() => {
+    fetchMessages();
+    const interval = setInterval(() => {
+      fetchMessages();
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    }
+
+  }, [])
+
+
 
 
 

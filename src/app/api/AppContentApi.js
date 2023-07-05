@@ -113,6 +113,11 @@ const AppContentApi = ({ children }) => {
     await updateProfile('Status', 'status', status);
   }
 
+  const isDocExist = async (collection, doc_id) => {
+    const documentSnapshot = await collection.doc(doc_id).get();
+    return documentSnapshot.exists;
+  };
+
   const getBloodUniversal = () => {
     bloodtypes.doc(user.bloodgroup)
       .onSnapshot(documentSnapshot => {
@@ -123,7 +128,7 @@ const AppContentApi = ({ children }) => {
 
   const getAvailableDonor = async () => {
     getBloodUniversal();
-    if(universalGroup != null){
+    if (universalGroup != null) {
       try {
         const donors = await users
           .where('status', '==', 1)
@@ -139,19 +144,19 @@ const AppContentApi = ({ children }) => {
         else {
           setAvailableDonors([]);
         }
-  
+
       } catch (error) {
         console.log("Get Donors Error", error)
       }
     }
-   
+
   }
 
 
 
   const makeBloodRequest = (data) => {
     const uploaded_data = {
-      sender_id: auth().currentUser.uid,
+      id: auth().currentUser.uid,
       ...data,
       sender_address: formattedAddress,
       sender_city: city,
@@ -172,7 +177,7 @@ const AppContentApi = ({ children }) => {
 
   const makeUrgentBloodRequest = (data) => {
     const uploaded_data = {
-      sender_id: auth().currentUser.uid,
+      id: auth().currentUser.uid,
       ...data,
       sender_address: formattedAddress,
       sender_city: city,
@@ -194,7 +199,7 @@ const AppContentApi = ({ children }) => {
   const getRequesters = async () => {
     try {
       const requester = await bloodrequests
-        .where('sender_id', '!=', auth().currentUser.uid)
+        .where('id', '!=', user.id)
         .get();
       if (requester.size > 0) {
         const requesterArray = [];
@@ -213,50 +218,29 @@ const AppContentApi = ({ children }) => {
   }
 
   const getUrgentRequesters = async () => {
-      try {
-        const requester = await urgentbloodrequests
-          .where('sender_id', '!=', user.id)
-          .get();
-        if (requester.size > 0) {
-          const requesterArray = [];
-          requester.forEach(doc => {
-            requesterArray.push(doc.data());
-          });
-          setUrgentRequesters(requesterArray);
-        }
-        else {
-          setUrgentRequesters([]);
-        }
-  
-      } catch (error) {
-        console.log("Get Urgent Requester Error", error)
-      }
-    
-   
-  }
-
-
-  const isCheatThreadExist = async (sender, receiver) => {
     try {
-      const querySnapshot = await chats
-        .where('sender_id', '==', sender)
-        .where('receiver_id', '==', receiver)
-        .limit(1)
+      const requester = await urgentbloodrequests
+        .where('id', '!=', user.id)
         .get();
-
-      if (querySnapshot.size > 0) {
-        const docs = querySnapshot.docs;
-        const document = docs[0];
-        return document.id;
+      if (requester.size > 0) {
+        const requesterArray = [];
+        requester.forEach(doc => {
+          requesterArray.push(doc.data());
+        });
+        setUrgentRequesters(requesterArray);
       }
       else {
-        return false;
+        setUrgentRequesters([]);
       }
 
     } catch (error) {
-      console.log("Cheatheads Existence Error", error);
+      console.log("Get Urgent Requester Error", error);
     }
+
+
   }
+
+
 
   const sendMessage = (message) => {
     messages_collection.doc(message._id)
@@ -265,9 +249,19 @@ const AppContentApi = ({ children }) => {
       })
       .then(async () => {
         console.log('Message added!');
-        const document = await isCheatThreadExist(message.sender_id, message.receiver_id);
-        if (!document) {
-          chats.add({
+        let doc = null;
+        const doc_id = message.sender_id.trim() + "_" + message.receiver_id.trim();
+        const rev_doc_id = message.receiver_id.trim() + "_" + message.sender_id.trim();
+        const document = await isDocExist(chats, doc_id);
+        const rev_document = await isDocExist(chats, rev_doc_id);
+        if (document) {
+          doc = chats.doc(doc_id);
+        }
+        else if (rev_document) {
+          doc = chats.doc(rev_doc_id);
+        }
+        else {
+          chats.doc(doc_id).set({
             sender_id: message.sender_id,
             receiver_id: message.receiver_id,
             last_message: message.text,
@@ -276,13 +270,13 @@ const AppContentApi = ({ children }) => {
             console.log("Chat Head Created");
           }).catch((err) => console.log(err));
         }
-        else {
-          chats
-            .doc(document)
-            .update({
-              last_message: message.text,
-              createdAt: message.createdAt
-            })
+
+        if (doc != null) {
+
+          doc.update({
+            last_message: message.text,
+            createdAt: message.createdAt
+          })
             .then(() => {
               console.log('Chat Head updated!');
             }).catch((err) => console.log(err));
@@ -290,6 +284,7 @@ const AppContentApi = ({ children }) => {
 
       })
       .catch(err => console.log(err));
+
   }
 
 

@@ -28,21 +28,33 @@ const Nearby = ({location}) => {
         const getDonors = async () => {
             await getAvailableDonor();
         }
-        const interval = setInterval(() => { getDonors() }, 1000);
+        const interval = setInterval(() => { getDonors() }, 5000);
         return () => {
             clearInterval(interval);
         }
+
     }, []);
 
     useEffect(() => {
-        const getPatients = async () => {
+        const getRequests = async () => {
             await getRequesters();
-            await getUrgentRequesters();
         }
-        const interval = setInterval(() => { getPatients() }, 1000);
+        const interval = setInterval(() => { getRequests() }, 5000);
         return () => {
             clearInterval(interval);
         }
+        
+    }, []);
+
+    useEffect(() => {
+        const getUrgentRequests = async () => {
+            await getUrgentRequesters();
+        }
+        const interval = setInterval(() => { getUrgentRequests() }, 5000);
+        return () => {
+            clearInterval(interval);
+        }
+        
     }, []);
 
 

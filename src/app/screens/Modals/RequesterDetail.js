@@ -1,23 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { globalStyles } from '../../constants/Style';
 import { colors } from '../../constants/Colors';
 import { getFormatedDate } from '../../utils/Functions';
 import Item from './components/Item';
 import Button from './components/Button';
-const RequesterDetail = ({ route }) => {
+import { AuthContext } from '../../api/AuthContentApi';
+const RequesterDetail = ({ route, navigation }) => {
+  const {user} = useContext(AuthContext);
   const [requester, setRequester] = useState(route.params.requester);
   return (
     <View style={globalStyles.wrapper}>
       <View style={styles.bodyContainer}>
-        <Item icon="person" title={requester.sender_name}/>
+        <Item icon="person" title={requester.name}/>
         <Item icon="water" title={requester.blood_group}/>
-        <Item icon="call" title={requester.sender_phone} />
+        <Item icon="call" title={requester.phone} />
         <Item icon="calendar" title={getFormatedDate(new Date(requester.required_date), "WWW MMM DD YYYY") } />
         <Item icon="location" title={requester.sender_address.substr(0, 50).concat('...')} />
       </View>
       <View style={{marginHorizontal:30}}>  
-        <Button text="Message" />
+        <Button text="Message" onPress={() => navigation.navigate('ChatScreen', {sender:user, receiver:requester})}/>
       </View>
     </View>
   )

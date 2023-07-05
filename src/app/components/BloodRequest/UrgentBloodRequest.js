@@ -73,8 +73,9 @@ const UrgentBloodRequest = () => {
                     if(location){
                         console.log(location);
                         const data = {
-                            sender_name:name,
-                            sender_phone:phone,
+                            name:name,
+                            phone:phone,
+                            image:user.image,
                             blood_group:value,
                             sender_location:location,
                             request_date:getTodayDate(),
