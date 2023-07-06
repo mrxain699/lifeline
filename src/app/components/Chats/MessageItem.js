@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 const MessageItem = ({ date, message, sender_id, receiver_id }) => {
     const navigation = useNavigation();
     const {
+        user,
         getUserById,
     } = useContext(AuthContext);
     const [sender, setSender] = useState(null);
@@ -38,7 +39,7 @@ const MessageItem = ({ date, message, sender_id, receiver_id }) => {
 
     return (
         
-        receiver != null &&
+        receiver != null && sender_id  == user.id ?
         <TouchableOpacity style={styles.threadContainer} onPress={() => navigation.navigate('ChatScreen', {sender:sender, receiver:receiver})}>
             <View style={styles.avatarContainer}>
                 {
@@ -54,9 +55,24 @@ const MessageItem = ({ date, message, sender_id, receiver_id }) => {
                 <Text style={[styles.text, styles.message]}>{message}</Text>
             </View>
         </TouchableOpacity>
-        
-        
-
+        : sender != null && receiver_id  == user.id ?
+        <TouchableOpacity style={styles.threadContainer} onPress={() => navigation.navigate('ChatScreen', {sender:receiver, receiver:sender})}>
+        <View style={styles.avatarContainer}>
+            {
+                sender.image ? <Image source={{ uri: sender.image }} style={styles.avatar} />
+                    : <Image source={images.user_default_icon} style={styles.avatar} />
+            }
+        </View>
+        <View style={styles.infoContainer}>
+            <View style={{ justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center' }}>
+                <Text style={[styles.name, styles.text]}>{sender.name}</Text>
+                <Text style={[styles.text, styles.date]}>{date}</Text>
+            </View>
+            <Text style={[styles.text, styles.message]}>{message}</Text>
+        </View>
+    </TouchableOpacity>
+    :
+    <View></View>
     );
 }
 
