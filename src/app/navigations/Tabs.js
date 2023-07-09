@@ -10,6 +10,7 @@ import { colors } from '../constants/Colors';
 
 const Tab = createBottomTabNavigator();
 
+
 const tabBarIcons = (route, focused) => {
   let iconName;
   let rn = route.name;

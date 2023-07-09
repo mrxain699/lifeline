@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { Image, StyleSheet, Text, View, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { colors } from '../../constants/Colors';
 import { images } from '../../constants/Images';
 import { AuthContext } from '../../api/AuthContentApi';
@@ -72,7 +72,9 @@ const MessageItem = ({ date, message, sender_id, receiver_id }) => {
         </View>
     </TouchableOpacity>
     :
-    <View></View>
+    <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+        <ActivityIndicator size='large' color={colors.grey_100} />
+    </View>
     );
 }
 

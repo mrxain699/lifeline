@@ -19,6 +19,8 @@ import RequesterDetail from '../screens/Modals/RequesterDetail';
 import { AuthContext } from '../api/AuthContentApi';
 import { AppContext } from '../api/AppContentApi';
 import ChatScreen from '../screens/Main/ChatScreen';
+import ManageRequestsScreen from '../screens/Main/ManageRequestsScreen';
+import TopTabs from './TopTabs';
 
 const Stack = createStackNavigator();
 
@@ -66,6 +68,7 @@ const AppStack = () => {
         />
         <Stack.Screen name="BloodRequestScreen" component={BloodRequestScreen} options={{title:"Blood Request"}}/>
         <Stack.Screen name="UrgentBloodRequestScreen" component={UrgentBloodRequestScreen} options={{title:"Urgent Blood Request"}}/>
+        <Stack.Screen name="ManageRequestsScreen" component={TopTabs} options={{title:"Manage Requests"}}/>
         <Stack.Screen name="ChatScreen" component={ChatScreen} />
 
         <Stack.Group screenOptions={{ presentation: 'modal' }}>
