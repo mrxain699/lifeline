@@ -1,11 +1,12 @@
 import React from 'react'
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import IncomingRequest from '../screens/Tabs/IncomingRequest';
-import OutgoingRequest from '../screens/Tabs/OutgoingRequest';
+import Regular from '../screens/Tabs/Requests/Regular';
+import Urgent from '../screens/Tabs/Requests/Urgent';
+import Send from '../screens/Tabs/Requests/Send';
+import Recieve from '../screens/Tabs/Requests/Recieve';
 import { colors } from '../constants/Colors';
 
-const { width, height } = Dimensions.get('window');
 const Tab = createMaterialTopTabNavigator();
 
 
@@ -18,28 +19,48 @@ const TopTabs = () => {
             },
             tabBarPressColor: colors.red_50,
             tabBarBounces: true,
-            tabBarLabelStyle:{
-                fontSize:14
+            tabBarLabelStyle: {
+                fontSize: 14
             }
         }}
 
         >
-            <Tab.Screen name="IncomingRequest" component={IncomingRequest}
+            <Tab.Screen name="Regular" component={Regular}
                 options={{
                     tabBarLabel: ({ focused, color }) => {
                         return (
 
-                            <Text style={[focused ? styles.isFocused : styles.notFocused]}>INCOMING</Text>
+                            <Text style={[focused ? styles.isFocused : styles.notFocused]}>Normal</Text>
                         )
                     }
                 }}
             />
-            <Tab.Screen name="OutgoingRequest" component={OutgoingRequest}
+            <Tab.Screen name="Urgent" component={Urgent}
                 options={{
                     tabBarLabel: ({ focused, color }) => {
                         return (
 
-                            <Text style={[focused ? styles.isFocused : styles.notFocused]}>OUTGOING</Text>
+                            <Text style={[focused ? styles.isFocused : styles.notFocused]}>Urgent</Text>
+                        )
+                    }
+                }}
+            />
+            <Tab.Screen name="Send" component={Send}
+                options={{
+                    tabBarLabel: ({ focused, color }) => {
+                        return (
+
+                            <Text style={[focused ? styles.isFocused : styles.notFocused]}>Send</Text>
+                        )
+                    }
+                }}
+            />
+            <Tab.Screen name="Recieve" component={Recieve}
+                options={{
+                    tabBarLabel: ({ focused, color }) => {
+                        return (
+
+                            <Text style={[focused ? styles.isFocused : styles.notFocused]}>Recieved</Text>
                         )
                     }
                 }}
@@ -52,8 +73,8 @@ const TopTabs = () => {
 const styles = StyleSheet.create({
     isFocused: {
         fontWeight: 'bold',
-        color:colors.red,
-        width:150,
+        color: colors.red,
+        width: 150,
     },
     notFocused: {
         color: colors.grey_100,

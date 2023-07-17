@@ -337,7 +337,7 @@ const AuthContentApi = ({ children }) => {
         uploadProfile,
         setIsLoading,
         getUserById,
-
+        currentUserId
     }
 
     return (

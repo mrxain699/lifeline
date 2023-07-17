@@ -86,7 +86,7 @@ const BloodRequest = () => {
                             required_date:selectedDate,
                             blood_group:value,
                             sender_location:location,
-                            request_date:getTodayDate(),
+                            createdAt:new Date(),
                         }
                         makeBloodRequest(data);
                         setIsValid(false);

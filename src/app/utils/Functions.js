@@ -66,6 +66,12 @@ const getFormatedDate = (date = null, format) => {
     else if(format === "WWW MMM DD YYYY"){
         return `${day_name}, ${month_name} ${month_date < 10 ? '0' : ''}${month_date}, ${year}`;
     }
+    else if(format === "MMM DD YYYY"){
+        return ` ${month_name} ${month_date < 10 ? '0' : ''}${month_date}, ${year}`;
+    }
+    else if(format === "WWW MMM DD"){
+        return ` ${day_name}, ${month_name} ${month_date < 10 ? '0' : ''}${month_date}`;
+    }
     
 };
 

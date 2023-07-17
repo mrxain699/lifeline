@@ -78,7 +78,7 @@ const UrgentBloodRequest = () => {
                             image:user.image,
                             blood_group:value,
                             sender_location:location,
-                            request_date:getTodayDate(),
+                            createdAt:new Date(),
                         }
                         makeUrgentBloodRequest(data);
                         setIsValid(false);

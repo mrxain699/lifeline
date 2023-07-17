@@ -19,7 +19,6 @@ import RequesterDetail from '../screens/Modals/RequesterDetail';
 import { AuthContext } from '../api/AuthContentApi';
 import { AppContext } from '../api/AppContentApi';
 import ChatScreen from '../screens/Main/ChatScreen';
-import ManageRequestsScreen from '../screens/Main/ManageRequestsScreen';
 import TopTabs from './TopTabs';
 
 const Stack = createStackNavigator();
