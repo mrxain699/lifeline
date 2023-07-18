@@ -8,8 +8,9 @@ import { AuthContext } from '../../api/AuthContentApi';
 import Iconic from '../../components/ui/Icons/Icons';
 const { width, height } = Dimensions.get('window');
 
-const Map = () => {
+const Map = ({route}) => {
     const navigation = useNavigation();
+    const { location } = route?.params;
     const {
         userCurrentLocation,
         getFormattedAddress,
@@ -64,6 +65,19 @@ const Map = () => {
                                 </View>
                             </Callout>
                         </Marker>
+                    )
+                }
+
+                {
+
+                   location &&  (
+                        <Marker
+                            coordinate={{
+                                latitude: location.latitude,
+                                longitude: location.longitude,
+                            }}
+                            pinColor={colors.red}
+                        />
                     )
                 }
             </MapView>

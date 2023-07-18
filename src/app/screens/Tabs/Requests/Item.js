@@ -1,8 +1,10 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React from 'react'
+import React, { useContext, useState } from 'react'
 import { colors } from '../../../constants/Colors';
 import Iconic from '../../../components/ui/Icons/Icons';
 import { getFormatedDate } from '../../../utils/Functions';
+import { useNavigation } from '@react-navigation/native';
+import { AuthContext } from '../../../api/AuthContentApi';
 
 const ItemContent = ({ icon, style, text }) => {
     return (
@@ -13,9 +15,9 @@ const ItemContent = ({ icon, style, text }) => {
     );
 }
 
-const Button = ({ text }) => {
+const Button = ({ text, onPress }) => {
     return (
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={() => {onPress()}}>
             <Text style={styles.buttonText}>{text}</Text>
         </TouchableOpacity>
     );
@@ -23,6 +25,27 @@ const Button = ({ text }) => {
 
 
 const Item = ({ request }) => {
+    const navigation = useNavigation();
+    const {
+        user,
+        getUserById
+    } = useContext(AuthContext);
+
+    const handleOnMapPress = () => {
+        navigation.navigate('Map', {location:request.sender_location});
+    }
+
+    const handleOnMessagePress = async (requester_id) => {
+        try {
+            const reciever = await getUserById(requester_id);
+            if(reciever){
+                navigation.navigate('ChatScreen', {sender:user, receiver:reciever});
+            }
+        } catch (error) {
+            console.log("Get user by id at : Tabs/RequestItem.js", error);
+        }
+    }
+
     return (
         <View style={styles.itemContainer}>
             <View style={styles.itemContentConatiner}>
@@ -43,7 +66,6 @@ const Item = ({ request }) => {
                 />
                 <ItemContent
                     icon={"calendar"}
-                    style={{ marginRight: 10 }}
                     text={
                         request.hasOwnProperty('required_date')  ?
                         `${getFormatedDate(new Date(request.required_date), "WWW MMM DD")}` :
@@ -52,8 +74,8 @@ const Item = ({ request }) => {
                 />
             </View>
             <View style={[styles.itemContentConatiner, { marginTop: 20, justifyContent: 'space-around' },]}>
-                <Button text="Location" />
-                <Button text="Message" />
+                <Button text="Location" onPress={handleOnMapPress}/>
+                <Button text="Message" onPress={() => handleOnMessagePress(request.id)}/>
             </View>
         </View>
     )
