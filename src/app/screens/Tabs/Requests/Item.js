@@ -78,8 +78,34 @@ const Item = ({ request, sender_component }) => {
         }
     }
 
+    const handleOnAcceptPress = async (request_id) => {
+        try {
+            setIsLoading(true);
+            const  querySnapshot = await bloodrequests.where('request_id', '==', request_id).get();
+            if(querySnapshot.size > 0){
+                querySnapshot.forEach(async documentSnapshot => {
+                    const doc_id = documentSnapshot.id;
+                    if(doc_id){
+                        await bloodrequests.doc(doc_id).update({ 
+                            request_approved:1,
+                        }).then(() => {
+                            console.log("Request Update")
+                            setIsLoading(false);
+                        }).catch((err) => {
+                            setIsLoading(false);
+                            console.log("Request Update Error", err)
+                        })
+                    }
+                })
+            }
+        } catch (error) {
+            setIsLoading(false);
+            console.log("Find Request Error", error);
+        }
+    }
+
     return (
-        <View style={styles.itemContainer}>
+        <View style={styles.itemContainer} key={request.request_id}>
             <View style={styles.itemContentConatiner}>
                 <ItemContent
                     icon={"person"}
@@ -110,8 +136,16 @@ const Item = ({ request, sender_component }) => {
                 <View style={[styles.itemContentConatiner, { marginTop: 20, justifyContent: 'center', alignItems:'center' },]}>
                     <Button 
                     text="Cancel" 
-                    style={{paddingHorizontal:50}} 
+                    style={{paddingHorizontal:100}} 
                     onPress={() => handleOnCancelPress(request.request_id)}
+                    loading={isLoading} 
+                    />
+                </View> : sender_component && sender_component === "recieve" ?
+                <View style={[styles.itemContentConatiner, { marginTop: 20, justifyContent: 'center', alignItems:'center' },]}>
+                    <Button 
+                    text="Accept" 
+                    style={{paddingHorizontal:100}} 
+                    onPress={() => handleOnAcceptPress(request.request_id)}
                     loading={isLoading} 
                     />
                 </View> :

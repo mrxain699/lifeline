@@ -43,7 +43,7 @@ const Urgent = () => {
           <FlatList
             data={urgentRequests}
             renderItem={({ item }) => <Item request={item} />}
-            keyExtractor={item => item.id}
+            keyExtractor={(item, i) => i*i}
           />
           : error != null ?
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>

@@ -26,7 +26,7 @@ const Send = () => {
         setError('No Send Requests Found!');
       }
     } catch (error) {
-      console.log("Get Normal Requests Error : ", error);
+      console.log("Get Send Requests Error : ", error);
     }
 
   }
@@ -45,7 +45,7 @@ const Send = () => {
           <FlatList
             data={sendRequests}
             renderItem={({ item }) => <Item request={item} sender_component={"send"} />}
-            keyExtractor={item => item.id}
+            keyExtractor={(item, i) => i*i}
           /> : error != null ?
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
               <Text style={{ color: colors.grey_200 }}>{error}</Text>

@@ -12,7 +12,10 @@ const Regular = () => {
   const getNormalRequests = async () => {
     try {
       let requests = [];
-      const querySnapshot = await bloodrequests.where('id', '!=', `${currentUserId}`).get();
+      const querySnapshot = await bloodrequests
+      .where('id', '!=', `${currentUserId}`)
+      .where('donor_id', '==', "")
+      .get();
       if (querySnapshot.size > 0) {
         querySnapshot.forEach((documentSnapshot) => {
           requests.push(documentSnapshot.data());
@@ -42,8 +45,8 @@ const Regular = () => {
         normalRequests.length > 0 ?
           <FlatList
             data={normalRequests}
-            renderItem={({ item }) => <Item request={item} />}
-            keyExtractor={item => item.id}
+            renderItem={({ item }) => <Item request={item}/>}
+            keyExtractor={(item, i) => i*i}
           /> : error != null ?
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
               <Text style={{ color: colors.grey_200 }}>{error}</Text>

@@ -14,6 +14,7 @@ import { Calendar } from 'react-native-calendars';
 import { getTodayDate, getFormatedDate } from '../../utils/Functions';
 import { validateName, validatePhoneNumber } from '../../utils/Functions';
 import Toast from 'react-native-toast-message';
+import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 
 const BloodRequest = ({donor_id}) => {
@@ -82,6 +83,7 @@ const BloodRequest = ({donor_id}) => {
                     if(location){
                         const data = {
                             request_id:uuidv4(),
+                            request_approved:0,
                             name:name,
                             phone:phone,
                             image:user.image,
@@ -89,7 +91,7 @@ const BloodRequest = ({donor_id}) => {
                             blood_group:value,
                             sender_location:location,
                             createdAt:new Date(),
-                            donor_id:donor_id ? donor_id : '',
+                            donor_id:donor_id  ? donor_id : '',
                         }
                         makeBloodRequest(data);
                         setIsValid(false);

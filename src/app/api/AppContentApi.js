@@ -46,7 +46,7 @@ const AppContentApi = ({ children }) => {
       error => {
         console.error('Error getting user location:', error);
       },
-      { enableHighAccuracy: true, timeout: 20000, maximumAge: 20000 },
+      { enableHighAccuracy: true, timeout: 25000, maximumAge: 20000 },
     );
   }
 
