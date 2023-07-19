@@ -30,7 +30,7 @@ const DonorDetail = ({ route }) => {
         <Item icon="location" title={donor.address.substr(0, 50).concat('...')} />
       </View>
       <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('BloodRequestScreen', {donor_id: donor.id})}>
               <Text style={styles.buttonText}>Send Request</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('ChatScreen', {sender : user, receiver:donor})}>

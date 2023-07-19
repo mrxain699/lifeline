@@ -10,7 +10,7 @@ const { width, height } = Dimensions.get('window');
 
 const Map = ({route}) => {
     const navigation = useNavigation();
-    const { location } = route?.params;
+    const location  = route?.params ? route.params.location : null;
     const {
         userCurrentLocation,
         getFormattedAddress,

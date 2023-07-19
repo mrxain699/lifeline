@@ -46,7 +46,7 @@ const AppContentApi = ({ children }) => {
       error => {
         console.error('Error getting user location:', error);
       },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 20000 },
     );
   }
 
@@ -200,6 +200,7 @@ const AppContentApi = ({ children }) => {
     try {
       const requester = await bloodrequests
         .where('id', '!=', user.id)
+        .where('donor_id', '==', "")
         .get();
       if (requester.size > 0) {
         const requesterArray = [];
@@ -213,7 +214,7 @@ const AppContentApi = ({ children }) => {
       }
 
     } catch (error) {
-      console.log("Get Donors Error", error)
+      console.log("Get Requesters Error Error", error)
     }
   }
 

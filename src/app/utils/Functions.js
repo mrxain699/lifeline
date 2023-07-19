@@ -110,7 +110,8 @@ const validatePassword = (password) => {
 const validatePhoneNumber = (number) => {
     var pattern = /^03\d{9}$/;
     return pattern.test(number);
-  }
+}
+
 
 
 

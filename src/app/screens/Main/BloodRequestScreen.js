@@ -2,10 +2,11 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native'
 import { globalStyles } from '../../constants/Style';
 import BloodRequest from '../../components/BloodRequest/BloodRequest';
-const BloodRequestScreen = () => {
+const BloodRequestScreen = ({route}) => {
+  const {donor_id} = route?.params;
   return (
     <View style={globalStyles.wrapper}>
-      <BloodRequest/>
+      <BloodRequest donor_id={donor_id}/>
     </View>
   )
 }

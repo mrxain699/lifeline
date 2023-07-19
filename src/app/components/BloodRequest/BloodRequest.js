@@ -13,8 +13,10 @@ import { useNavigation } from '@react-navigation/native';
 import { Calendar } from 'react-native-calendars';
 import { getTodayDate, getFormatedDate } from '../../utils/Functions';
 import { validateName, validatePhoneNumber } from '../../utils/Functions';
-import Toast from 'react-native-toast-message'
-const BloodRequest = () => {
+import Toast from 'react-native-toast-message';
+import { v4 as uuidv4 } from 'uuid';
+
+const BloodRequest = ({donor_id}) => {
     const navigation = useNavigation();
     const {
         user,
@@ -78,8 +80,8 @@ const BloodRequest = () => {
                 try {
                     const location = await getRequestGeometryAddress(formattedAddress);
                     if(location){
-                        console.log(location);
                         const data = {
+                            request_id:uuidv4(),
                             name:name,
                             phone:phone,
                             image:user.image,
@@ -87,6 +89,7 @@ const BloodRequest = () => {
                             blood_group:value,
                             sender_location:location,
                             createdAt:new Date(),
+                            donor_id:donor_id ? donor_id : '',
                         }
                         makeBloodRequest(data);
                         setIsValid(false);
