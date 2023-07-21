@@ -1,9 +1,11 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { SafeAreaView, Text, View } from 'react-native'
+import { ActivityIndicator, SafeAreaView, Text, View } from 'react-native'
 import { globalStyles } from '../../constants/Style'
 import History from '../../components/History/History'
 import { bloodrequests } from '../../database/Collections'
 import { AuthContext } from '../../api/AuthContentApi'
+import { request } from 'react-native-permissions'
+import { colors } from '../../constants/Colors'
 const HistoryScreen = () => {
   const { user } = useContext(AuthContext);
   const [requests, setRequests] = useState([]);
@@ -34,6 +36,11 @@ const HistoryScreen = () => {
         else{
           console.log("Error on 2")
         }
+        requests_arr.sort((a, b) => {
+          if (a.createdAt.seconds < b.createdAt.seconds) return 1;
+          if (a.createdAt.seconds > b.createdAt.seconds) return -1;
+          return 0;
+        });
         setRequests(requests_arr);
       }
       else {
@@ -44,22 +51,23 @@ const HistoryScreen = () => {
     }
   }
 
-
-
   useEffect(() => {
     getAcceptedRequest();
   }, [])
 
 
-  useEffect(() => {
-    if(requests.length > 0){
-      console.log(requests)
-    }
-  }, [requests])
+ 
 
   return (
-    <SafeAreaView srtle={globalStyles.wrapper}>
-      <History />
+    <SafeAreaView style={globalStyles.wrapper}>
+    {
+      requests.length > 0 ? 
+      <History requests={requests} />
+      : <View style={{flex:1, justifyContent:'center', alignItems: 'center'}}> 
+        <ActivityIndicator size="large" color={colors.grey_200}/>
+      </View>
+    }
+      
     </SafeAreaView>
   )
 }
