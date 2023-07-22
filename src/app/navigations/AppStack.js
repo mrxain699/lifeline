@@ -1,5 +1,5 @@
 import React, {useContext, useEffect} from 'react'
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, Platform } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { colors } from '../constants/Colors';
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -20,7 +20,8 @@ import { AuthContext } from '../api/AuthContentApi';
 import { AppContext } from '../api/AppContentApi';
 import ChatScreen from '../screens/Main/ChatScreen';
 import TopTabs from './TopTabs';
-
+import { messaging } from '../database/DB';
+import { useNavigation } from '@react-navigation/native';
 const Stack = createStackNavigator();
 
 const screenOptions = {
@@ -36,13 +37,27 @@ const screenOptions = {
 }
 
 const AppStack = () => {
+  const navigation = useNavigation();
   const {isLoggedIn, getCurrentUser} = useContext(AuthContext);
   const {modalVisible, setModalVisible} = useContext(AppContext);
+  
   useEffect(()=>{
     if(isLoggedIn){
       getCurrentUser();
     }
   }, [])
+
+
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+        const screen = remoteMessage.data.screenName;
+        navigation.navigate(screen);
+        // console.log('Background notification clicked. Screen:', screen);
+      });
+    }
+
+  }, []);
 
   return (
     <Stack.Navigator screenOptions={screenOptions}>

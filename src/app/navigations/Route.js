@@ -7,6 +7,7 @@ import { AuthContext } from '../api/AuthContentApi';
 import { auth } from '../database/DB';
 import InternetScreen from '../screens/Network/InternetScreen';
 import NetInfo from "@react-native-community/netinfo";
+
 const Stack = createNativeStackNavigator();
 
 const Route = () => {
@@ -41,6 +42,8 @@ const Route = () => {
     } 
     setTimeout(() => checkInternet(), 1000);
   }, []);
+
+
 
 
   if (initialLoad) {

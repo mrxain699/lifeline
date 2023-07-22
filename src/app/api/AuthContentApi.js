@@ -28,13 +28,29 @@ const AuthContentApi = ({ children }) => {
 
     const getUserById = async (id) => {
         try {
-           const documentSnapshot =   await users.doc(id).get(); 
-           if(documentSnapshot.exists){
-            return documentSnapshot.data();
-           }
+            const documentSnapshot = await users.doc(id).get();
+            if (documentSnapshot.exists) {
+                return documentSnapshot.data();
+            }
         } catch (error) {
             console.log("Get user error", error);
         }
+    }
+
+    const getAllDeviceTokens = async () => {
+        try {
+            let tokens = [];
+            const querySnapshot = await users.get();
+            if (querySnapshot.size > 0) {
+                querySnapshot.forEach((documentSnapshot) => {
+                    tokens.push(documentSnapshot.data().token);
+                });
+                return tokens;
+            }
+        } catch (error) {
+            console.log("Getting all device tokens error", error)
+        }
+
     }
 
 
@@ -57,7 +73,7 @@ const AuthContentApi = ({ children }) => {
     const setCurrentUser = (new_user, name, token) => {
         users.doc(new_user.uid)
             .set({
-                id:new_user.uid,
+                id: new_user.uid,
                 name: new_user.displayName ? new_user.displayName : name,
                 email: new_user.email,
                 phone: '',
@@ -67,10 +83,10 @@ const AuthContentApi = ({ children }) => {
                 lastbleed: '',
                 gender: '',
                 image: new_user.photoURL ? new_user.photoURL : '',
-                city:'',
-                location:{latitude:'', longitude:''},
-                status:0,
-                token:token && token,
+                city: '',
+                location: { latitude: '', longitude: '' },
+                status: 0,
+                token: token && token,
             })
             .then(() => {
                 getCurrentUser();
@@ -142,14 +158,14 @@ const AuthContentApi = ({ children }) => {
                     getCurrentUser();
                     const token = await messaging().getToken();
                     users.doc(auth().currentUser.uid).update({
-                        token:token,
+                        token: token,
                     })
-                    .then(()=>{
-                        console.log("Token Updated")
-                    })
-                    .catch((error)=>{
-                        console.log("Token Update Error ", error)
-                    })
+                        .then(() => {
+                            console.log("Token Updated")
+                        })
+                        .catch((error) => {
+                            console.log("Token Update Error ", error)
+                        })
                 }
             } catch (error) {
                 setIsLoading(false);
@@ -180,20 +196,20 @@ const AuthContentApi = ({ children }) => {
                 const isExist = await isUserExist(response.user.uid);
                 const token = await messaging().getToken();
                 if (!isExist) {
-                    setCurrentUser(response.user, null, token); 
-                    getCurrentUser();                   
+                    setCurrentUser(response.user, null, token);
+                    getCurrentUser();
                 }
-                else{
+                else {
                     getCurrentUser();
                     users.doc(auth().currentUser.uid).update({
-                        token:token,
+                        token: token,
                     })
-                    .then(()=>{
-                        console.log("Token Updated")
-                    })
-                    .catch((error)=>{
-                        console.log("Token Update Error ", error)
-                    })
+                        .then(() => {
+                            console.log("Token Updated")
+                        })
+                        .catch((error) => {
+                            console.log("Token Update Error ", error)
+                        })
                 }
 
 
@@ -283,11 +299,11 @@ const AuthContentApi = ({ children }) => {
             }
             const reference = storage().ref('images/profiles/' + currentUserId);
             await reference.putFile(imagePath)
-        
+
             const url = await storage().ref('images/profiles/' + currentUserId).getDownloadURL();
-            if(url){
+            if (url) {
                 await users.doc(currentUserId).update({
-                    image:url,
+                    image: url,
                 });
                 getCurrentUser();
                 return true;
@@ -337,7 +353,8 @@ const AuthContentApi = ({ children }) => {
         uploadProfile,
         setIsLoading,
         getUserById,
-        currentUserId
+        currentUserId,
+        getAllDeviceTokens
     }
 
     return (

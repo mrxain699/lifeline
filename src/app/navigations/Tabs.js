@@ -24,7 +24,7 @@ const tabBarIcons = (route, focused) => {
     iconName = focused ? 'chatbubbles' : 'chatbubbles';
   }
   else {
-    iconName = focused ? 'cog' : 'cog';
+    iconName = focused ? 'sync' : 'sync';
   }
   return <Ionicons name={iconName} size={28} color={focused ? colors.white : colors.red_200} />
 

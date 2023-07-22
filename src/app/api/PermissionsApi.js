@@ -70,9 +70,9 @@ export const requestForeEableGPS = async () => {
     }
 }
 
-export const sendNotificationToSingleDevice = async (notification, data, device_id) => {
+export const sendNotification = async (notification, data, device_id) => {
     const payload = {
-        to: device_id,
+        registration_ids: device_id,
         notification: {
             title: notification.title,
             body: notification.body,
@@ -95,4 +95,3 @@ export const sendNotificationToSingleDevice = async (notification, data, device_
 }
 
 
-export const sendNotificationToMultipleDevice = async (notificationPayload, screenName, data, device_id) => {}

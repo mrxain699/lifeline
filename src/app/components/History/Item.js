@@ -32,7 +32,6 @@ const Item = ({ item }) => {
     }
 
     useEffect(() => {
-        console.log(item)
         getDonor();
         getApplicant();
     }, [])
@@ -40,24 +39,24 @@ const Item = ({ item }) => {
 
 
     return (
-        <View style={styles.container}>
+        donor != null && applicant != null && <View style={styles.container}>
             <View style={styles.avatarContainer}>
             {
-                donor != null && applicant != null && <Image source={{uri: user.image }} style={styles.avatar} />
+               <Image source={{uri: user.image }} style={styles.avatar} />
             }
             </View>
             <View style={styles.textContainer}>
                 {
-                    donor != null && applicant != null &&  (
+                    
                         user.id == item.id ? 
                         <Text style={styles.text}>{`You accepted blood from @${donor.name}`}</Text> 
                         : <Text style={styles.text}>{`You donated blood to @${donor.name}`}</Text>
-                    )
+                    
                 }
             </View>
             <View style={styles.avatarContainer}>
             {
-                donor != null && applicant != null && <Image source={{uri: item.donor_id == user.id ? applicant.image : donor.image}} style={styles.avatar} />
+                <Image source={{uri: item.donor_id == user.id ? applicant.image : donor.image}} style={styles.avatar} />
             }
             </View>
         </View>

@@ -12,7 +12,7 @@ import {
   messages_collection,
   chats
 } from '../database/Collections';
-import { sendNotificationToSingleDevice } from './PermissionsApi';
+import { sendNotification } from './PermissionsApi';
 const AppContext = createContext(null);
 
 const AppContentApi = ({ children }) => {
@@ -23,6 +23,7 @@ const AppContentApi = ({ children }) => {
     getUserById,
     setIsLoading,
     isLoading,
+    getAllDeviceTokens
   } = useContext(AuthContext);
   const [userCurrentLocation, setUserCurrentLocation] = useState(null);
   const [formattedAddress, setFormattedAddress] = useState('');
@@ -169,16 +170,22 @@ const AppContentApi = ({ children }) => {
         setIsLoading(false);
         setRequestLocation(null);
         setShowToast(true);
+        const notification = {
+          title:"Blood Request",
+          body: `${user.name} sent you a request for blood`,
+        }
         if(data.donor_id != ''){
           const get_user = await getUserById(data.donor_id);
           if(get_user){
-            const notification = {
-              title:"Blood Request",
-              body: `${user.name} sent you a request for blood`,
-            }
-            sendNotificationToSingleDevice(notification, {screen:'ManageRequestsScreen'},  get_user.token);
+            sendNotification(notification, {screen:'ManageRequestsScreen'},  [get_user.token]);
           } 
-        
+        }
+        else{
+          const tokens = await getAllDeviceTokens();
+          if(tokens){
+            sendNotification(notification, {screen:'ManageRequestsScreen'},  tokens);
+          }
+
         }
       })
       .catch(() => {
@@ -197,10 +204,18 @@ const AppContentApi = ({ children }) => {
     }
     setIsLoading(true);
     urgentbloodrequests.add(uploaded_data)
-      .then(() => {
+      .then(async () => {
         setIsLoading(false);
         setRequestLocation(null);
         setShowToast(true);
+        const notification = {
+          title:"Urgent Blood Request",
+          body: `${user.name} sent you a request for blood`,
+        }
+        const tokens = await getAllDeviceTokens();
+          if(tokens){
+            sendNotification(notification, {screen:'ManageRequestsScreen'},  tokens);
+          }
       })
       .catch(() => {
         console.log("Blood Request adding error : ", error)
