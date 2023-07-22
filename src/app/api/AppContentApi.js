@@ -12,7 +12,7 @@ import {
   messages_collection,
   chats
 } from '../database/Collections';
-
+import { sendNotificationToSingleDevice } from './PermissionsApi';
 const AppContext = createContext(null);
 
 const AppContentApi = ({ children }) => {
@@ -20,6 +20,7 @@ const AppContentApi = ({ children }) => {
   const {
     updateProfile,
     user,
+    getUserById,
     setIsLoading,
     isLoading,
   } = useContext(AuthContext);
@@ -164,10 +165,21 @@ const AppContentApi = ({ children }) => {
     }
     setIsLoading(true);
     bloodrequests.add(uploaded_data)
-      .then(() => {
+      .then(async () => {
         setIsLoading(false);
         setRequestLocation(null);
         setShowToast(true);
+        if(data.donor_id != ''){
+          const get_user = await getUserById(data.donor_id);
+          if(get_user){
+            const notification = {
+              title:"Blood Request",
+              body: `${user.name} sent you a request for blood`,
+            }
+            sendNotificationToSingleDevice(notification, {screen:'ManageRequestsScreen'},  get_user.token);
+          } 
+        
+        }
       })
       .catch(() => {
         console.log("Blood Request adding error : ", error)

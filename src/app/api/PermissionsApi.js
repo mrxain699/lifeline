@@ -1,9 +1,10 @@
-import {PERMISSIONS, request, check} from 'react-native-permissions';
+import { PERMISSIONS, request, check } from 'react-native-permissions';
 import RNAndroidLocationEnabler from 'react-native-android-location-enabler';
-
+import { FCM_SERVER_KEY, FCM_ENDPOINT } from '../constants/Const.js';
+import axios from 'axios';
 export const requestForLocationPermission = async () => {
     try {
-       const result  =  await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
+        const result = await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
     } catch (error) {
         console.log(error);
     }
@@ -57,14 +58,41 @@ export const checkNotificationPermission = async () => {
 
 export const requestForeEableGPS = async () => {
     try {
-        const data = await  RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({
+        const data = await RNAndroidLocationEnabler.promptForEnableLocationIfNeeded({
             interval: 10000,
             fastInterval: 5000,
-          });
-        if(data === "enabled" || data === "already-enabled"){
+        });
+        if (data === "enabled" || data === "already-enabled") {
             return true;
         }
     } catch (error) {
         console.log("GPS enabler error", error);
     }
 }
+
+export const sendNotificationToSingleDevice = async (notification, data, device_id) => {
+    const payload = {
+        to: device_id,
+        notification: {
+            title: notification.title,
+            body: notification.body,
+        },
+        data: {
+            screenName: data.screen, 
+        },
+    };
+    try {
+        const response = await axios.post(FCM_ENDPOINT, payload, {
+            headers: {
+                Authorization: `key=${FCM_SERVER_KEY}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        console.log('Push notification sent:', response.data);
+    } catch (error) {
+        console.error('Error sending push notification:', error);
+    }
+}
+
+
+export const sendNotificationToMultipleDevice = async (notificationPayload, screenName, data, device_id) => {}

@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, } from 'react';
 import { SafeAreaView, View } from 'react-native';
 import { globalStyles } from '../../constants/Style';
 import Home from '../../components/Home/Home';
@@ -14,6 +14,7 @@ import {
 
 
 
+
 const HomeScreen = () => {
 
   const { isAppFirstLaunched } = useContext(AuthContext);
@@ -23,6 +24,7 @@ const HomeScreen = () => {
     getFormattedAddress,
   } = useContext(AppContext);
 
+
   useEffect(() => {
     const requestForPermissions = async () => {
       if (isAppFirstLaunched) {
@@ -30,15 +32,15 @@ const HomeScreen = () => {
         await requestForStoragePermission();
         await requestForNotificationPermission();
         const result = await requestForeEableGPS();
-        if(result){
+        if (result) {
           getUserCurrentLocation();
         }
       }
-      else{
+      else {
         const permission = await checkLocationPermission();
-        if(permission === "granted"){
+        if (permission === "granted") {
           const result = await requestForeEableGPS();
-          if(result){
+          if (result) {
             getUserCurrentLocation();
           }
         }
@@ -48,7 +50,7 @@ const HomeScreen = () => {
   }, []);
 
   useEffect(() => {
-    if(userCurrentLocation != null){
+    if (userCurrentLocation != null) {
       getFormattedAddress(userCurrentLocation.latitude, userCurrentLocation.longitude);
     }
   }, [userCurrentLocation])
