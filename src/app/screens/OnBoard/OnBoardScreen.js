@@ -5,7 +5,7 @@ import {
   View,
   Text,
   Image,
-  Pressable,
+  TouchableOpacity,
 } from 'react-native';
 import { styles } from './Style';
 
@@ -22,9 +22,9 @@ const OnBoardScreen = ({navigation}) => {
           <Image source={require('../../assets/images/OnBoard/logo.png')} style={styles.image}/>
         </View>
         <View style={styles.buttonContainer}>
-          <Pressable style={styles.button} onPress={()=>navigation.replace('LoginScreen')}>
+          <TouchableOpacity style={styles.button} onPress={()=>navigation.replace('LoginScreen')}>
             <Text style={styles.buttonText}>Get Started!</Text>
-          </Pressable>
+          </TouchableOpacity>
         </View>
       </View>
     </SafeAreaView>

@@ -8,48 +8,48 @@ export const styles = StyleSheet.create({
         backgroundColor:'#fff',
     },
     headingContainer:{
+        height:200,
         justifyContent:'center',
         alignItems:'center',
-        paddingTop:50,
     },
     heading:{
         fontFamily:'Kalam-Bold',
-        fontSize:72,
+        fontSize:62,
         color:'#ff0004',
     },
     subHeading:{
         marginTop:-28,
         fontFamily:'Kalam-Regular',
-        fontSize:20,
+        fontSize:18,
         color:'#ff0004',
     },
     imageContainer:{
-        height:400,
-        marginVertical:20,
+        height:300,
         overflow:'hidden',
     },
     image:{
         width:'100%',
         height:'100%',
+        resizeMode:'contain'
     },
     buttonContainer:{
-        marginVertical:25,
+        marginTop:10,
+        marginBottom:40,
         justifyContent:'center',
         alignItems:'center',
+        flexGrow:1,
     },
     button:{
-        width:250,
-        height:55,
+        paddingHorizontal:50,
+        paddingVertical:10,
         backgroundColor:'#ff0004',
-        justifyContent:'center',
-        alignItems:'center',
         borderWidth:2,
         borderColor:'#fff',
         borderRadius:15,
     },
     buttonText:{
-        fontFamily:'Kalam-Bold',
-        fontSize:24,
+        fontFamily:'Roboto-Regular',
+        fontSize:18,
         color:'#fff'
     }
 

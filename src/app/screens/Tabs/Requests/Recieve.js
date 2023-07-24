@@ -15,6 +15,8 @@ const Recieve = () => {
       const querySnapshot = await bloodrequests
       .where('donor_id', '==', `${currentUserId}`)
       .where('request_approved', '==', 0)
+      .where('requestStatus', '==', 1)
+      .orderBy('createdAt', 'desc')
       .get();
       if (querySnapshot.size > 0) {
         querySnapshot.forEach((documentSnapshot) => {

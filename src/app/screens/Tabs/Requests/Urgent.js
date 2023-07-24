@@ -12,7 +12,10 @@ const Urgent = () => {
   const getNormalRequests = async () => {
     try {
       let requests = [];
-      const querySnapshot = await urgentbloodrequests.where('id', '!=', `${currentUserId}`).get();
+      const querySnapshot = await urgentbloodrequests
+      // .where('requestStatus', '==', 1)
+      .orderBy('createdAt', 'desc')
+      .get();
       if (querySnapshot.size > 0) {
         querySnapshot.forEach((documentSnapshot) => {
           requests.push(documentSnapshot.data());
@@ -42,7 +45,7 @@ const Urgent = () => {
         urgentRequests.length > 0 ?
           <FlatList
             data={urgentRequests}
-            renderItem={({ item }) => <Item request={item} />}
+            renderItem={({ item }) => item.id != currentUserId && <Item request={item} />}
             keyExtractor={(item, i) => i*i}
           />
           : error != null ?

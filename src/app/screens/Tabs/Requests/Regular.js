@@ -13,8 +13,9 @@ const Regular = () => {
     try {
       let requests = [];
       const querySnapshot = await bloodrequests
-      .where('id', '!=', `${currentUserId}`)
-      .where('donor_id', '==', "")
+      .where('donor_id', '==', '')
+      // .where('requestStatus', '==', 1)
+      .orderBy('createdAt', 'desc')
       .get();
       if (querySnapshot.size > 0) {
         querySnapshot.forEach((documentSnapshot) => {
@@ -45,7 +46,7 @@ const Regular = () => {
         normalRequests.length > 0 ?
           <FlatList
             data={normalRequests}
-            renderItem={({ item }) => <Item request={item}/>}
+            renderItem={({ item }) => item.id != currentUserId && <Item request={item}/>}
             keyExtractor={(item, i) => i*i}
           /> : error != null ?
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
