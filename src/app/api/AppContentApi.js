@@ -153,6 +153,7 @@ const AppContentApi = ({ children }) => {
         if (donors.size > 0) {
           const donorsarray = [];
           donors.forEach(doc => {
+            // console.log(doc.data())
             donorsarray.push(doc.data());
           });
           setAvailableDonors(donorsarray);

@@ -80,11 +80,7 @@ const Chat = ({ sender, receiver }) => {
     fetchMessages();
     const interval = setInterval(() => {
       fetchMessages();
-    }, 1000);
-
-    return () => {
-      clearInterval(interval);
-    }
+    }, 5000);
 
   }, [])
 
