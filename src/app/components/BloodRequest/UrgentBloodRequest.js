@@ -26,6 +26,7 @@ const UrgentBloodRequest = () => {
         getRequestGeometryAddress,
         isLoading,
         showToast,
+        setShowToast
      } = useContext(AppContext);
     const [name, setName] = useState(user.name);
     const [phone, setPhone] = useState(user.phone);
@@ -98,7 +99,10 @@ const UrgentBloodRequest = () => {
         if(showToast){
             Toast.show({
                 type: 'success',
-                text1: 'Request send successfully!'
+                text1: 'Request send successfully!',
+                onHide: () => {
+                    setShowToast(false);
+                }
               });
         }
     }, [showToast])

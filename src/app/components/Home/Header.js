@@ -98,7 +98,9 @@ const Header = () => {
           }
         </TouchableOpacity>
         <Text style={styles.userName}>{user.name && user.name}</Text>
-        <Text style={styles.userAddress}>{user.city && user.country ? `${user.city}, ${user.country}` : `${city}, ${country}`}</Text>
+        {
+          user.city && user.country && <Text style={styles.userAddress}>{user.city && user.country ? `${user.city}, ${user.country}` : `${city}, ${country}`}</Text>
+        }
       </View>
     </View>
 

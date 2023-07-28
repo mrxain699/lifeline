@@ -29,7 +29,8 @@ const BloodRequest = ({donor_id}) => {
         makeBloodRequest,
         getRequestGeometryAddress,
         isLoading,
-        showToast
+        showToast,
+        setShowToast
      } = useContext(AppContext);
     const [name, setName] = useState(user.name);
     const [phone, setPhone] = useState(user.phone);
@@ -110,8 +111,12 @@ const BloodRequest = ({donor_id}) => {
         if(showToast){
             Toast.show({
                 type: 'success',
-                text1: 'Request send successfully!'
-              });
+                text1: 'Request send successfully!',
+                onHide: () => {
+                    setShowToast(false);
+                }
+            });
+            
         }
     }, [showToast])
 

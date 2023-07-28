@@ -28,10 +28,7 @@ const Nearby = ({location}) => {
         const getDonors = async () => {
             await getAvailableDonor();
         }
-        const interval = setInterval(() => { getDonors() }, 5000);
-        return () => {
-            clearInterval(interval);
-        }
+        setInterval(() => { getDonors() }, 5000);
 
     }, []);
 
@@ -39,22 +36,14 @@ const Nearby = ({location}) => {
         const getRequests = async () => {
             await getRequesters();
         }
-        const interval = setInterval(() => { getRequests() }, 5000);
-        return () => {
-            clearInterval(interval);
-        }
-        
+        setInterval(() => { getRequests() }, 3000);
     }, []);
 
     useEffect(() => {
         const getUrgentRequests = async () => {
             await getUrgentRequesters();
         }
-        const interval = setInterval(() => { getUrgentRequests() }, 5000);
-        return () => {
-            clearInterval(interval);
-        }
-        
+        setInterval(() => { getUrgentRequests() }, 5000);
     }, []);
 
 
@@ -64,8 +53,8 @@ const Nearby = ({location}) => {
                 provider={PROVIDER_GOOGLE}
                 style={styles.map}
                 region={{
-                    latitude: location.latitude,
-                    longitude: location.longitude,
+                    latitude: location !=null && location.latitude,
+                    longitude: location != null && location.longitude,
                     latitudeDelta: LATITUDE_DELTA,
                     longitudeDelta: LATITUDE_DELTA * ASPECT_RATIO,
                 }}

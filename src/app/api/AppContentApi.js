@@ -13,6 +13,7 @@ import {
   chats
 } from '../database/Collections';
 import { sendNotification } from './PermissionsApi';
+import Toast from 'react-native-toast-message';
 const AppContext = createContext(null);
 
 const AppContentApi = ({ children }) => {
@@ -39,16 +40,21 @@ const AppContentApi = ({ children }) => {
   Geocoder.init(API_KEY, { language: "en" });
 
   const getUserCurrentLocation = () => {
-    getBloodUniversal();
     Geolocation.getCurrentPosition(
       async position => {
         setUserCurrentLocation({ latitude: position.coords.latitude, longitude: position.coords.longitude });
         await getFormattedAddress(position.coords.latitude, position.coords.longitude);
       },
       error => {
-        console.error('Error getting user location:', error);
+        console.log('Error getting user location:', error);
+        Toast.show({
+          type: 'error',
+          text1: 'Enable your location services or Check your internet connection',
+
+        });
+
       },
-      { enableHighAccuracy: true, timeout: 25000, maximumAge: 20000 },
+      { enableHighAccuracy: false, timeout: 30000, maximumAge: 20000 },
     );
   }
 
@@ -120,21 +126,29 @@ const AppContentApi = ({ children }) => {
     return documentSnapshot.exists;
   };
 
-  const getBloodUniversal = () => {
-    bloodtypes.doc(user.bloodgroup)
-      .onSnapshot(documentSnapshot => {
-        setUniversalGroup(documentSnapshot.data());
-      });
+  const getBloodUniversal = async () => {
+    try {
+      const documentSnapshot = await bloodtypes.doc(user.bloodgroup).get();
+      if (documentSnapshot.exists) {
+        return documentSnapshot.data();
+      }
+      else {
+        return null;
+      }
+    } catch (error) {
+      console.log("Getting Blood Universal Error");
+    }
+
   }
 
 
   const getAvailableDonor = async () => {
-    getBloodUniversal();
-    if (universalGroup != null) {
+    const data = await getBloodUniversal();
+    if (data != null) {
       try {
         const donors = await users
           .where('status', '==', 1)
-          .where('bloodgroup', 'in', universalGroup.receive_from)
+          .where('bloodgroup', 'in', data.receive_from)
           .get();
         if (donors.size > 0) {
           const donorsarray = [];
@@ -171,19 +185,19 @@ const AppContentApi = ({ children }) => {
         setRequestLocation(null);
         setShowToast(true);
         const notification = {
-          title:"Blood Request",
+          title: "Blood Request",
           body: `${user.name} sent you a request for blood`,
         }
-        if(data.donor_id != ''){
+        if (data.donor_id != '') {
           const get_user = await getUserById(data.donor_id);
-          if(get_user){
-            sendNotification(notification, {screen:'ManageRequestsScreen'},  [get_user.token]);
-          } 
+          if (get_user) {
+            sendNotification(notification, { screen: 'ManageRequestsScreen' }, [get_user.token]);
+          }
         }
-        else{
+        else {
           const tokens = await getAllDeviceTokens();
-          if(tokens){
-            sendNotification(notification, {screen:'ManageRequestsScreen'},  tokens);
+          if (tokens) {
+            sendNotification(notification, { screen: 'ManageRequestsScreen' }, tokens);
           }
 
         }
@@ -209,13 +223,13 @@ const AppContentApi = ({ children }) => {
         setRequestLocation(null);
         setShowToast(true);
         const notification = {
-          title:"Urgent Blood Request",
+          title: "Urgent Blood Request",
           body: `${user.name} sent you a request for blood`,
         }
         const tokens = await getAllDeviceTokens();
-          if(tokens){
-            sendNotification(notification, {screen:'ManageRequestsScreen'},  tokens);
-          }
+        if (tokens) {
+          sendNotification(notification, { screen: 'ManageRequestsScreen' }, tokens);
+        }
       })
       .catch(() => {
         console.log("Blood Request adding error : ", error)
@@ -346,6 +360,7 @@ const AppContentApi = ({ children }) => {
     urgentRequesters,
     getUrgentRequesters,
     sendMessage,
+    setShowToast
 
 
   }

@@ -52,9 +52,6 @@ const screenOptions = ({ route, navigation }) => {
     },
     headerRight: () => (
       <View style={{ flexDirection: 'row' }}>
-        <TouchableOpacity onPress={() => navigation.navigate('')}>
-          <Ionicons name="notifications-circle-outline" size={28} color={colors.white} style={{ marginRight: 5 }} />
-        </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
           <Ionicons name="person-circle-outline" size={28} color={colors.white} style={{ marginRight: 20 }} />
         </TouchableOpacity>
