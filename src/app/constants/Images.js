@@ -10,4 +10,5 @@ export const images = {
     wave_icon:require('../assets/images/wave.png'),
     red_flag_icon:require('../assets/images/red_flag.png'),
     green_flag_icon:require('../assets/images/green_flag.png'),
+    person_icon:require('../assets/images/person.png'),
 }

@@ -47,7 +47,7 @@ const LastBleed = ({ navigation }) => {
 
     return (
         <View style={[globalStyles.wrapper, { paddingHorizontal: 20 }]}>
-            <Title title="Your Last Bleed Date" />
+            <Title title="Your Last Donation Date" />
             {
                 message && <View style={[globalStyles.errorContainer, { backgroundColor: '#b2f6a2' }]}>
                     <Text style={[globalStyles.error, { color: '#31ba12' }]}>{message}</Text>

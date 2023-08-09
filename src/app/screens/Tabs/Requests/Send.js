@@ -4,6 +4,7 @@ import { bloodrequests } from '../../../database/Collections';
 import { AuthContext } from '../../../api/AuthContentApi';
 import { colors } from '../../../constants/Colors';
 import Item from './Item';
+import { getTodayDate } from '../../../utils/Functions';
 const Send = () => {
   const { user, currentUserId } = useContext(AuthContext)
   const [sendRequests, setSendRequests] = useState([]);
@@ -19,7 +20,14 @@ const Send = () => {
       .get();
       if (querySnapshot.size > 0) {
         querySnapshot.forEach((documentSnapshot) => {
-          requests.push(documentSnapshot.data());
+          let todayDate = new Date(getTodayDate());
+          let required_date = new Date(documentSnapshot.data().required_date);
+          if(required_date >= todayDate){
+            requests.push(documentSnapshot.data());
+          }
+          else if(requests.length === 0){
+            setError('No Send Requests Found!');
+          }
         });
         setSendRequests(requests);
       }

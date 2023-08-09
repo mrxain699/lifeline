@@ -4,6 +4,7 @@ import { bloodrequests } from '../../../database/Collections';
 import { AuthContext } from '../../../api/AuthContentApi';
 import { colors } from '../../../constants/Colors';
 import Item from './Item';
+import { getFormatedDate, getTodayDate } from '../../../utils/Functions';
 const Regular = () => {
   const { user, currentUserId } = useContext(AuthContext)
   const [normalRequests, setNormalRequests] = useState([]);
@@ -14,12 +15,19 @@ const Regular = () => {
       let requests = [];
       const querySnapshot = await bloodrequests
       .where('donor_id', '==', '')
-      // .where('requestStatus', '==', 1)
+      .where('requestStatus', '==', 1)
       .orderBy('createdAt', 'desc')
       .get();
       if (querySnapshot.size > 0) {
         querySnapshot.forEach((documentSnapshot) => {
-          requests.push(documentSnapshot.data());
+          let todayDate = new Date(getTodayDate());
+          let required_date = new Date(documentSnapshot.data().required_date);
+          if(required_date >= todayDate){
+            requests.push(documentSnapshot.data());
+          }
+          else if(requests.length === 0){
+            setError('No Regular Requests Found!');
+          }
         });
         setNormalRequests(requests);
       }

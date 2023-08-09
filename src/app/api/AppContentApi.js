@@ -54,7 +54,7 @@ const AppContentApi = ({ children }) => {
         });
 
       },
-      { enableHighAccuracy: false, timeout: 30000, maximumAge: 20000 },
+      { enableHighAccuracy: false, timeout: 50000, maximumAge: 20000 },
     );
   }
 

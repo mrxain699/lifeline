@@ -2,11 +2,11 @@ import React from 'react'
 import {  Text, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import { colors } from '../../constants/Colors'
 
-const Item = ({ title, image, onPress }) => {
+const Item = ({ title, image, onPress, imageStyle }) => {
 
   return (
     <TouchableOpacity style={styles.itemContainer} onPress={() => onPress && onPress()}>
-      <Image source={image} style={styles.image} resizeMode='contain'/>
+      <Image source={image} style={[styles.image, imageStyle && imageStyle]} resizeMode='contain'/>
       <Text style={styles.title}>{title}</Text>
     </TouchableOpacity>
   )

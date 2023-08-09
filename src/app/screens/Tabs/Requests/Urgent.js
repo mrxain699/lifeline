@@ -4,6 +4,7 @@ import { urgentbloodrequests } from '../../../database/Collections';
 import { AuthContext } from '../../../api/AuthContentApi';
 import Item from './Item';
 import { colors } from '../../../constants/Colors';
+import { getTodayDate } from '../../../utils/Functions';
 const Urgent = () => {
   const { user, currentUserId } = useContext(AuthContext)
   const [urgentRequests, setUrgentRequests] = useState([]);
@@ -13,12 +14,18 @@ const Urgent = () => {
     try {
       let requests = [];
       const querySnapshot = await urgentbloodrequests
-      // .where('requestStatus', '==', 1)
       .orderBy('createdAt', 'desc')
       .get();
       if (querySnapshot.size > 0) {
         querySnapshot.forEach((documentSnapshot) => {
-          requests.push(documentSnapshot.data());
+          let todayDate = new Date(getTodayDate());
+          let required_date = new Date(documentSnapshot.data().createdAt.toDate());
+          if(todayDate <= required_date){
+            requests.push(documentSnapshot.data());
+          }
+          else if(requests.length === 0){
+            setError('No Urgent Requests Found!');
+          }
         });
         setUrgentRequests(requests);
       }

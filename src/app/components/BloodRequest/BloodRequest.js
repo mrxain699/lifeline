@@ -130,7 +130,7 @@ const BloodRequest = ({donor_id}) => {
                     </View>
                 }
                 <View style={styles.inputsContainer}>
-                    <Label label="Name" style={{ color: colors.red, marginLeft: 8 }} />
+                    <Label label="Name*" style={{ color: colors.red, marginLeft: 8 }} />
                     <View style={styles.inputContainer}>
                         <Input
                             placeholder="Name"
@@ -141,7 +141,7 @@ const BloodRequest = ({donor_id}) => {
                             style={[styles.input, { borderWidth: 0, marginTop: 0, }]}
                         />
                     </View>
-                    <Label label="Phone" style={{ color: colors.red, marginLeft: 8, marginTop: 20 }} />
+                    <Label label="Phone*" style={{ color: colors.red, marginLeft: 8, marginTop: 20 }} />
                     <View style={styles.inputContainer}>
                         <View style={styles.textContainer}>
                             <Text style={styles.defaultText}>+92</Text>
@@ -160,7 +160,7 @@ const BloodRequest = ({donor_id}) => {
 
                         />
                     </View>
-                    <Label label="Address" style={{ color: colors.red, marginLeft: 8, marginTop: 20 }} />
+                    <Label label="Location*" style={{ color: colors.red, marginLeft: 8, marginTop: 20 }} />
                     <View style={styles.addressContainer}>
                         <View style={styles.address}>
                             <Text style={styles.userAddress}>{formattedAddress.substr(0, 50).concat('...')}</Text>
@@ -171,7 +171,7 @@ const BloodRequest = ({donor_id}) => {
                             }} />
                         </TouchableOpacity>
                     </View>
-                    <Label label="Required Date" style={{ color: colors.red, marginLeft: 8, marginTop: 20 }} />
+                    <Label label="Required Date*" style={{ color: colors.red, marginLeft: 8, marginTop: 20 }} />
                     <View style={styles.datContaienr} >
                         <Text style={styles.date}>{getFormatedDate(new Date(selectedDate), "WWW MMM DD YYYY")}</Text>
                         <TouchableOpacity>
@@ -198,7 +198,7 @@ const BloodRequest = ({donor_id}) => {
                         />
 
                     }
-                    <Label label="Blood Group" style={{ color: colors.red, marginLeft: 8, marginTop: 20 }} />
+                    <Label label="Required Blood Group*" style={{ color: colors.red, marginLeft: 8, marginTop: 20 }} />
                     <View style={styles.inputContainer}>
                         <DropDownPicker
                             open={open}
