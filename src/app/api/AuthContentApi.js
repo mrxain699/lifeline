@@ -52,19 +52,7 @@ const AuthContentApi = ({ children }) => {
 
     }
 
-    //   const dummy = async () => {
-    //     const get_user = await getUserById(auth().currentUser.uid);
-    //     console.log(get_user);
-    //     if (get_user && get_user.id == auth().currentUser.uid) {
-    //         if (get_user.address == "" || get_user.bloodgroup == "" || get_user.phone == "") {
-    //             setProfileAlert(true);
-    //         }
-    //         else {
-    //             setProfileAlert(false);
-    //         }
-    //     }
 
-    // }
 
     const getAllDeviceTokens = async () => {
         try {
