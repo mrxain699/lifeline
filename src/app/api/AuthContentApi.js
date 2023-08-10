@@ -38,13 +38,18 @@ const AuthContentApi = ({ children }) => {
         }
     }
 
-    const isProfileCompleted = () => {
-        if (user.address === "" || user.bloodgroup === "" || user.phone === ""){
-            setProfileAlert(true);
+    const isProfileCompleted = async () => {
+        const get_user = await getUserById(auth().currentUser.uid);
+        console.log(get_user);
+        if (get_user && get_user.id == auth().currentUser.uid) {
+            if (get_user.address == "" || get_user.bloodgroup == "" || get_user.phone == "") {
+                setProfileAlert(true);
+            }
+            else {
+                setProfileAlert(false);
+            }
         }
-        else{
-            setProfileAlert(false);
-        }
+
     }
 
     const getAllDeviceTokens = async () => {
@@ -215,7 +220,7 @@ const AuthContentApi = ({ children }) => {
                 }
                 else {
                     getCurrentUser();
-                    
+
                     isProfileCompleted();
                     users.doc(auth().currentUser.uid).update({
                         token: token,
@@ -338,6 +343,7 @@ const AuthContentApi = ({ children }) => {
             const response = await auth().signOut();
             if (response) {
                 setError(null);
+                setProfileAlert(false);
             }
         } catch (error) {
             if (error) {
