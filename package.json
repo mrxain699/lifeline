@@ -29,6 +29,7 @@
     "react-native": "0.71.8",
     "react-native-android-location-enabler": "^1.2.2",
     "react-native-asset": "^2.1.1",
+    "react-native-awesome-alerts": "^2.0.0",
     "react-native-calendars": "^1.1298.0",
     "react-native-date-picker": "^4.2.13",
     "react-native-dropdown-picker": "^5.4.7-beta.1",

@@ -13,6 +13,7 @@ const AuthContentApi = ({ children }) => {
     const [isLoading, setIsLoading] = useState(null);
     const [user, setUser] = useState({});
     const [currentUserId, setCurrentUserId] = useState('');
+    const [profileAlert, setProfileAlert] = useState(false);
 
 
     const checkIsAppFirstLaunched = async () => {
@@ -34,6 +35,15 @@ const AuthContentApi = ({ children }) => {
             }
         } catch (error) {
             console.log("Get user error", error);
+        }
+    }
+
+    const isProfileCompleted = () => {
+        if (user.address === "" || user.bloodgroup === "" || user.phone === ""){
+            setProfileAlert(true);
+        }
+        else{
+            setProfileAlert(false);
         }
     }
 
@@ -90,6 +100,7 @@ const AuthContentApi = ({ children }) => {
             })
             .then(() => {
                 getCurrentUser();
+                isProfileCompleted();
             })
             .catch(error => {
                 console.log("Set user error", error);
@@ -156,6 +167,7 @@ const AuthContentApi = ({ children }) => {
                     setError(null);
                     setIsLoading(false);
                     getCurrentUser();
+                    isProfileCompleted();
                     const token = await messaging().getToken();
                     users.doc(auth().currentUser.uid).update({
                         token: token,
@@ -198,9 +210,13 @@ const AuthContentApi = ({ children }) => {
                 if (!isExist) {
                     setCurrentUser(response.user, null, token);
                     getCurrentUser();
+                    isProfileCompleted();
+
                 }
                 else {
                     getCurrentUser();
+                    
+                    isProfileCompleted();
                     users.doc(auth().currentUser.uid).update({
                         token: token,
                     })
@@ -354,7 +370,9 @@ const AuthContentApi = ({ children }) => {
         setIsLoading,
         getUserById,
         currentUserId,
-        getAllDeviceTokens
+        getAllDeviceTokens,
+        profileAlert,
+        setProfileAlert
     }
 
     return (

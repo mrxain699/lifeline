@@ -5,11 +5,12 @@ import { colors } from '../../constants/Colors';
 import { images } from '../../constants/Images';
 import { AuthContext } from '../../api/AuthContentApi';
 import { AppContext } from '../../api/AppContentApi';
-import Toast from 'react-native-toast-message'
+import Toast from 'react-native-toast-message';
 import {
   requestForStoragePermission,
   checkStoragePermission
 } from '../../api/PermissionsApi';
+
 
 const Header = () => {
 
@@ -22,10 +23,12 @@ const Header = () => {
     uploadProfile,
   } = useContext(AuthContext);
 
+
   const {
     city,
     country,
-  } = useContext(AppContext)
+  } = useContext(AppContext);
+
 
   const onPressHandler = async () => {
     const permission = await checkStoragePermission();
@@ -99,7 +102,11 @@ const Header = () => {
         </TouchableOpacity>
         <Text style={styles.userName}>{user.name && user.name}</Text>
         {
-          user.city && user.country && <Text style={styles.userAddress}>{user.city && user.country ? `${user.city}, ${user.country}` : `${city}, ${country}`}</Text>
+          <Text style={styles.userAddress}>
+          {
+            user.city && user.country ? `${user.city}, ${user.country}` : `${city}, ${country}`
+          }
+          </Text>
         }
       </View>
     </View>

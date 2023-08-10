@@ -20,6 +20,7 @@ import { AuthContext } from '../api/AuthContentApi';
 import { AppContext } from '../api/AppContentApi';
 import ChatScreen from '../screens/Main/ChatScreen';
 import TopTabs from './TopTabs';
+import YourRequestTabs from './YourRequestsTab';
 import { messaging } from '../database/DB';
 import { useNavigation } from '@react-navigation/native';
 const Stack = createStackNavigator();
@@ -83,11 +84,12 @@ const AppStack = () => {
         <Stack.Screen name="BloodRequestScreen" component={BloodRequestScreen} options={{title:"Blood Request"}}/>
         <Stack.Screen name="UrgentBloodRequestScreen" component={UrgentBloodRequestScreen} options={{title:"Urgent Blood Request"}}/>
         <Stack.Screen name="ManageRequestsScreen" component={TopTabs} options={{title:"Manage Requests"}}/>
+        <Stack.Screen name="ManageMyRequestsScreen" component={YourRequestTabs} options={{title:"Your Requests"}}/>
         <Stack.Screen name="ChatScreen" component={ChatScreen} />
 
         <Stack.Group screenOptions={{ presentation: 'modal' }}>
           <Stack.Screen name="BloodGroup" component={BloodGroup} options={{title:"Blood Group"}}/>
-          <Stack.Screen name="LastBleed" component={LastBleed} options={{title:"Last Bleed",}}/>
+          <Stack.Screen name="LastBleed" component={LastBleed} options={{title:"Last Donation",}}/>
           <Stack.Screen name="Address" component={Address} />
           <Stack.Screen name="PhoneNumber" component={PhoneNumber} options={{title:"Phone Number"}}/>
           <Stack.Screen name="Gender" component={Gender} />

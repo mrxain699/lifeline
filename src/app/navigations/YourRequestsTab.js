@@ -1,15 +1,15 @@
 import React from 'react'
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import { Text, StyleSheet } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import Regular from '../screens/Tabs/Requests/Regular';
-import Urgent from '../screens/Tabs/Requests/Urgent';
+import Send from '../screens/Tabs/Requests/Send';
+import Recieve from '../screens/Tabs/Requests/Recieve';
 import { colors } from '../constants/Colors';
 
 const Tab = createMaterialTopTabNavigator();
 
 
 
-const TopTabs = () => {
+const YourRequestTabs = () => {
     return (
         <Tab.Navigator screenOptions={{
             tabBarIndicatorStyle: {
@@ -23,22 +23,22 @@ const TopTabs = () => {
         }}
 
         >
-            <Tab.Screen name="Regular" component={Regular}
+            <Tab.Screen name="Send" component={Send}
                 options={{
                     tabBarLabel: ({ focused, color }) => {
                         return (
 
-                            <Text style={[focused ? styles.isFocused : styles.notFocused]}>Normal</Text>
+                            <Text style={[focused ? styles.isFocused : styles.notFocused]}>Sent</Text>
                         )
                     }
                 }}
             />
-            <Tab.Screen name="Urgent" component={Urgent}
+            <Tab.Screen name="Recieve" component={Recieve}
                 options={{
                     tabBarLabel: ({ focused, color }) => {
                         return (
 
-                            <Text style={[focused ? styles.isFocused : styles.notFocused]}>Urgent</Text>
+                            <Text style={[focused ? styles.isFocused : styles.notFocused]}>Recieved</Text>
                         )
                     }
                 }}
@@ -59,4 +59,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default TopTabs;
+export default YourRequestTabs;

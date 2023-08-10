@@ -28,7 +28,7 @@ const Nearby = ({location}) => {
         const getDonors = async () => {
             await getAvailableDonor();
         }
-        setInterval(() => { getDonors() }, 5000);
+        setInterval(() => { getDonors() }, 10000);
 
     }, []);
 
@@ -36,14 +36,14 @@ const Nearby = ({location}) => {
         const getRequests = async () => {
             await getRequesters();
         }
-        setInterval(() => { getRequests() }, 3000);
+        setInterval(() => { getRequests() }, 10000);
     }, []);
 
     useEffect(() => {
         const getUrgentRequests = async () => {
             await getUrgentRequesters();
         }
-        setInterval(() => { getUrgentRequests() }, 5000);
+        setInterval(() => { getUrgentRequests() }, 10000);
     }, []);
 
 

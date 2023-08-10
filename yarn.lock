@@ -6251,6 +6251,13 @@
     "sha1-file" "^1.0.4"
     "xcode" "^2.0.0"
 
+"react-native-awesome-alerts@^2.0.0":
+  "integrity" "sha512-ZRBNnDfpE+aQCtXXnQcfGLqwzZ53Q45CNkQI4hOiF8/9JPuCyMUQL2aqtiypnLpCIX+CB28Jcx1KVJ6/reaZsg=="
+  "resolved" "https://registry.npmjs.org/react-native-awesome-alerts/-/react-native-awesome-alerts-2.0.0.tgz"
+  "version" "2.0.0"
+  dependencies:
+    "prop-types" "^15.7.2"
+
 "react-native-calendars@^1.1298.0":
   "integrity" "sha512-+g9b6ceYQn+kEzS2dK5RsOhXR4Ue659EOVTpg+5kFZBHbgwqIqSwpKQIXwK6h8jkDMpUgjMYn4qVLYHW77FzWw=="
   "resolved" "https://registry.npmjs.org/react-native-calendars/-/react-native-calendars-1.1298.0.tgz"

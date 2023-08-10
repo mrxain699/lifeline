@@ -4,13 +4,11 @@ import { colors } from '../../constants/Colors';
 import Item from './Item';
 import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../../api/AuthContentApi';
-import { AppContext } from '../../api/AppContentApi';
 import { getFormatedDate } from '../../utils/Functions';
 
 const Body = () => {
 
   const { user } = useContext(AuthContext);
-  const { formattedAddress } = useContext(AppContext);
   const navigation = useNavigation();
 
   return (

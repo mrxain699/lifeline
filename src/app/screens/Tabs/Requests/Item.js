@@ -131,6 +131,10 @@ const Item = ({ request, sender_component }) => {
                     }
                 />
             </View>
+            <View style={styles.locationConatiner}>
+                <Iconic name={"location"} size={24} color={colors.red}/>
+                <Text style={[styles.text, {flex:1}]}>{request.sender_address}</Text>
+            </View>
             {
                 sender_component && sender_component === "send" ?
                 <View style={[styles.itemContentConatiner, { marginTop: 20, justifyContent: 'center', alignItems:'center' },]}>
@@ -176,7 +180,15 @@ const styles = StyleSheet.create({
     itemContentConatiner: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center'
+        alignItems: 'center',
+    },
+    locationConatiner:{
+        paddingVertical:10,
+        flexDirection:'row',
+        alignItems:'center',
+        gap:10,
+        paddingRight:5,
+    
     },
     button: {
         backgroundColor: colors.red_100,

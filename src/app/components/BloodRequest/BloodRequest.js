@@ -160,7 +160,7 @@ const BloodRequest = ({donor_id}) => {
 
                         />
                     </View>
-                    <Label label="Location*" style={{ color: colors.red, marginLeft: 8, marginTop: 20 }} />
+                    <Label label="Blood Required Location*" style={{ color: colors.red, marginLeft: 8, marginTop: 20 }} />
                     <View style={styles.addressContainer}>
                         <View style={styles.address}>
                             <Text style={styles.userAddress}>{formattedAddress.substr(0, 50).concat('...')}</Text>
@@ -223,7 +223,7 @@ const BloodRequest = ({donor_id}) => {
 
                     <TouchableOpacity style={styles.button} onPress={() => validate_fields()}>
                         {
-                            !isLoading ? <Text style={styles.buttonText}>Save</Text>
+                            !isLoading ? <Text style={styles.buttonText}>Send Request</Text>
                             : <ActivityIndicator size={"small"} color={colors.red_100}/>
                         }
                     </TouchableOpacity>

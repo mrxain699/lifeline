@@ -27,7 +27,7 @@ const AppContentApi = ({ children }) => {
     getAllDeviceTokens
   } = useContext(AuthContext);
   const [userCurrentLocation, setUserCurrentLocation] = useState(null);
-  const [formattedAddress, setFormattedAddress] = useState('');
+  const [formattedAddress, setFormattedAddress] = useState(null);
   const [country, setCountry] = useState('');
   const [city, setCity] = useState('');
   const [availableDonors, setAvailableDonors] = useState([]);
@@ -35,7 +35,6 @@ const AppContentApi = ({ children }) => {
   const [requestLocation, setRequestLocation] = useState(null);
   const [requesters, setRequesters] = useState([]);
   const [urgentRequesters, setUrgentRequesters] = useState([]);
-  const [universalGroup, setUniversalGroup] = useState(null);
   const [showToast, setShowToast] = useState(false);
   Geocoder.init(API_KEY, { language: "en" });
 
@@ -43,7 +42,7 @@ const AppContentApi = ({ children }) => {
     Geolocation.getCurrentPosition(
       async position => {
         setUserCurrentLocation({ latitude: position.coords.latitude, longitude: position.coords.longitude });
-        await getFormattedAddress(position.coords.latitude, position.coords.longitude);
+        getFormattedAddress(position.coords.latitude, position.coords.longitude);
       },
       error => {
         console.log('Error getting user location:', error);
