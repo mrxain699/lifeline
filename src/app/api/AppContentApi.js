@@ -31,6 +31,7 @@ const AppContentApi = ({ children }) => {
   const [country, setCountry] = useState('');
   const [city, setCity] = useState('');
   const [availableDonors, setAvailableDonors] = useState([]);
+  const [availableDonorsByBlood, setAvailableDonorsByBlood] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [requestLocation, setRequestLocation] = useState(null);
   const [requesters, setRequesters] = useState([]);
@@ -167,6 +168,26 @@ const AppContentApi = ({ children }) => {
     }
 
   }
+
+  const getDonorsByBlood = async (blood_group) => {
+    try {
+      const donors = await users
+      .where('bloodgroup', '==', blood_group)
+      .get();
+    if (donors.size > 0) {
+      const donorsarray = [];
+      donors.forEach(doc => {
+        donorsarray.push(doc.data());
+      });
+      setAvailableDonorsByBlood(donorsarray);
+    }
+    else {
+      setAvailableDonorsByBlood([]);
+    }
+    } catch (error) {
+      console.log("Get Donors By Blood Error", error)
+    }
+  } 
 
 
 
@@ -360,7 +381,9 @@ const AppContentApi = ({ children }) => {
     urgentRequesters,
     getUrgentRequesters,
     sendMessage,
-    setShowToast
+    setShowToast,
+    getDonorsByBlood,
+    availableDonorsByBlood
 
 
   }

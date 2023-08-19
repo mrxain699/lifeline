@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, View, Dimensions, Text } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker, Callout } from 'react-native-maps';
 import { AuthContext } from '../../api/AuthContentApi';
@@ -7,10 +7,12 @@ import { colors } from '../../constants/Colors';
 import Iconic from '../ui/Icons/Icons';
 import { useNavigation } from '@react-navigation/native';
 import { images } from '../../constants/Images';
+import DropDownPicker from 'react-native-dropdown-picker';
+
 const { width, height } = Dimensions.get('window');
 
 
-const Nearby = ({location}) => {
+const Nearby = ({ location }) => {
     const navigation = useNavigation();
     const { user } = useContext(AuthContext)
     const {
@@ -20,7 +22,21 @@ const Nearby = ({location}) => {
         getUrgentRequesters,
         urgentRequesters,
         requesters,
+        getDonorsByBlood,
+        availableDonorsByBlood
     } = useContext(AppContext);
+    const [open, setOpen] = useState(false);
+    const [value, setValue] = useState(null);
+    const [items, setItems] = useState([
+        { label: 'A+', value: 'A+' },
+        { label: 'B+', value: 'B+' },
+        { label: 'A-', value: 'A-' },
+        { label: 'B-', value: 'B-' },
+        { label: 'AB+', value: 'AB+' },
+        { label: 'AB-', value: 'AB-' },
+        { label: 'O+', value: 'O+' },
+        { label: 'O-', value: 'O-' },
+    ]);
     const ASPECT_RATIO = width / height;
     const LATITUDE_DELTA = 0.02;
 
@@ -47,50 +63,74 @@ const Nearby = ({location}) => {
     }, []);
 
 
+    useEffect(() => {
+        if(value != null ){
+            const getDonorsByBloodGroup = async () => {
+                await getDonorsByBlood(value);
+            }
+            getDonorsByBloodGroup();
+        }
+    }, [value]);
+
+
     return (
         <View style={styles.container}>
+            <View style={styles.filterContainer}>
+                <DropDownPicker
+                    open={open}
+                    value={value}
+                    items={items}
+                    setOpen={setOpen}
+                    setValue={setValue}
+                    setItems={setItems}
+                    style={[styles.dropdown, open ? {borderRadius:20} : {borderRadius:100}]}
+                    placeholder='Filter By Blood Group'
+                    maxHeight={400}
+                    onChangeValue={(value) => setValue(value)}
+                />
+            </View>
             <MapView
                 provider={PROVIDER_GOOGLE}
                 style={styles.map}
                 region={{
-                    latitude: location !=null && location.latitude,
+                    latitude: location != null && location.latitude,
                     longitude: location != null && location.longitude,
                     latitudeDelta: LATITUDE_DELTA,
                     longitudeDelta: LATITUDE_DELTA * ASPECT_RATIO,
                 }}
             >
                 {
-    
-                location != null && 
-                (
-                <Marker
-                    coordinate={{
-                        latitude: location.latitude,
-                        longitude: location.longitude,
-                    }}
-                    pinColor={colors.blue}
-                >
-                    <Callout tooltip>
-                        <View>
-                            <View style={styles.callOutView}>
-                                <View style={styles.calloutItemContainer}>
-                                    <Iconic name="person" size={18} color={colors.red} />
-                                    <Text style={styles.text}>{user.name}</Text>
+
+                    location != null &&
+                    (
+                        <Marker
+                            coordinate={{
+                                latitude: location.latitude,
+                                longitude: location.longitude,
+                            }}
+                            pinColor={colors.blue}
+                        >
+                            <Callout tooltip>
+                                <View>
+                                    <View style={styles.callOutView}>
+                                        <View style={styles.calloutItemContainer}>
+                                            <Iconic name="person" size={18} color={colors.red} />
+                                            <Text style={styles.text}>{user.name}</Text>
+                                        </View>
+                                        <View style={styles.calloutItemContainer}>
+                                            <Iconic name="call" size={18} color={colors.red} />
+                                            <Text style={styles.text}>{user.phone}</Text>
+                                        </View>
+                                        <View style={styles.calloutItemContainer}>
+                                            <Iconic name="water" size={18} color={colors.red} />
+                                            <Text style={styles.text}>{user.bloodgroup}</Text>
+                                        </View>
+                                    </View>
                                 </View>
-                                <View style={styles.calloutItemContainer}>
-                                    <Iconic name="call" size={18} color={colors.red} />
-                                    <Text style={styles.text}>{user.phone}</Text>
-                                </View>
-                                <View style={styles.calloutItemContainer}>
-                                    <Iconic name="water" size={18} color={colors.red} />
-                                    <Text style={styles.text}>{user.bloodgroup}</Text>
-                                </View>
-                            </View>
-                        </View>
-                    </Callout>
-                </Marker>
-                )
-            }
+                            </Callout>
+                        </Marker>
+                    )
+                }
 
 
 
@@ -109,11 +149,11 @@ const Nearby = ({location}) => {
                                     image={images.wave_icon}
                                     pinColor={colors.red}
                                     key={i * i}
-                                    onPress={()=>{
-                                        navigation.navigate('RequesterDetail', {requester});
+                                    onPress={() => {
+                                        navigation.navigate('RequesterDetail', { requester });
                                     }}
                                 />
-                                 
+
                             );
                         }
 
@@ -136,11 +176,11 @@ const Nearby = ({location}) => {
                                     // image={images.red_flag_icon}
                                     pinColor={colors.red}
                                     key={i * i}
-                                    onPress={()=>{
-                                        navigation.navigate('RequesterDetail', {requester});
+                                    onPress={() => {
+                                        navigation.navigate('RequesterDetail', { requester });
                                     }}
                                 />
-                                 
+
                             );
                         }
 
@@ -163,11 +203,38 @@ const Nearby = ({location}) => {
                                     // image={images.green_flag_icon}
                                     pinColor={colors.green}
                                     key={i * i}
-                                    onPress={()=>{
-                                        navigation.navigate('DonorDetail', {donor});
+                                    onPress={() => {
+                                        navigation.navigate('DonorDetail', { donor });
                                     }}
                                 />
-                                 
+
+                            );
+                        }
+
+
+                    })
+                }
+
+                {
+                    availableDonorsByBlood && availableDonorsByBlood.map((donor, i) => {
+
+                        if (donor.email != user.email && donor.location.latitude != "") {
+                            return (
+                                <Marker
+                                    coordinate={{
+                                        latitude: donor.location.latitude,
+                                        longitude: donor.location.longitude,
+                                        latitudeDelta: LATITUDE_DELTA,
+                                        longitudeDelta: LATITUDE_DELTA * ASPECT_RATIO
+                                    }}
+                                    // image={images.green_flag_icon}
+                                    pinColor={colors.green}
+                                    key={i * i}
+                                    onPress={() => {
+                                        navigation.navigate('DonorDetail', { donor });
+                                    }}
+                                />
+
                             );
                         }
 
@@ -184,9 +251,25 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#000'
     },
+    filterContainer: {
+        height: 70,
+        width: width,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: colors.white,
+        paddingHorizontal:30,
+        backgroundColor:colors.red_100,
+
+    },
     map: {
         width: width,
-        height: '100%'
+        // height: '100%'
+        flexGrow: 1,
+        zIndex:-1,
+    },
+    dropdown:{
+        borderColor:colors.white,
+        borderWidth:2,
     },
     callOutView: {
         elevation: 2,
