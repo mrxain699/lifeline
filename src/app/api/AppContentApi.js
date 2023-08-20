@@ -1,7 +1,7 @@
 import React, { useState, createContext, useContext } from 'react'
 import Geolocation from '@react-native-community/geolocation';
 import Geocoder from 'react-native-geocoding';
-import { auth } from '../database/DB';
+import { auth, storage } from '../database/DB';
 import { API_KEY } from '../constants/Const';
 import { AuthContext } from './AuthContentApi';
 import { users } from '../database/Collections';
@@ -327,7 +327,7 @@ const AppContentApi = ({ children }) => {
           chats.doc(doc_id).set({
             sender_id: message.sender_id,
             receiver_id: message.receiver_id,
-            last_message: message.text,
+            last_message: message.text ? message.text : '',
             createdAt: message.createdAt
           }).then(() => {
             console.log("Chat Head Created");
@@ -337,7 +337,7 @@ const AppContentApi = ({ children }) => {
         if (doc != null) {
 
           doc.update({
-            last_message: message.text,
+            last_message: message.text ?  message.text : '',
             createdAt: message.createdAt
           })
             .then(() => {
@@ -348,6 +348,26 @@ const AppContentApi = ({ children }) => {
       })
       .catch(err => console.log(err));
 
+  }
+
+
+  const uploadMessageImage = async (image_path) => {
+    try {
+      const image_id = Math.round(Math.random() * 1000000).toString();
+      console.log(image_path);
+      console.log(image_id);
+      const reference = storage().ref('images/messages/' + image_id);
+      await reference.putFile(image_path)
+      const url = await storage().ref('images/messages/' + image_id).getDownloadURL();
+      if (url) {
+        return url;
+      }
+      else{
+        return false;
+      }
+    } catch (error) {
+      console.log("Error to upload message image");
+    }
   }
 
 
@@ -383,7 +403,8 @@ const AppContentApi = ({ children }) => {
     sendMessage,
     setShowToast,
     getDonorsByBlood,
-    availableDonorsByBlood
+    availableDonorsByBlood,
+    uploadMessageImage,
 
 
   }

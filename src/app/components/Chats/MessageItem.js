@@ -72,9 +72,7 @@ const MessageItem = ({ date, message, sender_id, receiver_id }) => {
         </View>
     </TouchableOpacity>
     :
-    <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
-        <ActivityIndicator size='large' color={colors.grey_100} />
-    </View>
+    <View></View>
     );
 }
 

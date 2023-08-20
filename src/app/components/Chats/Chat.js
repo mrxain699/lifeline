@@ -1,14 +1,16 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, TouchableOpacity } from 'react-native'
 import { globalStyles } from '../../constants/Style'
 import { GiftedChat, Bubble, Send } from 'react-native-gifted-chat'
 import { colors } from '../../constants/Colors'
 import { messages_collection } from '../../database/Collections'
-import { AppContext } from '../../api/AppContentApi'
-
+import { AppContext } from '../../api/AppContentApi';
+import ImagePicker from 'react-native-image-crop-picker';
+import Iconic from '../ui/Icons/Icons'
 const Chat = ({ sender, receiver }) => {
   const {
     sendMessage,
+    uploadMessageImage
   } = useContext(AppContext)
   const [messages, setMessages] = useState([])
 
@@ -30,7 +32,8 @@ const Chat = ({ sender, receiver }) => {
         const message = doc.data();
         return {
           _id: doc.id,
-          text: message.text,
+          text: message.text ? message.text : null,
+          image:message.image ? message.image : null,
           createdAt: message.createdAt.toDate(),
           user: {
             _id: message.user._id,
@@ -62,18 +65,65 @@ const Chat = ({ sender, receiver }) => {
     }
   };
 
+
+
   const onSend = useCallback((messages = []) => {
+    let update_new_message = {};
     const new_message = messages.length > 0 && messages[0];
-    const update_new_message = {
-      ...new_message,
-      sender_id: sender.id,
-      receiver_id: receiver.id,
+    if(!new_message.hasOwnProperty('image')) {
+      update_new_message = {
+        ...new_message,
+        sender_id: sender.id,
+        receiver_id: receiver.id,
+      }
+    }
+    else{
+      update_new_message = {
+        ...new_message,
+        sender_id: sender.id,
+        receiver_id: receiver.id,
+
+      }
     }
     sendMessage(update_new_message);
     setMessages(previousMessages =>
       GiftedChat.append(previousMessages, messages),
     )
   }, [])
+
+  const onGallery = () => {
+    ImagePicker.openPicker({
+      mediaType: 'photo',
+    })
+      .then(async (image) => {
+        try {
+          const image_url = await uploadMessageImage(image.path);
+          if (image_url) {
+            console.log("URL", image_url);
+            const image_message = [{
+              _id: Math.round(Math.random() * 1000000).toString(),
+              text: null,
+              createdAt : new Date(),
+              user:{
+                _id: sender.id,
+                avatar: sender.image,
+              },
+              image: image_url,
+            }];
+            onSend(image_message);
+          }
+          else {
+            console.log("Sorry, something went wrong to send image");
+          }
+        } catch (error) {
+          console.log(error);
+        }
+
+      })
+      .catch(error => {
+        console.log(error);
+      })
+  };
 
 
   useEffect(() => {
@@ -95,7 +145,7 @@ const Chat = ({ sender, receiver }) => {
         onSend={messages => onSend(messages)}
         user={{
           _id: sender.id,
-          avatar:sender.image,
+          avatar: sender.image,
         }}
         textInputProps={{
           autoFocus: true,
@@ -115,6 +165,15 @@ const Chat = ({ sender, receiver }) => {
                 }
               }}
             />
+          );
+        }}
+        renderActions={() => {
+          return (
+            <TouchableOpacity
+              style={{ height: '100%', justifyContent: 'center', alignItems: 'center', marginLeft: 10, }}
+            >
+              <Iconic name={"image"} size={24} color={colors.red} onPress={() => { onGallery(); }} />
+            </TouchableOpacity>
           );
         }}
         renderSend={(props) => {
