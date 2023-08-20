@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, View, Dimensions, Text } from 'react-native';
+import { StyleSheet, View, Dimensions, Text, Image } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker, Callout } from 'react-native-maps';
 import { AuthContext } from '../../api/AuthContentApi';
 import { AppContext } from '../../api/AppContentApi';
@@ -146,13 +146,17 @@ const Nearby = ({ location }) => {
                                         latitudeDelta: LATITUDE_DELTA,
                                         longitudeDelta: LATITUDE_DELTA * ASPECT_RATIO
                                     }}
-                                    image={images.wave_icon}
+                                    // image={images.wireless_gif_icon}
                                     pinColor={colors.red}
                                     key={i * i}
                                     onPress={() => {
                                         navigation.navigate('RequesterDetail', { requester });
                                     }}
-                                />
+                                >
+                                    <View style={{width:70,height:70}}>
+                                    <Image source={images.wireless_gif_icon} resizeMode='contain' style={{width:'100%', height:'100%'}}/>
+                                    </View>
+                                </Marker>
 
                             );
                         }

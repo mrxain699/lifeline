@@ -12,4 +12,5 @@ export const images = {
     green_flag_icon:require('../assets/images/green_flag.png'),
     person_icon:require('../assets/images/person.png'),
     blood_d__icon:require('../assets/images/blood_d.png'),
+    wireless_gif_icon:require('../assets/images/wireless.gif'),
 }
