@@ -14,6 +14,7 @@ const Map = ({route}) => {
     const {
         userCurrentLocation,
         getFormattedAddress,
+        setShareLocation,
     } = useContext(AppContext);
     const { user } = useContext(AuthContext);
     const ASPECT_RATIO = width / height;
@@ -32,6 +33,10 @@ const Map = ({route}) => {
                 onPress={
                     (event) => {
                         getFormattedAddress(event.nativeEvent.coordinate.latitude, event.nativeEvent.coordinate.longitude);
+                        setShareLocation({
+                            latitude: event.nativeEvent.coordinate.latitude,
+                            longitude: event.nativeEvent.coordinate.longitude,
+                        })
                         navigation.goBack();
                     }
                 }

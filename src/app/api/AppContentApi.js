@@ -37,6 +37,8 @@ const AppContentApi = ({ children }) => {
   const [requesters, setRequesters] = useState([]);
   const [urgentRequesters, setUrgentRequesters] = useState([]);
   const [showToast, setShowToast] = useState(false);
+  const [shareLocation, setShareLocation] = useState(null);
+
   Geocoder.init(API_KEY, { language: "en" });
 
   const getUserCurrentLocation = () => {
@@ -405,7 +407,8 @@ const AppContentApi = ({ children }) => {
     getDonorsByBlood,
     availableDonorsByBlood,
     uploadMessageImage,
-
+    shareLocation,
+    setShareLocation
 
   }
 

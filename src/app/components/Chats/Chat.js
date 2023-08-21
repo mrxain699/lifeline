@@ -1,18 +1,27 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react'
-import { View, Text, TouchableOpacity } from 'react-native'
+import { View, Text } from 'react-native'
 import { globalStyles } from '../../constants/Style'
 import { GiftedChat, Bubble, Send } from 'react-native-gifted-chat'
 import { colors } from '../../constants/Colors'
 import { messages_collection } from '../../database/Collections'
 import { AppContext } from '../../api/AppContentApi';
 import ImagePicker from 'react-native-image-crop-picker';
-import Iconic from '../ui/Icons/Icons'
+import Iconic from '../ui/Icons/Icons';
+import { useNavigation } from '@react-navigation/native';
+import Alert from '../ui/Modals/Alert';
+import LocationMessage from './LocationMessage';
+
 const Chat = ({ sender, receiver }) => {
+  const navigation = useNavigation();
   const {
     sendMessage,
-    uploadMessageImage
+    uploadMessageImage,
+    userCurrentLocation,
+    shareLocation,
+    setShareLocation
   } = useContext(AppContext)
   const [messages, setMessages] = useState([])
+  const [show, setshow] = useState(false);
 
   const fetchMessages = async () => {
     try {
@@ -33,7 +42,8 @@ const Chat = ({ sender, receiver }) => {
         return {
           _id: doc.id,
           text: message.text ? message.text : null,
-          image:message.image ? message.image : null,
+          image: message.image ? message.image : null,
+          location: message.location ? message.location : null,
           createdAt: message.createdAt.toDate(),
           user: {
             _id: message.user._id,
@@ -70,20 +80,11 @@ const Chat = ({ sender, receiver }) => {
   const onSend = useCallback((messages = []) => {
     let update_new_message = {};
     const new_message = messages.length > 0 && messages[0];
-    if(!new_message.hasOwnProperty('image')) {
-      update_new_message = {
-        ...new_message,
-        sender_id: sender.id,
-        receiver_id: receiver.id,
-      }
-    }
-    else{
-      update_new_message = {
-        ...new_message,
-        sender_id: sender.id,
-        receiver_id: receiver.id,
+    update_new_message = {
+      ...new_message,
+      sender_id: sender.id,
+      receiver_id: receiver.id,
 
-      }
     }
     sendMessage(update_new_message);
     setMessages(previousMessages =>
@@ -99,12 +100,11 @@ const Chat = ({ sender, receiver }) => {
         try {
           const image_url = await uploadMessageImage(image.path);
           if (image_url) {
-            console.log("URL", image_url);
             const image_message = [{
               _id: Math.round(Math.random() * 1000000).toString(),
               text: null,
-              createdAt : new Date(),
-              user:{
+              createdAt: new Date(),
+              user: {
                 _id: sender.id,
                 avatar: sender.image,
               },
@@ -135,11 +135,72 @@ const Chat = ({ sender, receiver }) => {
   }, [])
 
 
+  const onPressLocation = () => {
+    setshow(true);
+
+  }
+
+  const sendLocation = (location) => {
+    const location_message = [{
+      _id: Math.round(Math.random() * 1000000).toString(),
+      text: null,
+      createdAt: new Date(),
+      user: {
+        _id: sender.id,
+        avatar: sender.image,
+      },
+      image: null,
+      location: location
+    }];
+    onSend(location_message);
+  }
+
+  const onCurrentPress = () => {
+    setShareLocation(userCurrentLocation);
+    sendLocation(userCurrentLocation);
+    setshow(false);
+
+
+  }
+
+  const onNewPress = () => {
+    setshow(false);
+    navigation.navigate('Map', { location: userCurrentLocation });
+    sendLocation(shareLocation);
+  }
+
+  useEffect(() => {
+    if (shareLocation != null) {
+      console.log(shareLocation);
+    }
+  }, [shareLocation])
+
+
+
+  const renderBubble = (props) => {
+    const { currentMessage } = props;
+    return (
+      !currentMessage.location ?  <Bubble
+        {...props}
+        wrapperStyle={{
+          left: {
+            backgroundColor: colors.white,
+          }
+        }}
+      />
+      :
+      <LocationMessage location={currentMessage.location} />
+    );
+
+  }
+
+
 
 
 
   return (
     <View style={globalStyles.wrapper}>
+      <Alert show={show} currentPress={onCurrentPress} newPress={onNewPress} />
       <GiftedChat
         messages={messages}
         onSend={messages => onSend(messages)}
@@ -155,25 +216,15 @@ const Chat = ({ sender, receiver }) => {
           color: colors.black,
           height: '100%',
         }}
-        renderBubble={props => {
-          return (
-            <Bubble
-              {...props}
-              wrapperStyle={{
-                left: {
-                  backgroundColor: colors.white,
-                }
-              }}
-            />
-          );
-        }}
+        renderBubble={renderBubble}
         renderActions={() => {
           return (
-            <TouchableOpacity
-              style={{ height: '100%', justifyContent: 'center', alignItems: 'center', marginLeft: 10, }}
+            <View
+              style={{ height: '100%', justifyContent: 'center', alignItems: 'center', marginLeft: 10, flexDirection: 'row' }}
             >
               <Iconic name={"image"} size={24} color={colors.red} onPress={() => { onGallery(); }} />
-            </TouchableOpacity>
+              <Iconic name={"location"} size={24} color={colors.red} onPress={() => { onPressLocation(); }} style={{ marginLeft: 10, }} />
+            </View>
           );
         }}
         renderSend={(props) => {
