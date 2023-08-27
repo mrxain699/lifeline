@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext } from 'react'
 import { StyleSheet, Text, View, Dimensions } from 'react-native'
 import MapView, { PROVIDER_GOOGLE, Marker, Callout } from 'react-native-maps';
 import { colors } from '../../constants/Colors';
@@ -10,7 +10,8 @@ const { width, height } = Dimensions.get('window');
 
 const Map = ({route}) => {
     const navigation = useNavigation();
-    const location  = route?.params ? route.params.location : null;
+    const location  = route.params ? route.params.location : null;
+    const state  = route.params ? route.params.hasOwnProperty('state') ? route.params.state : null : null;
     const {
         userCurrentLocation,
         getFormattedAddress,
@@ -24,26 +25,38 @@ const Map = ({route}) => {
             <MapView
                 provider={PROVIDER_GOOGLE}
                 style={styles.map}
-                region={{
+                region={state == null ? {
                     latitude: userCurrentLocation.latitude,
                     longitude: userCurrentLocation.longitude,
                     latitudeDelta: LATITUDE_DELTA,
                     longitudeDelta: LATITUDE_DELTA * ASPECT_RATIO,
-                }}
-                onPress={
+                }:
+                {
+                    latitude: location.latitude,
+                    longitude: location.longitude,
+                    latitudeDelta: LATITUDE_DELTA,
+                    longitudeDelta: LATITUDE_DELTA * ASPECT_RATIO,
+                }
+            }
+                 onPress={
                     (event) => {
-                        getFormattedAddress(event.nativeEvent.coordinate.latitude, event.nativeEvent.coordinate.longitude);
-                        setShareLocation({
-                            latitude: event.nativeEvent.coordinate.latitude,
-                            longitude: event.nativeEvent.coordinate.longitude,
-                        })
-                        navigation.goBack();
+                        if(state == null){
+                            getFormattedAddress(event.nativeEvent.coordinate.latitude, event.nativeEvent.coordinate.longitude);
+                            setShareLocation({
+                                latitude: event.nativeEvent.coordinate.latitude,
+                                longitude: event.nativeEvent.coordinate.longitude,
+                            })
+                            navigation.goBack();
+                        }
+                        
+                        
+                        
                     }
                 }
             >
                 {
 
-                    (
+                    state == null && (
                         <Marker
                             coordinate={{
                                 latitude: userCurrentLocation.latitude,

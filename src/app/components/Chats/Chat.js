@@ -156,22 +156,19 @@ const Chat = ({ sender, receiver }) => {
   }
 
   const onCurrentPress = () => {
-    setShareLocation(userCurrentLocation);
+    // setShareLocation(userCurrentLocation);
     sendLocation(userCurrentLocation);
     setshow(false);
-
-
   }
 
   const onNewPress = () => {
     setshow(false);
-    navigation.navigate('Map', { location: userCurrentLocation });
-    sendLocation(shareLocation);
+    navigation.navigate('Map', { location: userCurrentLocation });  
   }
 
   useEffect(() => {
     if (shareLocation != null) {
-      console.log(shareLocation);
+      sendLocation(shareLocation);
     }
   }, [shareLocation])
 
