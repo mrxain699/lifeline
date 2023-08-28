@@ -10,6 +10,8 @@ import Iconic from '../ui/Icons/Icons';
 import { useNavigation } from '@react-navigation/native';
 import Alert from '../ui/Modals/Alert';
 import LocationMessage from './LocationMessage';
+import axios from 'axios';
+import AlertMessage from './Alert.js'
 
 const Chat = ({ sender, receiver }) => {
   const navigation = useNavigation();
@@ -22,6 +24,7 @@ const Chat = ({ sender, receiver }) => {
   } = useContext(AppContext)
   const [messages, setMessages] = useState([])
   const [show, setshow] = useState(false);
+  const [showToxicAlert, setShowToxicAlert] = useState(false);
 
   const fetchMessages = async () => {
     try {
@@ -76,20 +79,68 @@ const Chat = ({ sender, receiver }) => {
   };
 
 
+  const checkMessageContent = async (message) => {
+    try {
+      const response = await axios.get(`http://192.168.10.6:3000/predict`, {
+        params: { text: message },
+      });
+      if (response) {
+        const prediction = response.data.prediction;
+        const parsedPrediction = parseInt(prediction, 10);
+        if (parsedPrediction === 1) {
+          return true;
+        }
+        else {
+          return false;
+        }
+      }
+    } catch (error) {
+      console.log("Prediction error at Chat.js", error)
+    }
 
-  const onSend = useCallback((messages = []) => {
+  };
+
+
+
+  const onSend = useCallback(async (messages = []) => {
     let update_new_message = {};
     const new_message = messages.length > 0 && messages[0];
-    update_new_message = {
-      ...new_message,
-      sender_id: sender.id,
-      receiver_id: receiver.id,
+    if (new_message.text != null) {
+      try {
+        const response = await checkMessageContent(new_message.text);
+        if (!response) {
+          update_new_message = {
+            ...new_message,
+            sender_id: sender.id,
+            receiver_id: receiver.id,
+
+          }
+          sendMessage(update_new_message);
+          setMessages(previousMessages =>
+            GiftedChat.append(previousMessages, messages),
+          )
+        }
+        else{
+          setShowToxicAlert(true);
+        }
+      } catch (error) {
+        console.log(error)
+      }
 
     }
-    sendMessage(update_new_message);
-    setMessages(previousMessages =>
-      GiftedChat.append(previousMessages, messages),
-    )
+    else{
+      update_new_message = {
+        ...new_message,
+        sender_id: sender.id,
+        receiver_id: receiver.id,
+
+      }
+      sendMessage(update_new_message);
+      setMessages(previousMessages =>
+        GiftedChat.append(previousMessages, messages),
+      )
+    }
+
   }, [])
 
   const onGallery = () => {
@@ -137,7 +188,6 @@ const Chat = ({ sender, receiver }) => {
 
   const onPressLocation = () => {
     setshow(true);
-
   }
 
   const sendLocation = (location) => {
@@ -163,21 +213,26 @@ const Chat = ({ sender, receiver }) => {
 
   const onNewPress = () => {
     setshow(false);
-    navigation.navigate('Map', { location: userCurrentLocation });  
+    navigation.navigate('Map', { location: userCurrentLocation });
   }
 
   useEffect(() => {
     if (shareLocation != null) {
       sendLocation(shareLocation);
     }
-  }, [shareLocation])
+  }, [shareLocation]);
+
+  const onOkPress = () => {
+    setShowToxicAlert(false);
+  }
+
 
 
 
   const renderBubble = (props) => {
     const { currentMessage } = props;
     return (
-      !currentMessage.location ?  <Bubble
+      !currentMessage.location ? <Bubble
         {...props}
         wrapperStyle={{
           left: {
@@ -185,8 +240,8 @@ const Chat = ({ sender, receiver }) => {
           }
         }}
       />
-      :
-      <LocationMessage location={currentMessage.location} />
+        :
+        <LocationMessage location={currentMessage.location} />
     );
 
   }
@@ -197,6 +252,7 @@ const Chat = ({ sender, receiver }) => {
 
   return (
     <View style={globalStyles.wrapper}>
+      <AlertMessage show={showToxicAlert} onPress={onOkPress} />
       <Alert show={show} currentPress={onCurrentPress} newPress={onNewPress} />
       <GiftedChat
         messages={messages}

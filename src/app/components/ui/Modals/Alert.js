@@ -7,8 +7,8 @@ const Alert = ({ show, currentPress, newPress }) => {
             show={show}
             showProgress={false}
             title="Share Your Location"
-            closeOnTouchOutside={false}
-            closeOnHardwareBackPress={false}
+            closeOnTouchOutside={true}
+            closeOnHardwareBackPress={true}
             showCancelButton={true}
             showConfirmButton={true}
             cancelText="Current"
