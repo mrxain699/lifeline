@@ -63,7 +63,7 @@ const Gender = ({navigation}) => {
                 maxHeight={400}
                 onChangeValue={(value) => setValue(value)}
             />
-            <Button onPress={() => updateProfile('Gender', 'gender', value)} />
+            <Button onPress={() => value !== null  && updateProfile('Gender', 'gender', value)} />
         </View>
     )
 }

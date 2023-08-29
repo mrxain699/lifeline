@@ -83,7 +83,7 @@ const DateOfBirth = ({ navigation }) => {
               />
 
             }
-            <Button onPress={() => updateProfile('Date of Bith', 'dob', date)} />
+            <Button onPress={() => date !== null && updateProfile('Date of Bith', 'dob', date)} />
         </View>
     )
 }

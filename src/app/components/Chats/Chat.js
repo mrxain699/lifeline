@@ -143,6 +143,21 @@ const Chat = ({ sender, receiver }) => {
 
   }, [])
 
+  // const onSend = useCallback(async (messages = []) => {
+  //   let update_new_message = {};
+  //   const new_message = messages.length > 0 && messages[0];
+  //     update_new_message = {
+  //       ...new_message,
+  //       sender_id: sender.id,
+  //       receiver_id: receiver.id,
+
+  //     }
+  //     sendMessage(update_new_message);
+  //     setMessages(previousMessages =>
+  //       GiftedChat.append(previousMessages, messages),
+  //     )
+  // }, [])
+
   const onGallery = () => {
     ImagePicker.openPicker({
       mediaType: 'photo',
